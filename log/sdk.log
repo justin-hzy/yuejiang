@@ -1,0 +1,2 @@
+2024-03-19 09:56:43,249 [Finalizer] [org.apache.http.impl.conn.PoolingHttpClientConnectionManager] [DEBUG] - Connection manager is shutting down
+2024-03-19 09:56:43,258 [Finalizer] [org.apache.http.impl.conn.PoolingHttpClientConnectionManager] [DEBUG] - Connection manager shut down
