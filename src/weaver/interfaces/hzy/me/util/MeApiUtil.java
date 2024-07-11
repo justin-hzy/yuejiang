@@ -329,35 +329,50 @@ public class MeApiUtil extends BaseBean {
         writeLog("---------开始组装ME接口采购进仓单参数-----------");
         List<String> params = new ArrayList<>();
         RecordSet rs = new RecordSet();
-        String sql1 = "select main.rkck,dt2.wlbm,dt2.rksl,dt2.rkrq from formtable_main_234 as main inner join formtable_main_234_dt2 dt2 on main.id = dt2.mainid where main.requestId = ?";
+        String sql1 = "select main.lcbh,main.rkck,dt2.wlbm,dt2.rksl,dt2.rkrq from formtable_main_234 as main inner join formtable_main_234_dt2 dt2 on main.id = dt2.mainid where main.requestId = ?";
         writeLog(sql1+","+requestId);
         rs.executeQuery(sql1, requestId);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray subOthers = new JSONArray();
         while (rs.next()){
-            JSONObject jsonObject = new JSONObject();
-            String rkck = Util.null2String(rs.getString("rkck")); //入库仓库
+
             String wlbm = Util.null2String(rs.getString("wlbm")); //物料编码
             String rksl = Util.null2String(rs.getString("rksl")); //入库数量
+
+            JSONObject subOther = new JSONObject();
+            subOther.put("sku",wlbm);
+            subOther.put("qty",rksl);
+
+            subOthers.add(subOther);
+
+            String rkck = Util.null2String(rs.getString("rkck")); //入库仓库
+
             String rkrq = Util.null2String(rs.getString("rkrq")); //入库日期
 
+
+            String lcbh = Util.null2String(rs.getString("lcbh")); //流程编号
+
             jsonObject.put("cstore",rkck);
-            jsonObject.put("sku",wlbm);
-            jsonObject.put("qty",rksl);
+
 
             /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String now = dateFormat.format(new Date());*/
 
             rkrq= rkrq.replace("-","");
             jsonObject.put("billDate",rkrq);
-            jsonObject.put("description","台湾采购申请流程-入库");
+            jsonObject.put("description","台湾采购申请流程-入库-"+lcbh);
             jsonObject.put("requestId",requestId);
-
-            String param = jsonObject.toJSONString();
-
-            writeLog("param="+param);
-
-            params.add(param);
-
         }
+
+        jsonObject.put("subOthers",subOthers);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        params.add(param);
+
+
         return params;
     }
 
