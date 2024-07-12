@@ -105,7 +105,7 @@ public class HKConsSubflowService extends BaseBean {
 
                 writeLog("twDetail="+twDetail.toString());
 
-                int result = workflowUtil.creatRequest("1","165","HK_销售发货_金蝶"+"（子流程）",mainTableData,twDetail,"1");
+                int result = workflowUtil.creatRequest("1","165","HK_寄售发货_金蝶"+"（子流程）",mainTableData,twDetail,"1");
                 writeLog("触发成功的子流程请求id：" + result);
 
                 lcbh = "HK_"+lcbh;
@@ -116,7 +116,6 @@ public class HKConsSubflowService extends BaseBean {
 
                 RecordSet rs1 = new RecordSet();
                 rs1.executeUpdate(insertSql);
-
             }
         }
     }
