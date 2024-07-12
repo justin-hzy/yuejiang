@@ -64,7 +64,7 @@ public class TWConsSubflowAction extends BaseBean implements Action {
     public Map<String, List<SaleDt1>> getConDt1(String requestid){
 
         RecordSet dtRs1 = new RecordSet();
-        String dt1Sql = "select main.lcbh,dt1.wlbm hptxm,dt1.hsdj ddje,dt1.xssl fhl from formtable_main_238_dt1 as dt1,formtable_main_238 main where dt1.mainid = main.id and main.requestid = ?";
+        String dt1Sql = "select main.lcbh,dt1.wlbm hptxm,dt1.hsdj ddje,dt1.xssl fhl,dt1.taxrate from formtable_main_238_dt1 as dt1,formtable_main_238 main where dt1.mainid = main.id and main.requestid = ?";
         writeLog("dt1Sql="+dt1Sql);
         dtRs1.executeQuery(dt1Sql,requestid);
 
@@ -79,6 +79,8 @@ public class TWConsSubflowAction extends BaseBean implements Action {
             Integer fhl = dtRs1.getInt("fhl");
             //含税单价
             String ddje = Util.null2String(dtRs1.getString("ddje"));
+            //税率
+            String taxrate = Util.null2String(dtRs1.getString("taxrate"));
 
             if(dt1Map.containsKey(lcbh)){
                 List<SaleDt1> dt1List = dt1Map.get(lcbh);
@@ -87,7 +89,7 @@ public class TWConsSubflowAction extends BaseBean implements Action {
                 saleDt1.setFhl(fhl);
                 saleDt1.setHptxm(hptxm);
                 saleDt1.setSellPrice(ddje);
-                //saleDt1.setGg(gg);
+                saleDt1.setGg(taxrate);
                 dt1List.add(saleDt1);
             }else {
                 List<SaleDt1> dt1List = new ArrayList<>();
@@ -96,7 +98,7 @@ public class TWConsSubflowAction extends BaseBean implements Action {
                 saleDt1.setFhl(fhl);
                 saleDt1.setHptxm(hptxm);
                 saleDt1.setSellPrice(ddje);
-                //saleDt1.setGg(gg);
+                saleDt1.setGg(taxrate);
                 dt1List.add(saleDt1);
                 dt1Map.put(lcbh,dt1List);
             }
@@ -107,7 +109,7 @@ public class TWConsSubflowAction extends BaseBean implements Action {
 
     public String creatRequest(Map<String,List<SupSale>> supMap, String requestid, RequestManager requestManager, String flag){
         WorkflowUtil workflowUtil = new WorkflowUtil();
-        //获取销售出库主流程明细表-需要补货的数据
+        //获取寄售出库主流程明细表-需要补货的数据
         for(String key : supMap.keySet()){
             List<SupSale> supSales = supMap.get(key);
             Map<String, List<Map<String, String>>> detail = new HashMap<>();
@@ -118,10 +120,11 @@ public class TWConsSubflowAction extends BaseBean implements Action {
                 String hptxm = supSale.getHptxm();
                 Integer quantity = supSale.getQuantity();
                 String sellPrice = supSale.getSellPrice();
-                String taxRate = supSale.getSellPrice();
+                String taxRate = supSale.getTaxRate();
                 map.put("tm",hptxm);
                 map.put("sl",String.valueOf(quantity));
                 map.put("xsj",sellPrice);
+                map.put("taxRate",taxRate);
                 //map.put("hplx",proType);
                 mapList.add(map);
             }
@@ -134,7 +137,7 @@ public class TWConsSubflowAction extends BaseBean implements Action {
 
             writeLog("mainTableData="+mainTableData);
 
-            int result = workflowUtil.creatRequest("1","165","TW_销售发货_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+            int result = workflowUtil.creatRequest("1","165","TW_寄售发货_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
             writeLog("result="+result);
             if(result == 0){
                 requestManager.setMessageid("1000");
