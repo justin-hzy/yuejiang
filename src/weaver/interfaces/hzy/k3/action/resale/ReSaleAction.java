@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.action;
+package weaver.interfaces.hzy.k3.action.resale;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
@@ -18,8 +18,8 @@ public class ReSaleAction extends BaseBean implements Action {
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        /*寄售月结退*/
-        writeLog("执行 ReSaleAction");
+        /*销售退*/
+        writeLog("销售退单执行ReSaleAction");
 
         String requestid = requestInfo.getRequestid();
 
@@ -73,9 +73,11 @@ public class ReSaleAction extends BaseBean implements Action {
                 rkrq = detailDatas1.get(0).get("rkrq");
             }
 
-            String dt1Sql = "select dt1.hptxm tm,dt1.fhl sl,dt1.ddje xsj,dt1.rkrq from formtable_main_227 main inner join formtable_main_227_dt1 dt1 on main.id = dt1.mainid  where requestId = ?";
+            String dt1Sql = "select dt1.hptxm tm,dt1.fhl sl,dt1.ddje xsj,dt1.rkrq from formtable_main_263 main inner join formtable_main_263_dt1 dt1 on main.id = dt1.mainid  where requestId = ?";
 
             RecordSet dt1Rs = new RecordSet();
+
+            writeLog("dt1Sql="+dt1Sql+"requestid="+requestid);
 
             dt1Rs.executeQuery(dt1Sql,requestid);
 
@@ -85,6 +87,9 @@ public class ReSaleAction extends BaseBean implements Action {
                 String tm = dt1Rs.getString("tm");
                 String sl = dt1Rs.getString("sl");
                 String xsj = dt1Rs.getString("xsj");
+
+
+                writeLog("tm="+tm+",sl="+sl+",xsj="+xsj);
 
                 //条码
                 map.put("tm",tm);
@@ -126,7 +131,7 @@ public class ReSaleAction extends BaseBean implements Action {
                 writeLog("mainTableData="+mainTableData.toString());
                 writeLog("hkDtl="+hkDtl.toString());
 
-                int result = workflowUtil.creatRequest("1","165","HK_寄售退货_金蝶子流程",mainTableData,hkDtl,"1");
+                int result = workflowUtil.creatRequest("1","165","HK_销售退货_金蝶子流程",mainTableData,hkDtl,"1");
                 writeLog("触发成功的子流程请求id：" + result);
             }
 
@@ -148,7 +153,7 @@ public class ReSaleAction extends BaseBean implements Action {
 
                 writeLog("mainTableData="+mainTableData.toString());
                 writeLog("twDtl="+twDtl.toString());
-                int result = workflowUtil.creatRequest("1","165","TW_寄售退货_金蝶子流程",mainTableData,twDtl,"1");
+                int result = workflowUtil.creatRequest("1","165","TW_销售退货_金蝶子流程",mainTableData,twDtl,"1");
                 writeLog("触发成功的子流程请求id：" + result);
             }
         }else {

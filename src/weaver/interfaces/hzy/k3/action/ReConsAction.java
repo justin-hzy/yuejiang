@@ -15,10 +15,11 @@ import java.util.Map;
 
 public class ReConsAction extends BaseBean implements Action {
 
+    /*寄售完结*/
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("执行HKReConsAction");
+        writeLog("月结接受退执行HKReConsAction");
 
         String requestid = requestInfo.getRequestid();
 

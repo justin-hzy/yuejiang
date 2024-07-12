@@ -75,9 +75,9 @@ public class K3Action extends BaseBean implements Action {
         }else if("resale".equals(type)){
             if(lcbh != null){
                 if(lcbh.contains("HK_")){
-                    String code = k3Service.putReSale(requestid,"HK");
+                        String code = k3Service.putRePur(requestid,"HK");
                     if("200".equals(code)){
-
+                        k3Service.putReSale(requestid,"HK");
                     }
                 }else if(lcbh.contains("TW_")){
                     k3Service.putReSale(requestid,"TW");
