@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.action;
+package weaver.interfaces.hzy.k3.action.assy;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
