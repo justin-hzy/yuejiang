@@ -21,7 +21,7 @@ public class PurService extends BaseBean {
     private String putSaleUrl = getPropValue("k3_api_config","putSaleUrl");
 
 
-    public void tranTwPur_0(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String falldiscount){
+    public void tranTwPur_0(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String falldiscount){
         JSONObject jsonObject = new JSONObject();
 
         String fbillno = "TW_"+lcbh;
@@ -33,7 +33,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fsettleorgid","ZT026");
         jsonObject.put("fthirdbillno",lcbh);
 
-        jsonObject.put("fdate",yjjcr);
+        jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
         jsonObject.put("fsettlecurrid",bb);
         jsonObject.put("falldiscount",falldiscount);
@@ -81,7 +81,7 @@ public class PurService extends BaseBean {
     }
 
 
-    public void tranTwPur_1(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String falldiscount){
+    public void tranTwPur_1(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String falldiscount){
         JSONObject jsonObject = new JSONObject();
 
         String fbillno = "TW_"+lcbh;
@@ -93,7 +93,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fsettleorgid","ZT026");
         jsonObject.put("fthirdbillno",lcbh);
 
-        jsonObject.put("fdate",yjjcr);
+        jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
         jsonObject.put("fsettlecurrid",bb);
         jsonObject.put("falldiscount",falldiscount);
@@ -142,7 +142,7 @@ public class PurService extends BaseBean {
         }
     }
 
-    public String tranHkPur_1(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate){
+    public String tranHkPur_1(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate){
 
         JSONObject jsonObject = new JSONObject();
         String fbillno = "HK_"+lcbh;
@@ -156,7 +156,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fsettleorgid","ZT021");
         jsonObject.put("fthirdbillno",lcbh);
 
-        jsonObject.put("fdate",yjjcr);
+        jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
 
         jsonObject.put("fsettlecurrid",bb);

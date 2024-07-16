@@ -56,7 +56,8 @@ public class PurAction extends BaseBean implements Action {
         String bb = mainData.get("bb");
 
         //子流程单据日期，暂时取预计进仓日
-        String yjjcr = mainData.get("yjjcr");
+        String rkrq = mainData.get("rkrq");
+
 
 
 
@@ -69,7 +70,7 @@ public class PurAction extends BaseBean implements Action {
 
         if("3".equals(cglx)){
             //材料购买
-            purService.tranTwPur_0(lcbh,gys,yjjcr,rkck,bb,detailDatas1,k3Service,"5","");
+            purService.tranTwPur_0(lcbh,gys,rkrq,rkck,bb,detailDatas1,k3Service,"5","");
         }else if("1".equals(cglx)){
             //大陆直发
             /*String code = purService.tranHkPur_1(lcbh,gys,yjjcr,rkck,bb,detailDatas1,k3Service,"0");
@@ -83,10 +84,10 @@ public class PurAction extends BaseBean implements Action {
             }*/
             //进口税
             String jks = mainData.get("jks");
-            purService.tranTwPur_1(lcbh,gys,yjjcr,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
+            purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
         }else if("0".equals(cglx)){
             //台湾资生堂
-            purService.tranHkPur_1(lcbh,gys,yjjcr,rkck,bb,detailDatas1,k3Service,"0");
+            purService.tranHkPur_1(lcbh,gys,rkrq,rkck,bb,detailDatas1,k3Service,"0");
         }else if("2".equals(cglx)){
             /*String code = purService.tranHkPur_1(lcbh,gys,yjjcr,rkck,bb,detailDatas1,k3Service,"0");
             if("200".equals(code)){
@@ -99,7 +100,7 @@ public class PurAction extends BaseBean implements Action {
             }*/
             //进口税
             String jks = mainData.get("jks");
-            purService.tranTwPur_1(lcbh,gys,yjjcr,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
+            purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
         }
 
         return SUCCESS;
