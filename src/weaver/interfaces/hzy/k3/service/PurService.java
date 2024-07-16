@@ -171,7 +171,8 @@ public class PurService extends BaseBean {
             dtl.put("fmaterialId",detailData.get("wlbm"));
             //‘› ±–¥À¿
             dtl.put("fentrytaxrate",fentrytaxrate);
-            dtl.put("frealqty",detailData.get("rksl"));
+            writeLog("cgsl="+detailData.get("cgsl"));
+            dtl.put("frealqty",detailData.get("cgsl"));
             dtl.put("fstockid",rkck);
 
             dtl.put("ftaxprice",detailData.get("cgdj"));
@@ -225,7 +226,8 @@ public class PurService extends BaseBean {
             dtl.put("fmaterialId",detailData.get("wlbm"));
             //‘› ±–¥À¿
             dtl.put("fentrytaxrate",fentrytaxrate);
-            dtl.put("frealqty",detailData.get("rksl"));
+
+            dtl.put("frealqty",detailData.get("cgsl"));
 
             dtl.put("fstockid",rkck);
             dtl.put("fsoorderno",lcbh);
