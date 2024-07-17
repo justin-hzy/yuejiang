@@ -19,6 +19,8 @@ import weaver.interfaces.tx.bojun.util.TicketUtil;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MeApiUtil extends BaseBean {
@@ -355,8 +357,13 @@ public class MeApiUtil extends BaseBean {
             jsonObject.put("cstore",rkck);
 
 
-            /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            String now = dateFormat.format(new Date());*/
+
+
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String pushDate = today.format(formatter);
+
+            rkrq = pushDate;
 
             rkrq= rkrq.replace("-","");
             jsonObject.put("billDate",rkrq);
