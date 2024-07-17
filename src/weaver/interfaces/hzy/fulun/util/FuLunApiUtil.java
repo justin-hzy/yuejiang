@@ -469,7 +469,9 @@ public class FuLunApiUtil extends BaseBean {
         //回传函数
         String callbackUrl = meIp+getSetDismantleCBUrl;
         //收货店仓
-        String storage_type = mainData.get("fhdc1");
+        String fhdc1 = mainData.get("fhdc1");
+
+        String shdc1 = mainData.get("shdc1");
 
         String requestid = mainData.get("requestid");
 
@@ -491,7 +493,7 @@ public class FuLunApiUtil extends BaseBean {
             JSONObject detail = new JSONObject();
             detail.put("sku",sku);
             detail.put("quantity",jhztsl);
-            detail.put("storage_type",storage_type);
+            detail.put("storage_type",fhdc1);
 
             String xq = detailData.get("xq");
             if(StrUtil.isNotEmpty(xq)){
@@ -522,7 +524,7 @@ public class FuLunApiUtil extends BaseBean {
 
             detailJson.put("sku",fxwlbm);
             detailJson.put("quantity",jhztfxsl);
-            detailJson.put("storage_type",storage_type);
+            detailJson.put("storage_type",shdc1);
             detailArr2.add(detailJson);
         }
         mainJson.put("target_items",detailArr2);
