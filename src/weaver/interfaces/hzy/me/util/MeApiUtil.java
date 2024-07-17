@@ -161,6 +161,9 @@ public class MeApiUtil extends BaseBean {
         }else if("2".equals(apiId)){
             params = getRePurJson(requestId);
         }else if("3".equals(apiId)){
+            params = getSetDassyJson(requestId);
+        }
+        /*else if("3".equals(apiId)){
             params = getSetFrJson(requestId);
         }else if("4".equals(apiId)){
             params = getSetSonJson(requestId);
@@ -173,7 +176,7 @@ public class MeApiUtil extends BaseBean {
             params = getTransCodeFrJson(requestId);
         }else if("8".equals(apiId)){
             params = getTransCodeSonJson(requestId);
-        }
+        }*/
         return params;
     }
 
@@ -418,12 +421,12 @@ public class MeApiUtil extends BaseBean {
         return params;
     }
 
-    public List<String> getSetFrJson(String requestId){
+    public List<String> getSetDassyJson(String requestId){
         writeLog("---------开始组装ME接口组套-父项出库单参数-----------");
         List<String> params = new ArrayList<>();
         RecordSet rs1 = new RecordSet();
 
-        String sql1 = "select dt3.spbm,main.shdc1,dt3.sjrksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjrksl is not null and dt3.sjcksl is null and main.requestId =  ?";
+        String sql1 = "select dt3.spbm,main.shdc1,dt3.sjrksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjrksl is not null and dt3.sjcksl is null and main.requestId = ?";
         writeLog(sql1+","+requestId);
         rs1.executeQuery(sql1, requestId);
 
