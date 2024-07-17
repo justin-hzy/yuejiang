@@ -161,7 +161,9 @@ public class MeApiUtil extends BaseBean {
         }else if("2".equals(apiId)){
             params = getRePurJson(requestId);
         }else if("3".equals(apiId)){
-            params = getSetDassyJson(requestId);
+            params = getSetFrJson(requestId);
+        }else if("4".equals(apiId)){
+            params = getSetSonJson(requestId);
         }
         /*else if("3".equals(apiId)){
             params = getSetFrJson(requestId);
@@ -421,40 +423,49 @@ public class MeApiUtil extends BaseBean {
         return params;
     }
 
-    public List<String> getSetDassyJson(String requestId){
+    public List<String> getSetFrJson(String requestId){
         writeLog("---------开始组装ME接口组套-父项出库单参数-----------");
         List<String> params = new ArrayList<>();
         RecordSet rs1 = new RecordSet();
 
-        String sql1 = "select dt3.spbm,main.shdc1,dt3.sjrksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjrksl is not null and dt3.sjcksl is null and main.requestId = ?";
+        String sql1 = "select main.lcbh,dt3.spbm,main.shdc1,dt3.sjrksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjrksl is not null and dt3.sjcksl is null and main.requestId = ?";
         writeLog(sql1+","+requestId);
         rs1.executeQuery(sql1, requestId);
 
-        while (rs1.next()){
+        JSONObject jsonObject = new JSONObject();
+        JSONArray subOthers = new JSONArray();
 
-            JSONObject jsonObject = new JSONObject();
+        while (rs1.next()){
 
             String shdc1 = Util.null2String(rs1.getString("shdc1")); //出库仓库
             String spbm = Util.null2String(rs1.getString("spbm")); //物料编码
             String sjrksl = Util.null2String(rs1.getString("sjrksl")); //父项实际入库数量
 
+            String lcbh = Util.null2String(rs1.getString("lcbh")); //流程编号
+
+            JSONObject subOther = new JSONObject();
+
             jsonObject.put("cstore",shdc1);
-            jsonObject.put("sku",spbm);
-            jsonObject.put("qty",sjrksl);
+
+            subOther.put("sku",spbm);
+            subOther.put("qty",sjrksl);
+            subOthers.add(subOther);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String now = dateFormat.format(new Date());
             jsonObject.put("billDate",now);
-            jsonObject.put("description","组装流程-入库");
+            jsonObject.put("description","组装流程-入库-"+lcbh);
             jsonObject.put("requestId",requestId);
 
-            String param = jsonObject.toJSONString();
-
-            writeLog("param="+param);
-
-            params.add(param);
         }
-        writeLog("params="+params.toString());
+
+        jsonObject.put("subOthers",subOthers);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+        params.add(param);
+
         return params;
     }
 
@@ -463,33 +474,46 @@ public class MeApiUtil extends BaseBean {
         writeLog("---------开始组装ME接口组套-子项出库单参数-----------");
         List<String> params = new ArrayList<>();
         RecordSet rs1 = new RecordSet();
-        String sql1 = "select dt3.spbm,main.fhdc1,dt3.sjcksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjcksl is not null and dt3.sjrksl is null and main.requestId = ?";
+        String sql1 = "select main.lcbh,dt1.spbm,main.fhdc1,dt1.sjztsl from formtable_main_242 as main inner join formtable_main_242_dt1 dt1 on main.id = dt1.mainid where main.requestId = ?";
         writeLog(sql1+","+requestId);
         rs1.executeQuery(sql1, requestId);
 
+        JSONObject jsonObject = new JSONObject();
+
+        JSONArray subOthers = new JSONArray();
+
         while (rs1.next()){
-            JSONObject jsonObject = new JSONObject();
+
 
             String fhdc1 = Util.null2String(rs1.getString("fhdc1")); //子项-入库仓库
             String spbm = Util.null2String(rs1.getString("spbm")); //物料编码
-            String sjcksl = Util.null2String(rs1.getString("sjcksl")); //子项-出库数量
+            String sjztsl = Util.null2String(rs1.getString("sjztsl")); //子项-出库数量
+            String lcbh = Util.null2String(rs1.getString("lcbh")); //子项-出库数量
 
             jsonObject.put("cstore",fhdc1);
-            jsonObject.put("sku",spbm);
-            jsonObject.put("qty",sjcksl);
+            JSONObject subOther = new JSONObject();
+
+            subOther.put("sku",spbm);
+            subOther.put("qty",sjztsl);
+            subOthers.add(subOther);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String now = dateFormat.format(new Date());
             jsonObject.put("billDate",now);
-            jsonObject.put("description","组套流程-出库");
+            jsonObject.put("description","组套流程-出库-"+lcbh);
             jsonObject.put("requestId",requestId);
 
-            String param = jsonObject.toJSONString();
 
-            writeLog("param="+param);
-
-            params.add(param);
         }
+
+        jsonObject.put("subOthers",subOthers);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        params.add(param);
+
         writeLog("params="+params.toString());
         return params;
     }
