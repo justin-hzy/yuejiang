@@ -117,6 +117,9 @@ public class PurService extends BaseBean {
 
             String ftaxprice = k3Service.queryPriceTable(detailData.get("wlbm"));
 
+            //价目表+进口税
+            ftaxprice = ftaxprice + falldiscount;
+
             dtl.put("ftaxprice",ftaxprice);
 
             jsonArray.add(dtl);
