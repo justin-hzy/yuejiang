@@ -724,7 +724,7 @@ public class K3Service extends BaseBean {
             String price = rs.getString("FTAXPRICE");
             dt1Json.put("ftaxprice",price);
         }else {
-            dt1Json.put("ftaxprice","价目表找不到相关价格");
+            dt1Json.put("ftaxprice","0.0");
         }
     }
 
