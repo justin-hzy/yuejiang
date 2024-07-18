@@ -13,13 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReSaleAction extends BaseBean implements Action {
+public class HKReSaleAction extends BaseBean implements Action {
+
+    private String type;
 
     @Override
     public String execute(RequestInfo requestInfo) {
 
         /*销售退*/
-        writeLog("销售退单执行ReSaleAction");
+        writeLog("销售退单执行HKReSaleAction");
 
         String requestid = requestInfo.getRequestid();
 
@@ -104,15 +106,12 @@ public class ReSaleAction extends BaseBean implements Action {
                 if("ZT021".equals(org)){
                     hkList.add(map);
                 }
-                twList.add(map);
+
             }
 
             writeLog("hkList="+hkList.toString());
 
-            writeLog("twList="+twList.toString());
-
-
-            /*if (hkList.size()>0){
+            if (hkList.size()>0){
                 Map<String,String> mainTableData = new HashMap<>();
                 mainTableData.put("zlclj",lclj);
                 String hklcbh = "HK_"+lcbh;
@@ -134,43 +133,12 @@ public class ReSaleAction extends BaseBean implements Action {
 
                 int result = workflowUtil.creatRequest("1","165","HK_销售退货_金蝶子流程",mainTableData,hkDtl,"1");
                 writeLog("触发成功的子流程请求id：" + result);
-            }*/
-
-            if (twList.size()>0){
-                Map<String,String> mainTableData = new HashMap<>();
-                mainTableData.put("zlclj",lclj);
-                String twlcbh = "TW_"+lcbh;
-                mainTableData.put("lcbh",twlcbh);
-                mainTableData.put("kh",kh);
-                mainTableData.put("shdc",shdc);
-                mainTableData.put("fhdc",fhdc);
-                //单据日期 = 订单日期
-                mainTableData.put("djrq",rkrq);
-                //币别
-                mainTableData.put("bb",bb);
-                mainTableData.put("ydh",lcbh);
-
-                twDtl.put("1",twList);
-
-                writeLog("mainTableData="+mainTableData.toString());
-                writeLog("twDtl="+twDtl.toString());
-                int result = workflowUtil.creatRequest("1","165","TW_销售退货_金蝶子流程",mainTableData,twDtl,"1");
-                writeLog("触发成功的子流程请求id：" + result);
             }
-
-            //更新是否需要生成香港单据
-            if (hkList.size()>0){
-
-                String updateSql = "update formtable_main_263 set spsfzyxgzt  = ? where requestid = ? ";
-
-                RecordSet updateRs  = new RecordSet();
-
-                updateRs.executeUpdate(updateSql,"0",requestid);
-            }
-
         }else {
             writeLog("流程编号"+lcbh+"，没有明细数据");
         }
-        return SUCCESS;
+
+        return null;
     }
+
 }
