@@ -714,11 +714,13 @@ public class K3Service extends BaseBean {
 
     public void queryPriceTable(String sku,JSONObject dt1Json){
 
-        String sql = "select FTAXPRICE from uf_T_PUR_PRICELIST where fnumber = ? and pricelist_fnumber = ?";
+        String sql = "select FTAXPRICE from uf_T_PUR_PRICELIST where fnumber = "+"'"+sku+"'"+" and pricelist_fnumber = ?";
 
         RecordSet rs = new RecordSet();
 
-        rs.executeQuery(sql,sku,"CGJM000032");
+        writeLog("sql="+sql);
+
+        rs.executeQuery(sql,"CGJM000032");
 
         if(rs.next()){
             String price = rs.getString("FTAXPRICE");
@@ -730,12 +732,13 @@ public class K3Service extends BaseBean {
 
     public String queryPriceTable(String sku){
 
-        String sql = "select FTAXPRICE from uf_T_PUR_PRICELIST where fnumber = ? and pricelist_fnumber = ?";
+        String sql = "select FTAXPRICE from uf_T_PUR_PRICELIST where fnumber = "+"'"+sku+"'"+" and pricelist_fnumber = ?";
 
         RecordSet rs = new RecordSet();
 
-        rs.executeQuery(sql,sku,"CGJM000032");
+        writeLog("sql="+sql);
 
+        rs.executeQuery(sql,"CGJM000032");
 
         String price = "";
 
