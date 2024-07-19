@@ -65,6 +65,7 @@ public class ReSaleAction extends BaseBean implements Action {
 
         WorkflowUtil workflowUtil = new WorkflowUtil();
 
+
         if(detailDatas1.size()>0){
 
             //入库日期
@@ -139,7 +140,15 @@ public class ReSaleAction extends BaseBean implements Action {
             if (twList.size()>0){
                 Map<String,String> mainTableData = new HashMap<>();
                 mainTableData.put("zlclj",lclj);
-                String twlcbh = "TW_"+lcbh;
+                String twlcbh = "";
+                String requestName = "";
+                if("S1".equals(shdc)){
+                    twlcbh = "GYJTW_"+lcbh;
+                    requestName = "GYJTW_销售退货_金蝶子流程";
+                }else {
+                    twlcbh = "TW_"+lcbh;
+                    requestName = "TW_销售退货_金蝶子流程";
+                }
                 mainTableData.put("lcbh",twlcbh);
                 mainTableData.put("kh",kh);
                 mainTableData.put("shdc",shdc);
@@ -154,7 +163,7 @@ public class ReSaleAction extends BaseBean implements Action {
 
                 writeLog("mainTableData="+mainTableData.toString());
                 writeLog("twDtl="+twDtl.toString());
-                int result = workflowUtil.creatRequest("1","165","TW_销售退货_金蝶子流程",mainTableData,twDtl,"1");
+                int result = workflowUtil.creatRequest("1","165",requestName,mainTableData,twDtl,"1");
                 writeLog("触发成功的子流程请求id：" + result);
             }
 

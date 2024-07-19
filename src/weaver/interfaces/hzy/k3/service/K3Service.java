@@ -419,6 +419,109 @@ public class K3Service extends BaseBean {
         return code;
     }
 
+    public String putGYJRePur(String requestid,String flag){
+        writeLog("执行putGYJRePur");
+
+        String mainSql = "select lcbh,djrq,kh,bb from formtable_main_249 where requestId = ?";
+
+        RecordSet rsMain = new RecordSet();
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            String kh = Util.null2String(rsMain.getString("kh"));
+            String bb = Util.null2String(rsMain.getString("bb"));
+
+
+            if("GYJTW".equals(flag)){
+                jsonObject.put("fstockorgid","ZT026");
+                jsonObject.put("fpurchaseorgid","ZT026");
+                jsonObject.put("fsupplierid","ZT021");
+                jsonObject.put("fdemandorgid","ZT026");
+                jsonObject.put("fbillno",lcbh);
+                lcbh = lcbh.substring(lcbh.indexOf("GYJHK_")+6,lcbh.length());
+                jsonObject.put("fthirdbillno",lcbh);
+            }else if ("GYJ".equals(flag)){
+                jsonObject.put("fstockorgid","ZT030");
+                jsonObject.put("fpurchaseorgid","ZT030");
+                jsonObject.put("fsupplierid","ZT021");
+                jsonObject.put("fdemandorgid","ZT030");
+                jsonObject.put("fbillno",lcbh);
+                lcbh = lcbh.substring(lcbh.indexOf("GYJ_")+4,lcbh.length());
+                jsonObject.put("fthirdbillno",lcbh);
+            }
+
+
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fsettlecurrid",bb);
+        }
+
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+
+        RecordSet rsDt1 = new RecordSet();
+
+        rsDt1.executeQuery(dt1Sql,requestid);
+        JSONArray jsonArray = new JSONArray();
+
+        while (rsDt1.next()){
+            String tm = Util.null2String(rsDt1.getString("tm"));
+            String sl = Util.null2String(rsDt1.getString("sl"));
+            String xsj = Util.null2String(rsDt1.getString("xsj"));
+            String taxrate = Util.null2String(rsDt1.getString("taxrate"));
+            String shdc = Util.null2String(rsDt1.getString("shdc"));
+
+            JSONObject dt1Json = new JSONObject();
+
+            dt1Json.put("fmaterialid",tm);
+            dt1Json.put("fentrytaxrate","0");
+
+
+            //queryPriceTable(tm,dt1Json);
+            if ("GYJ".equals(flag)){
+                queryRetPrice(tm,dt1Json);
+            }else if("GYJTW".equals(flag)){
+                queryPriceTable(tm,dt1Json);
+            }
+
+
+            dt1Json.put("frmrealqty",sl);
+            //String fhdc = jsonObject.getString("fhdc");
+            dt1Json.put("fstockid",shdc);
+
+            jsonArray.add(dt1Json);
+
+        }
+
+
+        jsonObject.put("fentitylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putRePurUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶广悦进-香港-退货单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶广悦进-香港-退货单失败");
+        }
+
+
+        return code;
+    }
+
     public String putConsPur(String requestid,String flag){
         String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
 
@@ -687,6 +790,118 @@ public class K3Service extends BaseBean {
         return code;
     }
 
+    public String putGyjReSale(String requestid,String flag){
+
+        writeLog("putGyjReSale ");
+
+        String mainSql = "select lcbh,djrq,kh,bb from formtable_main_249 where requestId = ?";
+
+        RecordSet rsMain = new RecordSet();
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            String kh = Util.null2String(rsMain.getString("kh"));
+            String bb = Util.null2String(rsMain.getString("bb"));
+
+            jsonObject.put("fbillno",lcbh);
+
+            if("GYJHK".equals(flag)){
+                jsonObject.put("fstockorgid","ZT021");
+                jsonObject.put("fsaleorgid","ZT021");
+                jsonObject.put("fsettleorgid","ZT021");
+                jsonObject.put("fretcustid","CUST0558");
+                lcbh = lcbh.substring(lcbh.indexOf("GYJHK_")+6,lcbh.length());
+                jsonObject.put("fthirdbillno",lcbh);
+            }else if("GYJTW".equals(flag)){
+                jsonObject.put("fstockorgid","ZT026");
+                jsonObject.put("fsaleorgid","ZT026");
+                jsonObject.put("fsettleorgid","ZT026");
+                jsonObject.put("fretcustid","CUST0354");
+                lcbh = lcbh.substring(lcbh.indexOf("GYJTW_")+6,lcbh.length());
+                jsonObject.put("fthirdbillno",lcbh);
+            }else if("GYJ".equals(flag)){
+                jsonObject.put("fstockorgid","ZT030");
+                jsonObject.put("fsaleorgid","ZT030");
+                jsonObject.put("fsettleorgid","ZT030");
+                jsonObject.put("fretcustid",kh);
+                lcbh = lcbh.substring(lcbh.indexOf("GYJ_")+4,lcbh.length());
+                jsonObject.put("fthirdbillno",lcbh);
+            }
+
+
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fsettlecurrid",bb);
+        }
+
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+
+        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+
+        RecordSet rsDt1 = new RecordSet();
+
+        rsDt1.executeQuery(dt1Sql,requestid);
+        JSONArray jsonArray = new JSONArray();
+
+
+        while (rsDt1.next()){
+            String tm = Util.null2String(rsDt1.getString("tm"));
+            String sl = Util.null2String(rsDt1.getString("sl"));
+            String xsj = Util.null2String(rsDt1.getString("xsj"));
+            String taxrate = Util.null2String(rsDt1.getString("taxrate"));
+            String shdc = Util.null2String(rsDt1.getString("shdc"));
+
+
+            JSONObject dt1Json = new JSONObject();
+
+            dt1Json.put("fmaterialId",tm);
+
+            if("GYJHK".equals(flag)){
+                dt1Json.put("fentrytaxrate","0");
+                queryPriceTable(tm,dt1Json);
+            }else if ("GYJ".equals(flag)){
+                dt1Json.put("fentrytaxrate",taxrate);
+                dt1Json.put("ftaxprice",xsj);
+            }else if("GYJTW".equals(flag)){
+                dt1Json.put("fentrytaxrate","0");
+                queryRetPrice(tm,dt1Json);
+            }
+
+
+            dt1Json.put("frealqty",sl);
+            //String fhdc = jsonObject.getString("fhdc");
+            dt1Json.put("fstockid",shdc);
+
+            jsonArray.add(dt1Json);
+        }
+
+        jsonObject.put("fentitylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putReSaleUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶销售退货单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶销售退货单失败");
+        }
+
+
+        return code;
+    }
+
 
 
 
@@ -718,16 +933,42 @@ public class K3Service extends BaseBean {
 
         RecordSet rs = new RecordSet();
 
-        writeLog("sql="+sql);
+        writeLog("价目表sql="+sql);
 
         rs.executeQuery(sql,"CGJM000032");
 
         if(rs.next()){
+            //writeLog("1111111111111111111111111111111");
             String price = rs.getString("FTAXPRICE");
             dt1Json.put("ftaxprice",price);
         }else {
+            //writeLog("22222222222222222222222222222222");
             dt1Json.put("ftaxprice","0.0");
         }
+    }
+
+    public void queryRetPrice(String sku,JSONObject dt1Json){
+
+        String sql = "select lsdj from uf_spk where hpbh = " +"'"+sku+"'";
+
+        RecordSet rs = new RecordSet();
+
+        writeLog("零售价sql="+sql);
+
+        rs.executeQuery(sql);
+
+        if(rs.next()){
+            //writeLog("1111111111111111111111111111111");
+            //零售定价
+            String lsdj = rs.getString("lsdj");
+            double price = Double.parseDouble(lsdj);
+            double discountedPrice = price * 0.35;
+            dt1Json.put("ftaxprice",discountedPrice);
+        }else {
+            //writeLog("22222222222222222222222222222222");
+            dt1Json.put("ftaxprice","0.0");
+        }
+
     }
 
     public String queryPriceTable(String sku){
@@ -736,13 +977,14 @@ public class K3Service extends BaseBean {
 
         RecordSet rs = new RecordSet();
 
-        writeLog("sql="+sql);
+        writeLog("价目表sql="+sql);
 
         rs.executeQuery(sql,"CGJM000032");
 
         String price = "";
 
         if(rs.next()){
+            //writeLog("333333333333333333333333");
             price = rs.getString("FTAXPRICE");
         }
 

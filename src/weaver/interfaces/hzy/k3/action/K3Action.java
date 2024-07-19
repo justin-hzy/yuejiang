@@ -15,6 +15,8 @@ public class K3Action extends BaseBean implements Action {
     /*业务类型*/
     private String type;
 
+    private String is_gyj;
+
     @Override
     public String execute(RequestInfo requestInfo) {
 
@@ -74,15 +76,36 @@ public class K3Action extends BaseBean implements Action {
             }
         }else if("resale".equals(type)){
             if(lcbh != null){
-                if(lcbh.contains("HK_")){
+                if ("false".equals(is_gyj)){
+                    if(lcbh.contains("HK_")){
                         String code = k3Service.putRePur(requestid,"HK");
-                    if("200".equals(code)){
-                        k3Service.putReSale(requestid,"HK");
+                        if("200".equals(code)){
+                            k3Service.putReSale(requestid,"HK");
+                        }
+                    }else if(lcbh.contains("TW_")){
+                        k3Service.putReSale(requestid,"TW");
                     }
-                }else if(lcbh.contains("TW_")){
-                    k3Service.putReSale(requestid,"TW");
+                }else if ("true".equals(is_gyj)){
+                    if(lcbh.contains("GYJ_")){
+                        //广悦进销售退
+                        k3Service.putGyjReSale(requestid,"GYJ");
+                    }else if(lcbh.contains("GYJTW_")){
+                        writeLog("执行广悦进到台湾的逻辑");
+                        String code = k3Service.putGYJRePur(requestid,"GYJ");
+                        writeLog("code="+code);
+                        if("200".equals(code)){
+                            //台湾销售退
+                            k3Service.putGyjReSale(requestid,"GYJTW");
+                        }
+                    }else if(lcbh.contains("GYJHK")){
+                        //台湾采购退
+                        String code = k3Service.putGYJRePur(requestid,"GYJTW");
+                        if("200".equals(code)){
+                            //香港销售退
+                            k3Service.putGyjReSale(requestid,"GYJHK");
+                        }
+                    }
                 }
-
             }
         }else if("recons".equals(type)){
             if(lcbh != null){
