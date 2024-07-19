@@ -97,7 +97,7 @@ public class K3Action extends BaseBean implements Action {
                             //台湾销售退
                             k3Service.putGyjReSale(requestid,"GYJTW");
                         }
-                    }else if(lcbh.contains("GYJHK")){
+                    }else if(lcbh.contains("GYJHK_")){
                         //台湾采购退
                         String code = k3Service.putGYJRePur(requestid,"GYJTW");
                         if("200".equals(code)){
