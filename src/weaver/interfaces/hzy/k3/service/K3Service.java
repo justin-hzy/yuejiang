@@ -774,6 +774,8 @@ public class K3Service extends BaseBean {
 
         String resStr = doK3Action(param,meIp,putReSaleUrl);
 
+        writeLog("resStr="+resStr);
+
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
