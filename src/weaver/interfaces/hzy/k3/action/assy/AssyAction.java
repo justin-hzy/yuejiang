@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.icbc.api.internal.apache.http.impl.cookie.S;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.k3.service.K3Service;
 import weaver.interfaces.hzy.k3.service.assy.AssyService;
+import weaver.interfaces.tx.util.WorkflowToolMethods;
 import weaver.interfaces.workflow.action.Action;
-import weaver.interfaces.zxg.binaryCode.DMS.util.WorkflowToolMethods;
+
 import weaver.soa.workflow.request.RequestInfo;
 import weaver.workflow.request.RequestManager;
 
@@ -17,11 +19,16 @@ import java.util.Map;
 
 public class AssyAction extends BaseBean implements Action {
 
+    private String meIp = getPropValue("fulun_api_config","meIp");
+
+    private String putAssemblyUrl = getPropValue("k3_api_config","putAssemblyUrl");
 
     @Override
     public String execute(RequestInfo requestInfo) {
 
         writeLog("Ö´ÐÐ AssyAction");
+
+        K3Service k3Service = new K3Service();
 
         String requestid  = requestInfo.getRequestid();
 
@@ -40,13 +47,36 @@ public class AssyAction extends BaseBean implements Action {
 
         RecordSet recordSet = new RecordSet();
 
-        recordSet.execute(sql,String.valueOf(id));
+        recordSet.executeQuery(sql,String.valueOf(id));
 
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.put("fillno","");
-        jsonObject.put("fstockorgid","");
-        jsonObject.put("faffairtype","");
+        String lcbh = mainData.get("lcbh");
+
+        String lx = mainData.get("lx");
+
+        jsonObject.put("fillno",lcbh);
+
+        String  szzt = mainData.get("szzt");
+
+        String fhdc1 = mainData.get("fhdc1");
+
+        String shdc1 = mainData.get("shdc1");
+
+        if("ZT026".equals(szzt)){
+            jsonObject.put("fstockorgid","ZT026");
+        }else if ("ZT021".equals(szzt)){
+            jsonObject.put("fstockorgid","ZT021");
+        }
+
+
+        if(lx.equals("0")){
+            jsonObject.put("faffairtype","Assembly");
+        }else if(lx.equals("1")){
+            jsonObject.put("faffairtype","Dassembly");
+        }
+
+
         jsonObject.put("fdate","");
 
         JSONArray assyFEntities = new JSONArray();
@@ -60,11 +90,16 @@ public class AssyAction extends BaseBean implements Action {
             String bombm = recordSet.getString("bombm");
             String sjztfxsl = recordSet.getString("sjztfxsl");
 
+//            writeLog("fxwlbm="+fxwlbm);
+//            writeLog("bombm="+bombm);
+//            writeLog("sjztfxsl="+sjztfxsl);
+
             if(!list.contains(fxwlbm)){
+                list.add(fxwlbm);
                 JSONObject assyFEntitiy = new JSONObject();
                 assyFEntitiy.put("fmaterialid",fxwlbm);
                 assyFEntitiy.put("fqty",sjztfxsl);
-                assyFEntitiy.put("fstockid","");
+                assyFEntitiy.put("fstockid",shdc1);
                 assyFEntitiy.put("frefbomid",bombm);
 
                 JSONArray assyFSubEntities = new JSONArray();
@@ -79,7 +114,7 @@ public class AssyAction extends BaseBean implements Action {
 
                 assyFSubEntitiy.put("fqtysety",sjztsl);
 
-                assyFSubEntitiy.put("fstockidsety","");
+                assyFSubEntitiy.put("fstockidsety",fhdc1);
 
                 assyFSubEntities.add(assyFSubEntitiy);
 
@@ -88,8 +123,8 @@ public class AssyAction extends BaseBean implements Action {
                 assyFEntities.add(assyFEntitiy);
 
                 jsonObject.put("assyFEntities",assyFEntities);
-
-            }else {
+            }
+            else {
                 JSONArray assyFEntities_1 = jsonObject.getJSONArray("assyFEntities");
                 for (int i = 0;i<assyFEntities_1.size();i++){
                    JSONObject assyFEntitiy = assyFEntities_1.getJSONObject(i);
@@ -109,25 +144,21 @@ public class AssyAction extends BaseBean implements Action {
 
                        assyFSubEntitiy.put("fqtysety",sjztsl);
 
-                       assyFSubEntitiy.put("fstockidsety","");
+                       assyFSubEntitiy.put("fstockidsety",fhdc1);
 
                        assyFSubEntities.add(assyFSubEntitiy);
                    }
                 }
             }
-
-
-
-
         }
+        list.clear();
+        String param = jsonObject.toJSONString();
+        writeLog("param="+jsonObject);
 
 
-
-
-
-
-
-
-        return null;
+        String resStr = k3Service.doK3Action(param,meIp,putAssemblyUrl);
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+        return SUCCESS;
     }
 }
