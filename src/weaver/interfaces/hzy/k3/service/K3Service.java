@@ -441,14 +441,18 @@ public class K3Service extends BaseBean {
                 jsonObject.put("fpurchaseorgid","ZT026");
                 jsonObject.put("fsupplierid","ZT021");
                 jsonObject.put("fdemandorgid","ZT026");
+                //香港的逻辑 : 先生成台湾销售退 所以把GYJHK替换成GYJTW
+                lcbh = lcbh.replace("GYJHK","GYJTW");
                 jsonObject.put("fbillno",lcbh);
                 lcbh = lcbh.substring(lcbh.indexOf("GYJHK_")+6,lcbh.length());
                 jsonObject.put("fthirdbillno",lcbh);
             }else if ("GYJ".equals(flag)){
                 jsonObject.put("fstockorgid","ZT030");
                 jsonObject.put("fpurchaseorgid","ZT030");
-                jsonObject.put("fsupplierid","ZT021");
+                jsonObject.put("fsupplierid","ZT026");
                 jsonObject.put("fdemandorgid","ZT030");
+                //GYJTW_-> GYJ_
+                lcbh = lcbh.replace("GYJTW_","GYJ_");
                 jsonObject.put("fbillno",lcbh);
                 lcbh = lcbh.substring(lcbh.indexOf("GYJ_")+4,lcbh.length());
                 jsonObject.put("fthirdbillno",lcbh);
