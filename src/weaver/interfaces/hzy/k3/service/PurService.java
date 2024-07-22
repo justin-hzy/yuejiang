@@ -96,7 +96,8 @@ public class PurService extends BaseBean {
         jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
         jsonObject.put("fsettlecurrid",bb);
-        jsonObject.put("falldiscount",falldiscount);
+        //传进口税
+        jsonObject.put("falldiscount",-Integer.valueOf(falldiscount));
         jsonObject.put("fisincludedtax","true");
 
 
@@ -117,9 +118,7 @@ public class PurService extends BaseBean {
 
             String ftaxprice = k3Service.queryPriceTable(detailData.get("wlbm"));
 
-            //价目表+进口税
-            ftaxprice = ftaxprice + falldiscount;
-
+            //价目表
             dtl.put("ftaxprice",ftaxprice);
 
             jsonArray.add(dtl);
