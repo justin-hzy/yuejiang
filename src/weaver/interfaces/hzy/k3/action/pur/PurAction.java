@@ -83,6 +83,7 @@ public class PurAction extends BaseBean implements Action {
                 }
             }*/
             //进口税
+            writeLog("大陆出口-工厂直发");
             String jks = mainData.get("jks");
             purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
         }else if("0".equals(cglx)){
@@ -99,6 +100,7 @@ public class PurAction extends BaseBean implements Action {
                 }
             }*/
             //进口税
+            writeLog("大陆出口-总部发货");
             String jks = mainData.get("jks");
             purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
         }

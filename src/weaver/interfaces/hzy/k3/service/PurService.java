@@ -97,7 +97,12 @@ public class PurService extends BaseBean {
         jsonObject.put("fhdc",rkck);
         jsonObject.put("fsettlecurrid",bb);
         //传进口税
-        jsonObject.put("falldiscount",-Integer.valueOf(falldiscount));
+        if("0.00".equals(falldiscount)){
+            jsonObject.put("falldiscount",falldiscount);
+        }else {
+            jsonObject.put("falldiscount",-Integer.valueOf(falldiscount));
+        }
+
         jsonObject.put("fisincludedtax","true");
 
 
