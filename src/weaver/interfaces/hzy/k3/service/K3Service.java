@@ -357,7 +357,7 @@ public class K3Service extends BaseBean {
 
         writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ? and dt1.sl > 0";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -465,7 +465,7 @@ public class K3Service extends BaseBean {
 
         writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ? and dt1.sl > 0";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -733,7 +733,7 @@ public class K3Service extends BaseBean {
         writeLog("jsonObject="+jsonObject.toJSONString());
 
 
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ? and dt1.sl > 0";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -845,7 +845,7 @@ public class K3Service extends BaseBean {
         writeLog("jsonObject="+jsonObject.toJSONString());
 
 
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ? and dt1.sl > 0";
 
         RecordSet rsDt1 = new RecordSet();
 
