@@ -332,13 +332,17 @@ public class FuLunApiUtil extends BaseBean {
         RecordSet rs = new RecordSet();
         JSONArray jsonArray = new JSONArray();
         writeLog("requestid="+mainData.get("requestid"));
-        rs.executeQuery("select dt1.id,dt1.hptxm,dt1.ddl from "+newReturnOrderMain+" main,"+newReturnOrderMainDetail+" dt1 where main.id=dt1.mainid and main.requestid = ?", mainData.get("requestid"));
+
+        rs.executeQuery("select dt1.id,dt1.hptxm,dt1.ddl,dt1.bz from "+newReturnOrderMain+" main,"+newReturnOrderMainDetail+" dt1 where main.id=dt1.mainid and main.requestid = ?", mainData.get("requestid"));
+
+        String bz = "";
 
         while (rs.next()){
 
             String id = Util.null2String(rs.getString("id")); //	识别ID
             String hptxm = Util.null2String(rs.getString("hptxm")); //	商品sku
             String ddl = Util.null2String(rs.getString("ddl")); // 商品数量
+            bz = Util.null2String(rs.getString("bz")); // 商品数量
             // 仓别
             //String cb = Util.null2String(rs.getString("cb"));
 
@@ -352,7 +356,12 @@ public class FuLunApiUtil extends BaseBean {
 
         mainJson.remove("storage_type");
         mainJson.put("products", jsonArray);
-        mainJson.put("note","销售发货流程(台湾)-入库");
+        if (bz.length()>0){
+            mainJson.put("note","销售发货流程(台湾)-入库-"+bz);
+        }else {
+            mainJson.put("note","销售发货流程(台湾)-入库");
+        }
+
         writeLog("明细参数" + jsonArray.toJSONString());
 
         return mainJson;
