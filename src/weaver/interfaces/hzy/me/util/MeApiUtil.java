@@ -164,6 +164,8 @@ public class MeApiUtil extends BaseBean {
             params = getSetFrJson(requestId);
         }else if("4".equals(apiId)){
             params = getSetSonJson(requestId);
+        }else if("5".equals(apiId)){
+            params = getDismantleFrJon(requestId);
         }
         /*else if("3".equals(apiId)){
             params = getSetFrJson(requestId);
@@ -561,33 +563,47 @@ public class MeApiUtil extends BaseBean {
         List<String> params = new ArrayList<>();
         RecordSet rs1 = new RecordSet();
 
-        String sql1 = "select dt3.spbm,main.fhdc1,dt3.sjcksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjcksl is not null and dt3.sjrksl is null and main.requestId = ?";
+        String sql1 = "select main.lcbh,dt3.spbm,main.fhdc1,dt3.sjcksl from formtable_main_242 as main inner join formtable_main_242_dt3 dt3 on main.id = dt3.mainid where dt3.sjcksl is not null and dt3.sjrksl is null and main.requestId = ?";
         writeLog(sql1+","+requestId);
         rs1.executeQuery(sql1, requestId);
 
+        JSONArray subOthers = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+
         while (rs1.next()){
-            JSONObject jsonObject = new JSONObject();
+
+
 
             String fhdc1 = Util.null2String(rs1.getString("fhdc1")); //出库仓库
             String spbm = Util.null2String(rs1.getString("spbm")); //物料编码
             String sjcksl = Util.null2String(rs1.getString("sjcksl")); //父项实际入库数量
+            String lcbh = Util.null2String(rs1.getString("lcbh")); //流程编号
+
 
             jsonObject.put("cstore",fhdc1);
-            jsonObject.put("sku",spbm);
-            jsonObject.put("qty",sjcksl);
+
+            JSONObject subOther = new JSONObject();
+            subOther.put("sku",spbm);
+            subOther.put("qty",sjcksl);
+            subOthers.add(subOther);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String now = dateFormat.format(new Date());
             jsonObject.put("billDate",now);
-            jsonObject.put("description","拆卸流程-出库");
+            jsonObject.put("description","拆卸流程-出库-"+lcbh);
             jsonObject.put("requestId",requestId);
 
-            String param = jsonObject.toJSONString();
 
-            writeLog("param="+param);
-
-            params.add(param);
         }
+
+        jsonObject.put("subOthers",subOthers);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        params.add(param);
+
         writeLog("params="+params.toString());
         return params;
     }
