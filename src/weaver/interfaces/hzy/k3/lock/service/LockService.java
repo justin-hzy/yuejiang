@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.service.lock;
+package weaver.interfaces.hzy.k3.lock.service;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;

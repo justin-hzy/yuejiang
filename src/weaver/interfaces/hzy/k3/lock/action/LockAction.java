@@ -1,8 +1,8 @@
-package weaver.interfaces.hzy.k3.action.lock;
+package weaver.interfaces.hzy.k3.lock.action;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
-import weaver.interfaces.hzy.k3.service.lock.LockService;
+import weaver.interfaces.hzy.k3.lock.service.LockService;
 import weaver.interfaces.workflow.action.Action;
 import weaver.soa.workflow.request.RequestInfo;
 import weaver.workflow.request.RequestManager;
