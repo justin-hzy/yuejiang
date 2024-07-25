@@ -135,12 +135,12 @@ public class FuLunApiUtil extends BaseBean {
                 mainJson = getDismantleJson(mainData,detailData);
             }else if("17".equals(apiId)){
                 mainJson = getNewReturnOrderJSONObject(mainJson,detailArr,detailArr1,mainData);
-            }
-            /*else if("14".equals(apiId)){
-                mainJson = getTranscodeFrJson(mainData);
-            }else if("15".equals(apiId)){
-                mainJson = getTranscodeSonJson(mainData);
-            }else if("16".equals(apiId)){
+            }else if("14".equals(apiId)){
+                mainJson = getTranscodeJson(mainData,detailData);
+            }/*else if("15".equals(apiId)){
+                mainJson = getTranscodeJson(mainData);
+            }*/
+            /*else if("16".equals(apiId)){
 
                 writeLog("mainJson="+mainJson.toJSONString());
                 if(detailData != null && detailData.size()>0) {
@@ -560,7 +560,7 @@ public class FuLunApiUtil extends BaseBean {
         JSONObject mainJson = new JSONObject();
 
         mainJson.put("name",name);
-        mainJson.put("shipping_type",shippingType);
+        //mainJson.put("shipping_type",shippingType);
         mainJson.put("callback_url",callbackUrl);
         mainJson.put("note","拆卸流程(台湾)-出库");
 
@@ -614,7 +614,7 @@ public class FuLunApiUtil extends BaseBean {
     }
 
 
-    public JSONObject getTranscodeFrJson(Map<String,String> mainData){
+    public JSONObject getTranscodeJson(Map<String,String> mainData,List<Map<String,String>> detailDatas){
 
         String requestid = mainData.get("requestid");
 
@@ -623,16 +623,12 @@ public class FuLunApiUtil extends BaseBean {
         //回传函数
         String callbackUrl = meIp+getTransFrCBUrl;
 
-        //物流类型
-        String shippingType = "hct";
-
         JSONObject mainJson = new JSONObject();
 
         mainJson.put("name",name);
-        mainJson.put("shipping_type",shippingType);
         mainJson.put("callback_url",callbackUrl);
         mainJson.put("note","转码申请流程(台湾)-出库");
-        mainJson.put("customer_name","");
+
 
         RecordSet rs = new RecordSet();
         rs.executeQuery("select dt1.hpbmtw,dt1.sl,dt1.dqcw1,dt1.bz from formtable_main_244 as main inner join formtable_main_244_dt1 as dt1 on main.id = dt1.mainid where main.requestid = ?",requestid);
@@ -657,55 +653,6 @@ public class FuLunApiUtil extends BaseBean {
             detailArr.add(detailJson);
         }
         mainJson.put("products",detailArr);
-        return mainJson;
-    }
-
-    public JSONObject getTranscodeSonJson(Map<String,String> mainData){
-
-
-        String requestid = mainData.get("requestid");
-
-
-        //订单编号
-        String title = mainData.get("lcbh");
-
-
-        String estDate = mainData.get("yjrksj");
-
-        //回传函数
-        String callbackUrl = meIp+getTransSonCBUrl;
-
-        JSONObject mainJson = new JSONObject();
-
-        mainJson.put("title",title);
-        mainJson.put("est_date",estDate);
-        mainJson.put("note","转码申请流程(台湾)-入库");
-        mainJson.put("callback_url",callbackUrl);
-
-
-        RecordSet rs = new RecordSet();
-
-        rs.executeQuery("select hpbmbghtw,sl,bghcw1 from formtable_main_244 as main inner join formtable_main_244_dt1 as dt1 on main.id = dt1.mainid where main.requestid = ?", requestid);
-
-        JSONArray detailArr = new JSONArray();
-
-        while (rs.next()){
-            //变更后商品编码
-            String sphpbmbghbm = rs.getString("hpbmbghtw");
-
-            String sl = rs.getString("sl");
-
-            String bghcw1 = rs.getString("bghcw1");
-
-            JSONObject detail = new JSONObject();
-
-            detail.put("sku",sphpbmbghbm);
-            detail.put("quantity",sl);
-            detail.put("storage_type",bghcw1);
-
-            detailArr.add(detail);
-        }
-        mainJson.put("items",detailArr);
         return mainJson;
     }
 }
