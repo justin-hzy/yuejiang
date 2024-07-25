@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.service.assy;
+package weaver.interfaces.hzy.k3.assy.service;
 
 import weaver.general.BaseBean;
 

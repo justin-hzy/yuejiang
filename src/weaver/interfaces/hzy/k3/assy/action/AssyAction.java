@@ -1,12 +1,11 @@
-package weaver.interfaces.hzy.k3.action.assy;
+package weaver.interfaces.hzy.k3.assy.action;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.icbc.api.internal.apache.http.impl.cookie.S;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.k3.service.K3Service;
-import weaver.interfaces.hzy.k3.service.assy.AssyService;
+import weaver.interfaces.hzy.k3.assy.service.AssyService;
 import weaver.interfaces.tx.util.WorkflowToolMethods;
 import weaver.interfaces.workflow.action.Action;
 
@@ -63,6 +62,9 @@ public class AssyAction extends BaseBean implements Action {
 
         String shdc1 = mainData.get("shdc1");
 
+        //实际完成时间
+        String sjwcsj = mainData.get("sjwcsj");
+
         if("ZT026".equals(szzt)){
             jsonObject.put("fstockorgid","ZT026");
         }else if ("ZT021".equals(szzt)){
@@ -77,7 +79,7 @@ public class AssyAction extends BaseBean implements Action {
         }
 
 
-        jsonObject.put("fdate","");
+        jsonObject.put("fdate",sjwcsj);
 
         JSONArray assyFEntities = new JSONArray();
 
