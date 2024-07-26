@@ -386,7 +386,7 @@ public class FuLunApiUtil extends BaseBean {
 
         mainJson.put("callback_url",meIp +transferOrderCallBackUrl);
         mainJson.put("items",detailArr);
-        mainJson.put("note","调拨流程(台湾)-仓内调拨");
+        mainJson.put("note",mainData.get("lcbh"));
 
 
         writeLog("明细参数" + detailArr.toJSONString());
