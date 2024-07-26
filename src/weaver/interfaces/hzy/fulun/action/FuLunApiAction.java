@@ -316,34 +316,34 @@ public class FuLunApiAction extends BaseBean implements Action {
                 writeLog("params="+params);
                 e.printStackTrace();
             }
+        } else if("14".equals(apiId)){
+            //转码父项
+            /*0: 未请求  1:请求成功 2:请求失败 3: 三次执行失败，需要人工干预 (组装拆卸/转码 4:提交流程 5:提交流程失败)*/
+            String status = "0";
+
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String todayString = today.format(formatter);
+
+            todayString = "'" + todayString + "'";
+
+            params = "'"+params+"'";
+
+            //请求入参
+            try{
+                RecordSet rs = new RecordSet();
+                String sql = "insert into uf_fl_transcode_order_request (requestId,apiid,params,status,createTime) values ("
+                        +requestId+","+apiId+","+params+","+status+","+todayString+")";
+                rs.executeUpdate(sql);
+            }catch (Exception e){
+                apiUtil.errlogMessage(apiId,requestId,params,e.getMessage());
+                writeLog("requestId="+requestId);
+                writeLog("apiId="+apiId);
+                writeLog("params="+params);
+                e.printStackTrace();
+            }
         }
-//        else if("14".equals(apiId)){
-//            //转码父项
-//            /*0: 未请求  1:请求成功 2:请求失败 3: 三次执行失败，需要人工干预 (组装拆卸/转码 4:提交流程 5:提交流程失败)*/
-//            String status = "0";
-//
-//            LocalDate today = LocalDate.now();
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//            String todayString = today.format(formatter);
-//
-//            todayString = "'" + todayString + "'";
-//
-//            params = "'"+params+"'";
-//
-//            //请求入参
-//            try{
-//                RecordSet rs = new RecordSet();
-//                String sql = "insert into uf_fl_transcode_order_request (requestId,apiid,fr_params,fr_status,createTime) values ("
-//                        +requestId+","+apiId+","+params+","+status+","+todayString+")";
-//                rs.executeUpdate(sql);
-//            }catch (Exception e){
-//                apiUtil.errlogMessage(apiId,requestId,params,e.getMessage());
-//                writeLog("requestId="+requestId);
-//                writeLog("apiId="+apiId);
-//                writeLog("params="+params);
-//                e.printStackTrace();
-//            }
-//        }else if("15".equals(apiId)){
+//        else if("15".equals(apiId)){
 //            //转码子项
 //            /*0: 未请求  1:请求成功 2:请求失败 3: 三次执行失败，需要人工干预 (组装拆卸/转码 4:提交流程 5:提交流程失败)*/
 //

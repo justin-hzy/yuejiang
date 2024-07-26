@@ -631,28 +631,55 @@ public class FuLunApiUtil extends BaseBean {
 
 
         RecordSet rs = new RecordSet();
-        rs.executeQuery("select dt1.hpbmtw,dt1.sl,dt1.dqcw1,dt1.bz from formtable_main_244 as main inner join formtable_main_244_dt1 as dt1 on main.id = dt1.mainid where main.requestid = ?",requestid);
+        rs.executeQuery("select dt1.hpbmtw,dt1.sl,dt1.dqcw1,dt1.hpbmbghtw,dt1.bghcw1,dt1.bz,dt1.pc,dt1.xq from formtable_main_244 as main inner join formtable_main_244_dt1 as dt1 on main.id = dt1.mainid where main.requestid = ?",requestid);
 
-        JSONArray detailArr = new MJSONArray();
+        JSONArray sourceArr = new MJSONArray();
+
+        JSONArray targetArr = new MJSONArray();
 
         while (rs.next()){
+            JSONObject sourceJson = new JSONObject();
 
-            JSONObject detailJson = new JSONObject();
+            JSONObject targetJson = new JSONObject();
+
+            //转换前sku
             String hpbh = rs.getString("hpbmtw");
+            //数量
             String sl = rs.getString("sl");
+            //转码前仓库
             String dqcw1 = rs.getString("dqcw1");
+            //转换后sku
+            String hpbmbghtw = rs.getString("hpbmbghtw");
+            //转换后仓库
+            String bghcw1 = rs.getString("bghcw1");
+            //备注
             String bz = rs.getString("bz");
+            //批次
+            String pc = rs.getString("pc");
+            //效期
+            String xq = rs.getString("xq");
 
+            sourceJson.put("sku",hpbh);
+            sourceJson.put("quantity",sl);
+            sourceJson.put("storage_type",dqcw1);
+            sourceJson.put("expiration_date",xq);
+            sourceJson.put("batch",pc);
 
-            detailJson.put("sku",hpbh);
-            detailJson.put("quantity",sl);
-            detailJson.put("storage_type",dqcw1);
-            detailJson.put("note",bz);
+            targetJson.put("sku",hpbmbghtw);
+            targetJson.put("quantity",sl);
+            targetJson.put("storage_type",bghcw1);
+            targetJson.put("expiration_date",xq);
+            targetJson.put("batch",pc);
+
+            targetArr.add(targetJson);
 
             //父件没有效期跟批次
-            detailArr.add(detailJson);
+            sourceArr.add(sourceJson);
         }
-        mainJson.put("products",detailArr);
+
+        mainJson.put("source_items",sourceArr);
+        mainJson.put("target_items",targetArr);
+
         return mainJson;
     }
 }
