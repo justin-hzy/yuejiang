@@ -170,13 +170,10 @@ public class MeApiUtil extends BaseBean {
             params = getDismantleSonJon(requestId);
         }else if("7".equals(apiId)){
             params = getTransCodeFrJson(requestId);
-        }
-        /*
-        else if("7".equals(apiId)){
-            params = getTransCodeFrJson(requestId);
         }else if("8".equals(apiId)){
             params = getTransCodeSonJson(requestId);
-        }*/
+        }
+
         return params;
     }
 
@@ -672,7 +669,6 @@ public class MeApiUtil extends BaseBean {
 
         while (rs1.next()){
 
-
             String ck = Util.null2String(rs1.getString("ck")); //入库仓库
             String hpbh = Util.null2String(rs1.getString("hpbh")); //物料编码
             String rksl = Util.null2String(rs1.getString("rksl")); //父项实际入库数量
@@ -687,9 +683,8 @@ public class MeApiUtil extends BaseBean {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String now = dateFormat.format(new Date());
             jsonObject.put("billDate",now);
-            jsonObject.put("description","转码流程-入库");
+            jsonObject.put("description","转码流程-入库-"+lcbh);
             jsonObject.put("requestId",requestId);
-
 
         }
         jsonObject.put("subOthers",subOthers);
