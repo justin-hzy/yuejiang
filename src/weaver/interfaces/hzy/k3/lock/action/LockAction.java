@@ -28,22 +28,24 @@ public class LockAction extends BaseBean implements Action {
 
 
 
-        /*String lcbh = queryBillNo(type,billId);
+        String lcbh = queryBillNo(type,billId);
 
-        writeLog("流程号:"+lcbh);*/
-        /*
-        boolean result = lockService.getLock(lcbh);
+        writeLog("流程号:"+lcbh);
+        boolean result = true;
+        while (result){
+            result = lockService.getLock(lcbh);
+            writeLog("result="+result);
+        }
 
         writeLog("result="+result);
+
+        writeLog("执行LockAction结束");
 
         if(result == true){
             return SUCCESS;
         }else {
             return FAILURE_AND_CONTINUE;
-        }*/
-        //return SUCCESS;
-        writeLog("执行LockAction结束");
-        return FAILURE_AND_CONTINUE;
+        }
     }
 
     public String queryBillNo(String type,Integer billId){

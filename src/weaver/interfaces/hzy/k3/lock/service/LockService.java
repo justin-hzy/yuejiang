@@ -52,14 +52,29 @@ public class LockService extends BaseBean {
 
             if (result == true){
                 writeLog(billNo+"已抢到锁，将进行库存匹配和同步金蝶单据");
-                return true;
-            }else {
-                writeLog(billNo+"未能抢到锁，将进行库存匹配和同步金蝶单据");
                 return false;
+            }else {
+                writeLog(billNo+"未能抢到锁，将进行库存匹配和同步金蝶单据，将要进入休眠");
+                writeLog("进入休眠");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                writeLog("结束休眠");
+                return true;
             }
         }else {
             writeLog(billNo+"未能抢到锁，将进行库存匹配和同步金蝶单据");
-            return false;
+            writeLog(billNo+"未能抢到锁，将进行库存匹配和同步金蝶单据，将要进入休眠");
+            writeLog("进入休眠");
+            try {
+                Thread.sleep(120000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            writeLog("结束休眠");
+            return true;
         }
     }
 }
