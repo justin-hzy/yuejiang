@@ -28,7 +28,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fbillno",fbillno);
         jsonObject.put("fstockorgid","ZT026");
         jsonObject.put("fpurchaseorgid","ZT026");
-        jsonObject.put("fsupplierId","ZT021");
+        jsonObject.put("fsupplierId",gys);
         jsonObject.put("fdemandorgid","ZT026");
         jsonObject.put("fsettleorgid","ZT026");
         jsonObject.put("fthirdbillno",lcbh);
