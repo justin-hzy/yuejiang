@@ -615,7 +615,7 @@ public class MeApiUtil extends BaseBean {
         List<String> params = new ArrayList<>();
         RecordSet rs1 = new RecordSet();
 
-        String sql1 = "select dt2.hpbh,dt2.ck,dt2.cksl,main.lcbh from formtable_main_244 as main inner join formtable_main_244_dt2 as dt2 on main.id = dt2.mainid where dt2.cksl is not null and dt2.rksl is null and main.requestid = ?";
+        String sql1 = "select dt1.hpbmtw,dt1.dqcw1,dt1.sjbgsl,main.lcbh from formtable_main_244 as main inner join formtable_main_244_dt1 as dt1 on main.id = dt1.mainid where main.requestid = ?";
 
         writeLog(sql1+","+requestId);
         rs1.executeQuery(sql1, requestId);
@@ -626,16 +626,16 @@ public class MeApiUtil extends BaseBean {
         while (rs1.next()){
 
 
-            String ck = Util.null2String(rs1.getString("ck")); //出库仓库
-            String hpbh = Util.null2String(rs1.getString("hpbh")); //物料编码
-            String cksl = Util.null2String(rs1.getString("cksl")); //父项实际入库数量
+            String dqcw1 = Util.null2String(rs1.getString("dqcw1")); //出库仓库
+            String hpbmtw = Util.null2String(rs1.getString("hpbmtw")); //物料编码
+            String sjbgsl = Util.null2String(rs1.getString("sjbgsl")); //父项实际入库数量
             String lcbh = Util.null2String(rs1.getString("lcbh")); //流程编码
 
-            jsonObject.put("cstore",ck);
+            jsonObject.put("cstore",dqcw1);
 
             JSONObject subOther = new JSONObject();
-            subOther.put("sku",hpbh);
-            subOther.put("qty",cksl);
+            subOther.put("sku",hpbmtw);
+            subOther.put("qty",sjbgsl);
             subOthers.add(subOther);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -660,7 +660,7 @@ public class MeApiUtil extends BaseBean {
 
 
 
-        String sql1 = "select dt2.hpbh,dt2.ck,dt2.rksl,main.lcbh from formtable_main_244 as main inner join formtable_main_244_dt2 as dt2 on main.id = dt2.mainid where dt2.rksl is not null and dt2.cksl is null and main.requestid = ?";
+        String sql1 = "select dt1.hpbmbghtw,dt1.bghcw1,dt1.sjbgsl,main.lcbh from formtable_main_244 as main inner join formtable_main_244_dt1 as dt1 on main.id = dt1.mainid where main.requestid = ?";
 
         writeLog(sql1+","+requestId);
         rs1.executeQuery(sql1, requestId);
@@ -669,15 +669,15 @@ public class MeApiUtil extends BaseBean {
 
         while (rs1.next()){
 
-            String ck = Util.null2String(rs1.getString("ck")); //入库仓库
-            String hpbh = Util.null2String(rs1.getString("hpbh")); //物料编码
-            String rksl = Util.null2String(rs1.getString("rksl")); //父项实际入库数量
+            String bghcw1 = Util.null2String(rs1.getString("bghcw1")); //入库仓库
+            String hpbmbghtw = Util.null2String(rs1.getString("hpbmbghtw")); //物料编码
+            String sjbgsl = Util.null2String(rs1.getString("sjbgsl")); //父项实际入库数量
             String lcbh = Util.null2String(rs1.getString("lcbh")); //流程编号
 
-            jsonObject.put("cstore",ck);
+            jsonObject.put("cstore",bghcw1);
             JSONObject subOther = new JSONObject();
-            subOther.put("sku",hpbh);
-            subOther.put("qty",rksl);
+            subOther.put("sku",hpbmbghtw);
+            subOther.put("qty",sjbgsl);
             subOthers.add(subOther);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
