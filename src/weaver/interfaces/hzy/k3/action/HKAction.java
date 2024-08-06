@@ -256,10 +256,18 @@ public class HKAction extends BaseBean implements Action {
 
                             insertRs.executeUpdate(insertError);
                         }else {
-                            Integer hkNumber = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty) ;
-                            hkSale.put("tm",wlbm);
-                            hkSale.put("sl",String.valueOf(hkNumber));
-                            hkSales.add(hkSale);
+                            if(Integer.valueOf(fBaseQty)<0){
+                                writeLog(wlbm+"的台湾即时库存为负数");
+                                Integer hkNumber = Integer.valueOf(xssl);
+                                hkSale.put("tm",wlbm);
+                                hkSale.put("sl",String.valueOf(hkNumber));
+                                hkSales.add(hkSale);
+                            }else {
+                                Integer hkNumber = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty) ;
+                                hkSale.put("tm",wlbm);
+                                hkSale.put("sl",String.valueOf(hkNumber));
+                                hkSales.add(hkSale);
+                            }
                         }
                     }
                 }

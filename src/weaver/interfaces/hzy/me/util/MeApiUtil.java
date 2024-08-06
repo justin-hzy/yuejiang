@@ -367,7 +367,7 @@ public class MeApiUtil extends BaseBean {
 
             rkrq= rkrq.replace("-","");
             jsonObject.put("billDate",rkrq);
-            jsonObject.put("description","台湾采购申请流程-入库-"+lcbh);
+            jsonObject.put("description",lcbh);
             jsonObject.put("requestId",requestId);
         }
 
