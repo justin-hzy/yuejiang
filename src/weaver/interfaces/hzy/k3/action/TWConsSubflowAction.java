@@ -64,7 +64,7 @@ public class TWConsSubflowAction extends BaseBean implements Action {
     public Map<String, List<SaleDt1>> getConDt1(String requestid){
 
         RecordSet dtRs1 = new RecordSet();
-        String dt1Sql = "select main.lcbh,dt1.wlbm hptxm,dt1.hsdj ddje,dt1.xssl fhl,dt1.taxrate from formtable_main_238_dt1 as dt1,formtable_main_238 main where dt1.mainid = main.id and main.requestid = ?";
+        String dt1Sql = "select main.lcbh,dt1.wlbm hptxm,dt1.hsdj ddje,dt1.xssl fhl,main.taxrate from formtable_main_238_dt1 as dt1,formtable_main_238 main where dt1.xssl>0 and dt1.mainid = main.id and main.requestid = ?";
         writeLog("dt1Sql="+dt1Sql);
         dtRs1.executeQuery(dt1Sql,requestid);
 
