@@ -94,7 +94,7 @@ public class HkConsAction extends BaseBean implements Action {
 
             String respStr = inventoryService.getBatchInventory(skus,fhdcxs);
 
-            List<Map<String,String>> k3InvList = consService.anlysBatIn(respStr);
+            List<Map<String,String>> k3InvList = consService.anlysBatIn(respStr,skus);
 
             writeLog("k3InvList="+k3InvList);
 
