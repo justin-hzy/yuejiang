@@ -96,13 +96,14 @@ public class PurService extends BaseBean {
         jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
         jsonObject.put("fsettlecurrid",bb);
+        writeLog("jsonObject="+jsonObject.toJSONString());
         //传进口税
         if("0.00".equals(falldiscount)){
             jsonObject.put("falldiscount",falldiscount);
         }else {
-            jsonObject.put("falldiscount",-Integer.valueOf(falldiscount));
+            jsonObject.put("falldiscount","-"+falldiscount);
         }
-
+        writeLog("jsonObject="+jsonObject.toJSONString());
         jsonObject.put("fisincludedtax","true");
 
 
@@ -125,6 +126,8 @@ public class PurService extends BaseBean {
 
             //价目表
             dtl.put("ftaxprice",ftaxprice);
+
+            writeLog("dtl="+dtl.toJSONString());
 
             jsonArray.add(dtl);
         }
