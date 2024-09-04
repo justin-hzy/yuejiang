@@ -49,7 +49,7 @@ public class LockAction extends BaseBean implements Action {
     }
 
     public String queryBillNo(String type,Integer billId){
-        String saleSql = "select lcbh from formtable_main_226 where id = ?";
+        String saleSql = "select lcbh from formtable_main_272 where id = ?";
 
         RecordSet recordSet = new RecordSet();
 

@@ -45,7 +45,7 @@ public class HkProSaleService extends BaseBean {
             List<String> skus = new ArrayList<>();
 
             //寄售销售 查询字段为 sku、销售数量、含税单价
-            String sql = "select dt5.tm tm,dt5.sl sl from formtable_main_226 main inner join formtable_main_226_dt5 dt5 on main.id = dt5.mainid where main.requestId = ?";
+            String sql = "select dt5.tm tm,dt5.sl sl from formtable_main_272 main inner join formtable_main_272_dt5 dt5 on main.id = dt5.mainid where main.requestId = ?";
 
             RecordSet dtRs = new RecordSet();
 
@@ -131,7 +131,7 @@ public class HkProSaleService extends BaseBean {
 
                 String id = getId(requestid);
 
-                String insertSql = "insert formtable_main_226_dt6 (mainid,jdzlcid,jdzlcbh,jdzlcsfgd) values ('"+id+"','"+result+"','"+lcbh+"','"+1+"')";
+                String insertSql = "insert formtable_main_272_dt6 (mainid,jdzlcid,jdzlcbh,jdzlcsfgd) values ('"+id+"','"+result+"','"+lcbh+"','"+1+"')";
 
                 RecordSet rs1 = new RecordSet();
                 rs1.executeUpdate(insertSql);
@@ -212,7 +212,7 @@ public class HkProSaleService extends BaseBean {
 
 
     public String getId(String requestid){
-        String getIdSql = "select id from formtable_main_226 where requestid = ?";
+        String getIdSql = "select id from formtable_main_272 where requestid = ?";
 
         RecordSet rs1 = new RecordSet();
 

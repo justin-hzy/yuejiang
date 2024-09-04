@@ -59,7 +59,7 @@ public class HKAction extends BaseBean implements Action {
             //String sql1 = "select main.id,dt1.hptxm tm,dt1.ddje xsj,sum(dt1.fhl) sl from formtable_main_226 main inner join formtable_main_226_dt1 dt1 on main.id = dt1.mainid where dt1.fhl is not null and main.requestId = ? group by main.id, dt1.hptxm, dt1.ddje";
 
 
-            String sql1 = "select main.id,dt1.hptxm tm,sum(dt1.fhl) sl from formtable_main_226 main inner join formtable_main_226_dt1 dt1 on main.id = dt1.mainid where dt1.fhl is not null and main.requestId = ? group by main.id, dt1.hptxm";
+            String sql1 = "select main.id,dt1.hptxm tm,sum(dt1.fhl) sl from formtable_main_272 main inner join formtable_main_272_dt1 dt1 on main.id = dt1.mainid where dt1.fhl is not null and main.requestId = ? group by main.id, dt1.hptxm";
 
             RecordSet dtRs = new RecordSet();
 
@@ -113,7 +113,7 @@ public class HKAction extends BaseBean implements Action {
             List<String> skus = new ArrayList<>();
 
             //正品 寄售销售 查询字段为 sku、销售数量、含税单价
-            String sql1 = "select main.id,dt2.hptxm tm,sum(dt2.fhsl )sl from formtable_main_226 main inner join formtable_main_226_dt2 dt2 on main.id = dt2.mainid where main.requestId = ? group by main.id,dt2.hptxm";
+            String sql1 = "select main.id,dt2.hptxm tm,sum(dt2.fhsl )sl from formtable_main_272 main inner join formtable_main_272_dt2 dt2 on main.id = dt2.mainid where main.requestId = ? and fhsl is not null group by main.id,dt2.hptxm";
 
             RecordSet dtRs = new RecordSet();
 
@@ -169,7 +169,7 @@ public class HKAction extends BaseBean implements Action {
 
         writeLog("hkSales1=" + hkSales1.toString());
 
-        String updateSql = "update formtable_main_226 set hk_status  = ? where requestid = ? ";
+        String updateSql = "update formtable_main_272 set hk_status  = ? where requestid = ? ";
 
         RecordSet rs  = new RecordSet();
 
@@ -181,7 +181,7 @@ public class HKAction extends BaseBean implements Action {
 
             String id = getSaleId(requestid);
 
-            String deleteSql = "DELETE FROM formtable_main_226_dt5 where mainid = ?";
+            String deleteSql = "DELETE FROM formtable_main_272_dt5 where mainid = ?";
             RecordSet deleteRs = new RecordSet();
             deleteRs.executeUpdate(deleteSql,id);
 
@@ -190,7 +190,7 @@ public class HKAction extends BaseBean implements Action {
                 String tm = hkSale.get("tm");
                 String sl = hkSale.get("sl");
 
-                String insertSql = "insert into formtable_main_226_dt5 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
+                String insertSql = "insert into formtable_main_272_dt5 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
                 RecordSet insertRs = new RecordSet();
                 insertRs.executeUpdate(insertSql);
             }
@@ -278,7 +278,7 @@ public class HKAction extends BaseBean implements Action {
 
 
     public String getSaleId(String requestid){
-        String sql = "select id from formtable_main_226 where requestid = ?";
+        String sql = "select id from formtable_main_272 where requestid = ?";
         RecordSet recordSet = new RecordSet();
         recordSet.executeQuery(sql,requestid);
         String id = "";

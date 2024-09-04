@@ -19,7 +19,7 @@ public class ProDtService extends BaseBean {
 
         RecordSet dtRs1 = new RecordSet();
 
-        String dt1Sql = "select dt1.khddh,dt1.hptxm,dt1.ddje,dt1.gg,sum(dt1.fhl) fhl from formtable_main_226_dt1 as dt1,formtable_main_226 main where dt1.fhl is not null and dt1.mainid = main.id and main.requestid = ? group by dt1.khddh, dt1.hptxm,dt1.lsj,dt1.gg";
+        String dt1Sql = "select dt1.khddh,dt1.hptxm,dt1.ddje,dt1.gg,sum(dt1.fhl) fhl from formtable_main_272_dt1 as dt1,formtable_main_272 main where dt1.fhl is not null and dt1.mainid = main.id and main.requestid = ? group by dt1.khddh, dt1.hptxm,dt1.lsj,dt1.gg";
 
         writeLog("dt1Sql="+dt1Sql);
 
@@ -69,7 +69,7 @@ public class ProDtService extends BaseBean {
 
         RecordSet dtRs2 = new RecordSet();
 
-        String dt2Sql = "select dt2.khddh,dt2.hptxm,dt2.xsj,sum(dt2.fhsl) fhsl from formtable_main_226_dt2 as dt2,formtable_main_226 main where dt2.mainid = main.id and main.requestid = ? group by dt2.khddh, dt2.hptxm,dt2.xsj";
+        String dt2Sql = "select dt2.khddh,dt2.hptxm,dt2.xsj,sum(dt2.fhsl) fhsl from formtable_main_272_dt2 as dt2,formtable_main_272 main where dt2.mainid = main.id and main.requestid = ? group by dt2.khddh, dt2.hptxm,dt2.xsj";
 
         writeLog("dt2Sql="+dt2Sql);
 

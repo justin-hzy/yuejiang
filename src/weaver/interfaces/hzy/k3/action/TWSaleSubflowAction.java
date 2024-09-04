@@ -132,9 +132,9 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
         RecordSet rsMain  = new RecordSet();
         String mainSql = "";
         if("pro".equals(proType)){
-            mainSql = "select main.kh,main.ddrq,main.fhdc,main.shdc,main.hzhkjeddje,main.fhje,main.shzjey,dt1.fhrq,main.lclj,main.bb,main.lcbh,dt1.tlmc from formtable_main_226 main inner join formtable_main_226_dt1 dt1 on main.id = dt1.mainid where requestid = ? limit 0,1";
+            mainSql = "select main.kh,main.ddrq,main.fhdc,main.shdc,main.hzhkjeddje,main.fhje,main.shzjey,dt1.fhrq,main.lclj,main.bb,main.lcbh,dt1.tlmc from formtable_main_272 main inner join formtable_main_272_dt1 dt1 on main.id = dt1.mainid where requestid = ? limit 0,1";
         }else if("sap".equals(proType)){
-            mainSql = "select main.kh,main.ddrq,main.fhdc,main.shdc,main.hzhkjeddje,main.fhje,main.shzjey,dt2.fhrq,main.lclj,main.bb,main.lcbh,dt2.tlmc from formtable_main_226 main inner join formtable_main_226_dt2 dt2 on main.id = dt2.mainid where requestid = ? limit 0,1";
+            mainSql = "select main.kh,main.ddrq,main.fhdc,main.shdc,main.hzhkjeddje,main.fhje,main.shzjey,dt2.fhrq,main.lclj,main.bb,main.lcbh,dt2.tlmc from formtable_main_272 main inner join formtable_main_272_dt2 dt2 on main.id = dt2.mainid where requestid = ? limit 0,1";
         }
 
         writeLog("mainSql="+mainSql);

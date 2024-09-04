@@ -260,7 +260,7 @@ public class FuLunApiUtil extends BaseBean {
 
         //·â×°Í¨Â·
         RecordSet rs = new RecordSet();
-        rs.executeQuery("select kh.khmcst from formtable_main_151 main inner join uf_kh kh on main.kh = khbh where fddh = ?",mainJson.get("name"));
+        rs.executeQuery("select kh.khmcst from formtable_main_272 main inner join uf_kh kh on main.kh = khbh where fddh = ?",mainJson.get("name"));
         while (rs.next()){
             String khmcst = rs.getString("khmcst");
             writeLog("khmcst",khmcst);
