@@ -45,7 +45,7 @@ public class HkProSaleService extends BaseBean {
             List<String> skus = new ArrayList<>();
 
             //寄售销售 查询字段为 sku、销售数量、含税单价
-            String sql = "select dt5.tm tm,dt5.sl sl from formtable_main_272 main inner join formtable_main_272_dt5 dt5 on main.id = dt5.mainid where main.requestId = ?";
+            String sql = "select dt3.tm tm,dt3.sl sl from formtable_main_272 main inner join formtable_main_272_dt3 dt3 on main.id = dt3.mainid where main.requestId = ?";
 
             RecordSet dtRs = new RecordSet();
 
@@ -127,14 +127,14 @@ public class HkProSaleService extends BaseBean {
                 int result = workflowUtil.creatRequest("1","165","HK_销售发货_金蝶"+"（子流程）",mainTableData,twDetail,"1");
                 writeLog("触发成功的子流程请求id：" + result);
 
-                lcbh = "HK_"+lcbh;
+                /*lcbh = "HK_"+lcbh;
 
                 String id = getId(requestid);
 
                 String insertSql = "insert formtable_main_272_dt6 (mainid,jdzlcid,jdzlcbh,jdzlcsfgd) values ('"+id+"','"+result+"','"+lcbh+"','"+1+"')";
 
                 RecordSet rs1 = new RecordSet();
-                rs1.executeUpdate(insertSql);
+                rs1.executeUpdate(insertSql);*/
             }
         }
 
