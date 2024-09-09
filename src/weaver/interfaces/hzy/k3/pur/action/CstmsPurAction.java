@@ -1,8 +1,8 @@
-package weaver.interfaces.hzy.k3.action.pur;
+package weaver.interfaces.hzy.k3.pur.action;
 
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.k3.service.K3Service;
-import weaver.interfaces.hzy.k3.service.PurService;
+import weaver.interfaces.hzy.k3.pur.service.PurService;
 import weaver.interfaces.workflow.action.Action;
 import weaver.interfaces.zxg.binaryCode.DMS.util.WorkflowToolMethods;
 import weaver.soa.workflow.request.RequestInfo;

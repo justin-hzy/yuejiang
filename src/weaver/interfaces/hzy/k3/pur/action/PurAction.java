@@ -1,12 +1,8 @@
-package weaver.interfaces.hzy.k3.action.pur;
+package weaver.interfaces.hzy.k3.pur.action;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.k3.service.K3Service;
-import weaver.interfaces.hzy.k3.service.PurService;
-import weaver.interfaces.tx.util.WorkflowUtil;
+import weaver.interfaces.hzy.k3.pur.service.PurService;
 import weaver.interfaces.workflow.action.Action;
 import weaver.interfaces.zxg.binaryCode.DMS.util.WorkflowToolMethods;
 import weaver.soa.workflow.request.RequestInfo;
@@ -83,7 +79,7 @@ public class PurAction extends BaseBean implements Action {
                 }
             }*/
             //进口税
-            writeLog("大陆出口-工厂直发");
+            writeLog("大陆出口-永青工厂直发");
             String jks = mainData.get("jks");
             purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
         }else if("0".equals(cglx)){
@@ -103,6 +99,10 @@ public class PurAction extends BaseBean implements Action {
             writeLog("大陆出口-总部发货");
             String jks = mainData.get("jks");
             purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
+        }else if("5".equals(cglx)){
+            writeLog("大陆出口-工厂直发");
+            String jks = mainData.get("jks");
+            purService.tranTwPur_2(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
         }
 
         return SUCCESS;
