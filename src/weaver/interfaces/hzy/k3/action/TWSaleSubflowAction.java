@@ -46,7 +46,7 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
 
 
         //样品拆单
-        Map<String,List<SaleDt2>> dt2Map = proDtService.getProDt2(requestid);
+        /*Map<String,List<SaleDt2>> dt2Map = proDtService.getProDt2(requestid);*/
 
 
         //正品台湾出库生成出库单
@@ -64,7 +64,7 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
         }
 
         //样品台湾生成出库单
-        if (dt2Map.size()>0){
+        /*if (dt2Map.size()>0){
 
             String flag = "TW";
 
@@ -75,7 +75,7 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
             writeLog("supMap="+supMap.toString());
 
             creatRequest(supMap,requestid,requestManager,flag,"sap");
-        }
+        }*/
 
 
         return SUCCESS;
@@ -132,10 +132,10 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
         RecordSet rsMain  = new RecordSet();
         String mainSql = "";
         if("pro".equals(proType)){
-            mainSql = "select main.kh,main.ddrq,main.fhdc,main.shdc,main.hzhkjeddje,main.fhje,main.shzjey,dt1.fhrq,main.lclj,main.bb,main.lcbh,dt1.tlmc from formtable_main_272 main inner join formtable_main_272_dt1 dt1 on main.id = dt1.mainid where requestid = ? limit 0,1";
-        }else if("sap".equals(proType)){
+            mainSql = "select main.kh,main.fhdc,main.shdc,dt1.fhrq,main.lclj,main.bb,main.lcbh,dt1.lxr as tlmc from formtable_main_272 main inner join formtable_main_272_dt1 dt1 on main.id = dt1.mainid where requestid = ? limit 0,1";
+        }/*else if("sap".equals(proType)){
             mainSql = "select main.kh,main.ddrq,main.fhdc,main.shdc,main.hzhkjeddje,main.fhje,main.shzjey,dt2.fhrq,main.lclj,main.bb,main.lcbh,dt2.tlmc from formtable_main_272 main inner join formtable_main_272_dt2 dt2 on main.id = dt2.mainid where requestid = ? limit 0,1";
-        }
+        }*/
 
         writeLog("mainSql="+mainSql);
         rsMain.executeQuery(mainSql,requestid);
@@ -145,9 +145,9 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
             String ddrq = Util.null2String(rsMain.getString("ddrq"));
             String fhdc_1 = Util.null2String(rsMain.getString("fhdc"));
             String shdc = Util.null2String(rsMain.getString("shdc"));
-            String hzhkjeddje = Util.null2String(rsMain.getString("hzhkjeddje"));
-            String fhje = Util.null2String(rsMain.getString("fhje"));
-            String shzjey = Util.null2String(rsMain.getString("shzjey"));
+            //String hzhkjeddje = Util.null2String(rsMain.getString("hzhkjeddje"));
+            //String fhje = Util.null2String(rsMain.getString("fhje"));
+            //String shzjey = Util.null2String(rsMain.getString("shzjey"));
             String fhrq = Util.null2String(rsMain.getString("fhrq"));
             String lclj = Util.null2String(rsMain.getString("lclj"));
             String bb = Util.null2String(rsMain.getString("bb"));
@@ -158,7 +158,7 @@ public class TWSaleSubflowAction extends BaseBean implements Action {
             mainTableData.put("djrq",ddrq);
             mainTableData.put("fhdc",fhdc_1);
             mainTableData.put("shdc",shdc);
-            mainTableData.put("ddje",hzhkjeddje);
+            //mainTableData.put("ddje",hzhkjeddje);
             mainTableData.put("chrq",fhrq);
             mainTableData.put("zlclj",lclj);
             mainTableData.put("bb",bb);

@@ -52,9 +52,9 @@ public class K3Service extends BaseBean {
             String chrq = Util.null2String(rsMain.getString("chrq"));
             String fhdc = Util.null2String(rsMain.getString("fhdc"));
             String kh = Util.null2String(rsMain.getString("kh"));
-            String ddje = Util.null2String(rsMain.getString("ddje"));
+            //String ddje = Util.null2String(rsMain.getString("ddje"));
             String bb = Util.null2String(rsMain.getString("bb"));
-            String ydh = Util.null2String(rsMain.getString("ydh"));
+            //String ydh = Util.null2String(rsMain.getString("ydh"));
             String ck = Util.null2String(rsMain.getString("ck"));
 
 
@@ -191,7 +191,7 @@ public class K3Service extends BaseBean {
             String tm = Util.null2String(rsDt1.getString("tm"));
             String sl = Util.null2String(rsDt1.getString("sl"));
             String xsj = Util.null2String(rsDt1.getString("xsj"));
-            String hplx = Util.null2String(rsDt1.getString("hplx"));
+            //String hplx = Util.null2String(rsDt1.getString("hplx"));
             String taxrate = Util.null2String(rsDt1.getString("taxrate"));
 
 
