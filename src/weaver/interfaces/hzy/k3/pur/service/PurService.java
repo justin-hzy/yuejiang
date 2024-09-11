@@ -314,7 +314,7 @@ public class PurService extends BaseBean {
             dtl.put("frealqty",detailData.get("cgsl"));
             dtl.put("fstockid",rkck);
 
-            dtl.put("ftaxprice",detailData.get("cnprice"));
+            dtl.put("ftaxprice",detailData.get("cgdj"));
 
             jsonArray.add(dtl);
         }
@@ -426,9 +426,9 @@ public class PurService extends BaseBean {
             dtl.put("fsoorderno",lcbh);
             dtl.put("fdsgsrcoid",lcbh);
 
-            String ftaxprice = k3Service.queryPriceTable(detailData.get("wlbm"));
+            String ftaxprice = k3Service.getPrice(detailData.get("wlbm"));
 
-            dtl.put("ftaxprice",detailData.get("cnprice"));
+            dtl.put("ftaxprice",ftaxprice);
 
             jsonArray.add(dtl);
         }
@@ -482,7 +482,7 @@ public class PurService extends BaseBean {
             dtl.put("fsoorderno",lcbh);
             dtl.put("fdsgsrcoid",lcbh);
 
-            dtl.put("ftaxprice",detailData.get("cnprice"));
+            dtl.put("ftaxprice",detailData.get("cgdj"));
 
             jsonArray.add(dtl);
         }

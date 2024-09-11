@@ -42,6 +42,7 @@ public class K3Action extends BaseBean implements Action {
                         if("200".equals(code)){
                             // todo 调用ME接口实现提交节点功能
                             writeLog("流程号"+lcbh+"台湾采购单据同步成功");
+                            return SUCCESS;
                         }else {
                             writeLog("流程号"+lcbh+"台湾采购单据同步失败");
                             return FAILURE_AND_CONTINUE;
@@ -51,13 +52,19 @@ public class K3Action extends BaseBean implements Action {
                         return FAILURE_AND_CONTINUE;
                     }
                 }else if(lcbh.contains("TW_")) {
-                    k3Service.putSale(requestid,"TW");
+                    String code = k3Service.putSale(requestid,"TW");
+                    if("200".equals(code)){
+                        return SUCCESS;
+                    }else {
+                        return FAILURE_AND_CONTINUE;
+                    }
                 }
             }
         }else if("trf".equals(type)){
             if(lcbh != null){
                 if(lcbh.contains("HK_")){
-                    k3Service.putTrf(requestid,mainData,"HK");
+                    String code = k3Service.putTrf(requestid,mainData,"HK");
+
                 }else if (lcbh.contains("TW_")){
                     k3Service.putTrf(requestid,mainData,"TW");
                 }

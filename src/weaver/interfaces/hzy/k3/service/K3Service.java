@@ -204,7 +204,8 @@ public class K3Service extends BaseBean {
                 dt1Json.put("fentrytaxrate","0");
 
                 //查询价目表
-                queryPriceTable(tm,dt1Json);
+                //queryPriceTable(tm,dt1Json);
+                getPrice(tm,dt1Json);
             }else if("TW".equals(flag)){
                 //台湾税率5
                 dt1Json.put("fentrytaxrate",taxrate);
@@ -951,6 +952,26 @@ public class K3Service extends BaseBean {
             //writeLog("22222222222222222222222222222222");
             dt1Json.put("ftaxprice","0.0");
         }
+    }
+
+    public void getPrice(String sku,JSONObject dt1Json){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sku",sku);
+
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getPrice");
+
+        dt1Json.put("ftaxprice",fTaxPrice);
+    }
+
+    public String getPrice(String sku){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sku",sku);
+
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getPrice");
+
+        return fTaxPrice;
     }
 
     public void queryRetPrice(String sku,JSONObject dt1Json){
