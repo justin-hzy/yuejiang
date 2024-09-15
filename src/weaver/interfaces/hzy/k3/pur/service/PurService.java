@@ -165,7 +165,7 @@ public class PurService extends BaseBean {
 
         jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
-        jsonObject.put("fsettlecurrid",bb);
+        jsonObject.put("fsettlecurrid","PRE005");
         writeLog("jsonObject="+jsonObject.toJSONString());
         //传进口税
         if("0.00".equals(falldiscount)){
@@ -298,7 +298,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
 
-        jsonObject.put("fsettlecurrid",bb);
+        jsonObject.put("fsettlecurrid","PRE005");
         jsonObject.put("fisincludedtax","true");
 
         JSONArray jsonArray = new JSONArray();
@@ -406,7 +406,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fdsgbase","ZT026");
         jsonObject.put("fsettleorgid","ZT021");
         jsonObject.put("type","HK");
-        jsonObject.put("fsettlecurrid",bb);
+        jsonObject.put("fsettlecurrid","PRE005");
         jsonObject.put("fthirdbillno",lcbh);
         jsonObject.put("fdate",yjjcr);
 
