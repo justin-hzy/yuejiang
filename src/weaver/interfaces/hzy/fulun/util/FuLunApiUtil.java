@@ -320,7 +320,7 @@ public class FuLunApiUtil extends BaseBean {
 
         mainJson.remove("storage_type");
         mainJson.put("products", jsonArray);
-        mainJson.put("note","销售发货流程(台湾)-入库");
+        mainJson.put("note","销售退货流程(台湾)-入库");
         writeLog("明细参数" + jsonArray.toJSONString());
 
         return mainJson;
@@ -357,9 +357,9 @@ public class FuLunApiUtil extends BaseBean {
         mainJson.remove("storage_type");
         mainJson.put("products", jsonArray);
         if (bz.length()>0){
-            mainJson.put("note","销售发货流程(台湾)-入库-"+bz);
+            mainJson.put("note","销售退货流程(台湾)-入库-"+bz);
         }else {
-            mainJson.put("note","销售发货流程(台湾)-入库");
+            mainJson.put("note","销售退货流程(台湾)-入库");
         }
 
         writeLog("明细参数" + jsonArray.toJSONString());
