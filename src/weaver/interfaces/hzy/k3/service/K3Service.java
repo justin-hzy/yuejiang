@@ -179,6 +179,165 @@ public class K3Service extends BaseBean {
         return code;
     }
 
+    public String putGyjConsSale(String requestid){
+
+        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+            String kh = Util.null2String(rsMain.getString("kh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            writeLog("djrq="+djrq);
+            //String bb = Util.null2String(rsMain.getString("bb"));
+
+            jsonObject.put("fbillno",lcbh);
+
+            jsonObject.put("fstockorgid","ZT030");
+            jsonObject.put("fsaleorgid","ZT030");
+            jsonObject.put("fcustomerid","Shopee");
+            jsonObject.put("fdsgbase","ZT030");
+            jsonObject.put("fsettleorgid","ZT030");
+            jsonObject.put("fthirdbillno",lcbh);
+
+            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fhdc",fhdc);
+
+        }
+
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+        String param = getDtl(requestid,jsonObject,"GYJ");
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putSaleUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶寄售出库单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶寄售出库单失败");
+        }
+        return code;
+    }
+
+
+    public String putGyjTWConsSale(String requestid){
+
+        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+            String kh = Util.null2String(rsMain.getString("kh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            writeLog("djrq="+djrq);
+            //String bb = Util.null2String(rsMain.getString("bb"));
+
+            jsonObject.put("fbillno",lcbh);
+
+            jsonObject.put("fstockorgid","ZT026");
+            jsonObject.put("fsaleorgid","ZT026");
+            jsonObject.put("fcustomerid","Shopee");
+            jsonObject.put("fdsgbase","Shopee");
+            jsonObject.put("fsettleorgid","ZT026");
+            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fhdc",fhdc);
+
+        }
+
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+        String param = getDtl(requestid,jsonObject,"GYJ_TW");
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putSaleUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶寄售出库单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶寄售出库单失败");
+        }
+
+        return code;
+    }
+
+    public String putGyjHKConsSale(String requestid){
+
+        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+            String kh = Util.null2String(rsMain.getString("kh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            writeLog("djrq="+djrq);
+            //String bb = Util.null2String(rsMain.getString("bb"));
+
+            jsonObject.put("fbillno",lcbh);
+
+            jsonObject.put("fstockorgid","ZT021");
+            jsonObject.put("fsaleorgid","ZT021");
+            jsonObject.put("fcustomerid","CUST0558");
+            jsonObject.put("fdsgbase","ZT026");
+            jsonObject.put("fsettleorgid","ZT021");
+            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fhdc",fhdc);
+
+        }
+
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+        String param = getDtl(requestid,jsonObject,"GYJ_HK");
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putSaleUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶寄售出库单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶寄售出库单失败");
+        }
+
+        return code;
+    }
 
     public String getDtl(String requestid,JSONObject jsonObject,String flag){
         String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.hplx,dt1.taxrate from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
@@ -199,7 +358,7 @@ public class K3Service extends BaseBean {
             dt1Json.put("fentryid",0);
             dt1Json.put("fmaterialId",tm);
 
-            if("HK".equals(flag)){
+            if("HK".equals(flag) || "GYJ_HK".equals(flag)){
                 //香港税率为0
                 dt1Json.put("fentrytaxrate","0");
 
@@ -210,6 +369,9 @@ public class K3Service extends BaseBean {
                 //台湾税率5
                 dt1Json.put("fentrytaxrate",taxrate);
                 dt1Json.put("ftaxprice",xsj);
+            }else if("GYJ_TW".equals(flag) || "GYJ".equals(flag)){
+                dt1Json.put("fentrytaxrate","5");
+                getPrice(tm,dt1Json);
             }
             dt1Json.put("frealqty",sl);
             String fhdc = jsonObject.getString("fhdc");
@@ -616,6 +778,167 @@ public class K3Service extends BaseBean {
         return "success";
     }
 
+    public String putGYJConsPur(String requestid){
+
+        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+
+
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            writeLog("djrq="+djrq);
+            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+            //String bb = Util.null2String(rsMain.getString("bb"));
+
+            lcbh= lcbh.replace("GYJ_TW_","GYJ_");
+
+            jsonObject.put("fbillno",lcbh);
+            jsonObject.put("fstockorgid","ZT030");
+            jsonObject.put("fpurchaseorgid","ZT030");
+            jsonObject.put("fsupplierId","ZT026");
+            jsonObject.put("fdemandorgid","ZT030");
+            jsonObject.put("fsettleorgid","ZT030");
+            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fhdc",fhdc);
+            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fisincludedtax","true");
+        }
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+        String dt1Sql = "select dt1.tm,dt1.sl from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        RecordSet rsDt1 = new RecordSet();
+
+        rsDt1.executeQuery(dt1Sql,requestid);
+        JSONArray jsonArray = new JSONArray();
+
+        while (rsDt1.next()){
+            String tm = Util.null2String(rsDt1.getString("tm"));
+            String sl = Util.null2String(rsDt1.getString("sl"));
+
+            JSONObject dt1Json = new JSONObject();
+
+            dt1Json.put("fmaterialId",tm);
+            //税率5
+            dt1Json.put("fentrytaxrate","5");
+
+            getPrice(tm,dt1Json);
+
+            dt1Json.put("frealqty",sl);
+            String fhdc = jsonObject.getString("fhdc");
+            dt1Json.put("fstockid",fhdc);
+
+            jsonArray.add(dt1Json);
+        }
+
+        jsonObject.remove("fhdc");
+        jsonObject.put("fentrylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putPurUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶采购入库单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶采购入库单失败");
+        }
+        return "success";
+    }
+
+    public String putGYJTWConsPur(String requestid){
+
+        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+
+
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String djrq = Util.null2String(rsMain.getString("djrq"));
+            writeLog("djrq="+djrq);
+            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+            //String bb = Util.null2String(rsMain.getString("bb"));
+
+            lcbh= lcbh.replace("GYJ_HK_","GYJ_TW_");
+
+            jsonObject.put("fbillno",lcbh);
+            jsonObject.put("fstockorgid","ZT026");
+            jsonObject.put("fpurchaseorgid","ZT026");
+            jsonObject.put("fsupplierId","ZT021");
+            jsonObject.put("fdemandorgid","ZT026");
+            jsonObject.put("fsettleorgid","ZT026");
+            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fdate",djrq);
+            jsonObject.put("fhdc",fhdc);
+            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fisincludedtax","true");
+        }
+        writeLog("jsonObject="+jsonObject.toJSONString());
+
+        String dt1Sql = "select dt1.tm,dt1.sl from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        RecordSet rsDt1 = new RecordSet();
+
+        rsDt1.executeQuery(dt1Sql,requestid);
+        JSONArray jsonArray = new JSONArray();
+
+        while (rsDt1.next()){
+            String tm = Util.null2String(rsDt1.getString("tm"));
+            String sl = Util.null2String(rsDt1.getString("sl"));
+
+            JSONObject dt1Json = new JSONObject();
+
+            dt1Json.put("fmaterialId",tm);
+            //税率5
+            dt1Json.put("fentrytaxrate","5");
+
+            getPrice(tm,dt1Json);
+
+            dt1Json.put("frealqty",sl);
+            String fhdc = jsonObject.getString("fhdc");
+            dt1Json.put("fstockid",fhdc);
+
+            jsonArray.add(dt1Json);
+        }
+
+        jsonObject.remove("fhdc");
+        jsonObject.put("fentrylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,meIp,putPurUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶采购入库单成功");
+
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶采购入库单失败");
+        }
+        return "success";
+    }
 
 
 
@@ -964,8 +1287,18 @@ public class K3Service extends BaseBean {
         dt1Json.put("ftaxprice",fTaxPrice);
     }
 
-    public String getPrice(String sku){
+    public void getDailyNecPrice(String sku,JSONObject dt1Json){
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sku",sku);
+
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getDailyNecPrice");
+
+        dt1Json.put("ftaxprice",fTaxPrice);
+    }
+
+    public String getPrice(String sku){
+        writeLog("sku="+sku);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 

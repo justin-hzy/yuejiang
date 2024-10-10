@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.k3.pur.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import weaver.general.BaseBean;
@@ -112,22 +113,32 @@ public class PurService extends BaseBean {
         for (Map<String, String> detailData : detailDatas1){
             JSONObject dtl = new JSONObject();
 
+            String rksl = detailData.get("rksl");
+            writeLog("rksl="+rksl);
+            if(StrUtil.isNotEmpty(rksl)){
+                writeLog("rksl="+rksl);
+                dtl.put("fmaterialId",detailData.get("wlbm"));
+                writeLog("fmaterialId="+detailData.get("wlbm"));
+                //暂时写死
+                dtl.put("fentrytaxrate",fentrytaxrate);
+                writeLog("fentrytaxrate="+fentrytaxrate);
+                dtl.put("frealqty",rksl);
+                writeLog("frealqty="+rksl);
+                dtl.put("fstockid",rkck);
+                writeLog("fstockid="+rkck);
 
-            dtl.put("fmaterialId",detailData.get("wlbm"));
-            //暂时写死
-            dtl.put("fentrytaxrate",fentrytaxrate);
-            dtl.put("frealqty",detailData.get("rksl"));
-            dtl.put("fstockid",rkck);
+                //String ftaxprice = k3Service.queryPriceTable(detailData.get("wlbm"));
+                String ftaxprice = k3Service.getPrice(detailData.get("wlbm"));
 
+                writeLog("ftaxprice="+ftaxprice);
 
-            String ftaxprice = k3Service.queryPriceTable(detailData.get("wlbm"));
+                //价目表
+                dtl.put("ftaxprice",ftaxprice);
 
-            //价目表
-            dtl.put("ftaxprice",ftaxprice);
+                writeLog("dtl="+dtl.toJSONString());
 
-            writeLog("dtl="+dtl.toJSONString());
-
-            jsonArray.add(dtl);
+                jsonArray.add(dtl);
+            }
         }
 
         jsonObject.put("fentrylist",jsonArray);
@@ -482,7 +493,11 @@ public class PurService extends BaseBean {
             dtl.put("fsoorderno",lcbh);
             dtl.put("fdsgsrcoid",lcbh);
 
-            dtl.put("ftaxprice",detailData.get("cgdj"));
+
+            k3Service.getDailyNecPrice(detailData.get("wlbm"),dtl);
+
+            // 放弃采取采购单价
+            // dtl.put("ftaxprice",detailData.get("cgdj"));
 
             jsonArray.add(dtl);
         }
