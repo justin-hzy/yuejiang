@@ -462,7 +462,7 @@ public class PurService extends BaseBean {
         return code;
     }
 
-    public String tranDailyNecCnSale(String lcbh,String gys,String yjjcr, String rkck, String bb,List<Map<String,String>> detailDatas1,K3Service k3Service,String fentrytaxrate){
+    public String tranDailyNecCnSale(String lcbh,String gys,String yjjcr, String ckck, String bb,List<Map<String,String>> detailDatas1,K3Service k3Service,String fentrytaxrate){
 
 
         JSONObject jsonObject = new JSONObject();
@@ -489,7 +489,7 @@ public class PurService extends BaseBean {
 
             dtl.put("frealqty",detailData.get("cgsl"));
 
-            dtl.put("fstockid",rkck);
+            dtl.put("fstockid",ckck);
             dtl.put("fsoorderno",lcbh);
             dtl.put("fdsgsrcoid",lcbh);
 

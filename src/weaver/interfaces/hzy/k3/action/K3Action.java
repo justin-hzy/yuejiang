@@ -1,6 +1,7 @@
 package weaver.interfaces.hzy.k3.action;
 
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.k3.sale.service.SaleService;
 import weaver.interfaces.hzy.k3.service.K3Service;
 import weaver.interfaces.tx.util.WorkflowToolMethods;
 import weaver.interfaces.workflow.action.Action;
@@ -24,6 +25,8 @@ public class K3Action extends BaseBean implements Action {
 
         K3Service k3Service = new K3Service();
 
+        SaleService saleService = new SaleService();
+
         String requestid = requestInfo.getRequestid();
 
         //获取流程主表，明细表数据
@@ -33,31 +36,33 @@ public class K3Action extends BaseBean implements Action {
         if("sale".equals(type)){
             if(lcbh != null){
                 if(lcbh.contains("HK_")){
-                    String code = k3Service.putSale(requestid,"HK");
+                    //String code = k3Service.putSale(requestid,"HK");
+                    String code = saleService.putHKSale(requestid,"HK");
                     writeLog("code="+code);
                     if("200".equals(code)){
-                        code = k3Service.putPur(requestid,"TW");
+                        //code = k3Service.putPur(requestid,"TW");
+                        code = saleService.putTWPur(requestid,"TW");
                         writeLog("code="+code);
                         writeLog("流程号"+lcbh+"香港销售出库单据同步成功");
                         if("200".equals(code)){
                             // todo 调用ME接口实现提交节点功能
                             writeLog("流程号"+lcbh+"台湾采购单据同步成功");
-                            return SUCCESS;
+                            //return SUCCESS;
                         }else {
                             writeLog("流程号"+lcbh+"台湾采购单据同步失败");
-                            return FAILURE_AND_CONTINUE;
+                            //return FAILURE_AND_CONTINUE;
                         }
                     }else {
                         writeLog("流程号"+lcbh+"香港销售出库单据同步失败");
-                        return FAILURE_AND_CONTINUE;
+                        //return FAILURE_AND_CONTINUE;
                     }
                 }else if(lcbh.contains("TW_")) {
-                    String code = k3Service.putSale(requestid,"TW");
-                    if("200".equals(code)){
-                        return SUCCESS;
-                    }else {
-                        return FAILURE_AND_CONTINUE;
-                    }
+                    String code = saleService.putTWSale(requestid,"TW");
+//                    if("200".equals(code)){
+//                        return SUCCESS;
+//                    }else {
+//                        return FAILURE_AND_CONTINUE;
+//                    }
                 }
             }
         }else if("trf".equals(type)){
@@ -71,7 +76,20 @@ public class K3Action extends BaseBean implements Action {
             }
         }else if("cons".equals(type)){
             if(lcbh != null){
-                if(lcbh.contains("HK_")){
+                if(lcbh.contains("GYJ_TW_")){
+                    //
+                    String code = k3Service.putGyjTWConsSale(requestid);
+                    if("200".equals(code)){
+                        k3Service.putGYJConsPur(requestid);
+                    }
+                }else if(lcbh.contains("GYJ_HK")){
+                    String code = k3Service.putGyjHKConsSale(requestid);
+                    if ("200".equals(code)){
+                        k3Service.putGYJTWConsPur(requestid);
+                    }
+                }else if (lcbh.contains("GYJ_")){
+                    k3Service.putGyjConsSale(requestid);
+                }else if(lcbh.contains("HK_")){
                     String code = k3Service.putConsSale(requestid,"HK");
                     if("200".equals(code)){
                         k3Service.putConsPur(requestid,"TW");

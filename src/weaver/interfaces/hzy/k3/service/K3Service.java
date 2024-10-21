@@ -1288,6 +1288,7 @@ public class K3Service extends BaseBean {
     }
 
     public void getDailyNecPrice(String sku,JSONObject dt1Json){
+        writeLog("查询香港日用品价目表");
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
@@ -1295,6 +1296,18 @@ public class K3Service extends BaseBean {
         String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getDailyNecPrice");
 
         dt1Json.put("ftaxprice",fTaxPrice);
+    }
+
+    public String getDailyNecPrice(String sku){
+        writeLog("查询香港日用品价目表");
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sku",sku);
+
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getDailyNecPrice");
+
+        return fTaxPrice;
+
     }
 
     public String getPrice(String sku){

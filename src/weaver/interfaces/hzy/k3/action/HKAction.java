@@ -87,7 +87,7 @@ public class HKAction extends BaseBean implements Action {
             //收集正品sku
             if (detailDatas1.size() > 0) {
                 for (Map<String, String> detailData : detailDatas1) {
-                    String hptxm = detailData.get("hptxm");
+                    String hptxm = detailData.get("tm");
                     skus.add(hptxm);
                 }
             }
