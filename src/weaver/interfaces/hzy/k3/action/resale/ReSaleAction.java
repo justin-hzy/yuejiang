@@ -175,6 +175,12 @@ public class ReSaleAction extends BaseBean implements Action {
                 RecordSet updateRs  = new RecordSet();
 
                 updateRs.executeUpdate(updateSql,"0",requestid);
+            }else {
+                String updateSql = "update formtable_main_263 set spsfzyxgzt  = ? where requestid = ? ";
+
+                RecordSet updateRs  = new RecordSet();
+
+                updateRs.executeUpdate(updateSql,"1",requestid);
             }
 
         }else {
