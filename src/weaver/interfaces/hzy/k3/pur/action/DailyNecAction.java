@@ -14,9 +14,6 @@ import java.util.Map;
 
 public class DailyNecAction extends BaseBean implements Action {
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
-
-
     private String apiId;
 
     @Override
