@@ -1242,7 +1242,7 @@ public class K3Service extends BaseBean {
 
         HttpPost httpPost = new HttpPost(meIp+url);
 
-        writeLog("meIp+url="+meIp+url);
+        writeLog("ip+url="+meIp+url);
 
         //…Ë÷√«Î«ÛÕ∑
         httpPost.addHeader("Content-Type", "application/json;charset=utf-8");

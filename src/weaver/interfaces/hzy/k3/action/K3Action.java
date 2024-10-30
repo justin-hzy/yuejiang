@@ -36,12 +36,12 @@ public class K3Action extends BaseBean implements Action {
         if("sale".equals(type)){
             if(lcbh != null){
                 if(lcbh.contains("HK_")){
-                    //String code = k3Service.putSale(requestid,"HK");
-                    String code = saleService.putHKSale(requestid,"HK");
+                    String code = k3Service.putSale(requestid,"HK");
+                    //String code = saleService.putHKSale(requestid,"HK");
                     writeLog("code="+code);
                     if("200".equals(code)){
-                        //code = k3Service.putPur(requestid,"TW");
-                        code = saleService.putTWPur(requestid,"TW");
+                        code = k3Service.putPur(requestid,"TW");
+                        //code = saleService.putTWPur(requestid,"TW");
                         writeLog("code="+code);
                         writeLog("流程号"+lcbh+"香港销售出库单据同步成功");
                         if("200".equals(code)){
@@ -57,7 +57,8 @@ public class K3Action extends BaseBean implements Action {
                         //return FAILURE_AND_CONTINUE;
                     }
                 }else if(lcbh.contains("TW_")) {
-                    String code = saleService.putTWSale(requestid,"TW");
+                    String code = k3Service.putSale(requestid,"TW");
+//                    String code = saleService.putTWSale(requestid,"TW");
 //                    if("200".equals(code)){
 //                        return SUCCESS;
 //                    }else {
