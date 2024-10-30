@@ -36,7 +36,7 @@ public class ReTrfService extends BaseBean {
         Map<String,String> mainTableData = new HashMap<>();
 
         mainTableData.put("chrq",rkrq);
-        //主流程路径为,台湾寄售=6
+        //主流程路径为,台湾调拨寄售退=10
         mainTableData.put("zlclj","6");
 
         //原单号
@@ -54,9 +54,36 @@ public class ReTrfService extends BaseBean {
         List<Map<String,String>> dtMapList = getTrfDt2(requestid);
         writeLog("dtMapList="+dtMapList.toString());
 
+
+        mainTableData.put("lcbh","TW_"+lcbh);
+        Map<String, List<Map<String, String>>> detail = new HashMap<>();
+        detail.put("1",dtMapList);
+        writeLog("mainTableData="+mainTableData.toString());
+        writeLog("detail="+detail.toString());
+        int result = workflowUtil.creatRequest("1","165","TW_调拨寄售退_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+        writeLog("触发成功的子流程请求id：" + result);
+
+        Map<String,List<Map<String,String>>> resMap = matchTrfOrg(dtMapList);
+
+        if(resMap.containsKey("hk")){
+            mainTableData.put("lcbh","HK_"+lcbh);
+            Map<String, List<Map<String, String>>> hkDetail = new HashMap<>();
+
+            List<Map<String,String>> mapList = resMap.get("hk");
+
+            if(mapList.size()>0){
+                detail.put("1",mapList);
+                writeLog("mainTableData="+mainTableData.toString());
+                writeLog("hkDetail="+hkDetail.toString());
+                int hkResult = workflowUtil.creatRequest("1","165","HK_寄售出库_金蝶"+"（子流程）",mainTableData,hkDetail,"1");//创建子流程
+                writeLog("触发成功的子流程请求id：" + hkResult);
+            }
+        }
+        /*
         Map<String,List<Map<String,String>>> resMap = matchTrfOrg(dtMapList);
 
         writeLog("resMap="+resMap.toString());
+
 
         if(resMap.containsKey("tw")){
             mainTableData.put("lcbh","TW_"+lcbh);
@@ -72,8 +99,9 @@ public class ReTrfService extends BaseBean {
                 int result = workflowUtil.creatRequest("1","165","TW_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
                 writeLog("触发成功的子流程请求id：" + result);
             }
-        }
+        }*/
 
+        /*
         if(resMap.containsKey("hk")){
             mainTableData.put("lcbh","HK_"+lcbh);
             Map<String, List<Map<String, String>>> detail = new HashMap<>();
@@ -87,7 +115,7 @@ public class ReTrfService extends BaseBean {
                 int result = workflowUtil.creatRequest("1","165","HK_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
                 writeLog("触发成功的子流程请求id：" + result);
             }
-        }
+        }*/
 
         return SUCCESS;
     }
