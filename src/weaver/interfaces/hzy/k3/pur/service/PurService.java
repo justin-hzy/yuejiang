@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.k3.log.LogService;
+import weaver.interfaces.hzy.k3.price.service.PriceService;
 import weaver.interfaces.hzy.k3.service.K3Service;
 
 import java.util.List;
@@ -13,7 +15,11 @@ public class PurService extends BaseBean {
 
     private String meIp = getPropValue("fulun_api_config","meIp");
 
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
+
     private String putPurUrl = getPropValue("k3_api_config","putPurUrl");
+
+    private String putHKPurUrl = getPropValue("k3_api_config","putHKPurUrl");
 
     private String putSaleUrl = getPropValue("k3_api_config","putSaleUrl");
 
@@ -220,7 +226,7 @@ public class PurService extends BaseBean {
         writeLog("json="+param);
 
 
-        String resStr = k3Service.doK3Action(param,meIp,putPurUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
@@ -277,22 +283,25 @@ public class PurService extends BaseBean {
 
         writeLog("json="+param);
 
-        String resStr = k3Service.doK3Action(param,meIp,putPurUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putHKPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
         if("200".equals(code)){
             k3Service.addLog(lcbh,"200");
-            writeLog("同步金蝶采购入库单成功");
+            writeLog("同步金蝶香港采购入库单成功");
             return code;
         }else {
             k3Service.addLog(lcbh,"500");
-            writeLog("同步金蝶采购入库单失败");
+            writeLog("同步金蝶香港采购入库单失败");
             return code;
         }
     }
 
     public String tranHkPur_2(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate){
+
+        PriceService priceService = new PriceService();
+        LogService logService = new LogService();
 
         JSONObject jsonObject = new JSONObject();
         String fbillno = "HK_"+lcbh;
@@ -336,19 +345,11 @@ public class PurService extends BaseBean {
 
         writeLog("json="+param);
 
-        String resStr = k3Service.doK3Action(param,meIp,putPurUrl);
+        String resStr = priceService.doK3Action(param,k3Ip,putPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
-        if("200".equals(code)){
-            k3Service.addLog(lcbh,"200");
-            writeLog("同步金蝶采购入库单成功");
-            return code;
-        }else {
-            k3Service.addLog(lcbh,"500");
-            writeLog("同步金蝶采购入库单失败");
-            return code;
-        }
+        return code;
     }
 
 
@@ -392,22 +393,26 @@ public class PurService extends BaseBean {
         jsonObject.put("fentitylist",jsonArray);
         String param = jsonObject.toJSONString();
 
-        String resStr = k3Service.doK3Action(param,meIp,putSaleUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putHKSaleUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
         if("200".equals(code)){
             k3Service.addLog(lcbh,"200");
-            writeLog("同步金蝶采购入库单成功");
+            writeLog("同步金蝶香港销售单成功");
         }else {
             k3Service.addLog(lcbh,"500");
-            writeLog("同步金蝶采购入库单失败");
+            writeLog("同步金蝶香港销售单失败");
         }
 
         return code;
     }
 
     public String tranHkSale_2(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate){
+
+        PriceService priceService = new PriceService();
+        LogService logService = new LogService();
+
         JSONObject jsonObject = new JSONObject();
         String fbillno = "HK_"+lcbh;
         jsonObject.put("fbillno",fbillno);
@@ -447,23 +452,24 @@ public class PurService extends BaseBean {
         jsonObject.put("fentitylist",jsonArray);
         String param = jsonObject.toJSONString();
 
-        String resStr = k3Service.doK3Action(param,meIp,putSaleUrl);
+        String resStr = priceService.doK3Action(param,k3Ip,putSaleUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
-        if("200".equals(code)){
-            k3Service.addLog(lcbh,"200");
+        /*if("200".equals(code)){
+            logService.addLog(lcbh,"200");
             writeLog("同步金蝶采购入库单成功");
         }else {
-            k3Service.addLog(lcbh,"500");
+            logService.addLog(lcbh,"500");
             writeLog("同步金蝶采购入库单失败");
-        }
+        }*/
 
         return code;
     }
 
     public String tranDailyNecCnSale(String lcbh,String gys,String yjjcr, String ckck, String bb,List<Map<String,String>> detailDatas1,K3Service k3Service,String fentrytaxrate){
 
+        PriceService priceService = new PriceService();
 
         JSONObject jsonObject = new JSONObject();
         String fbillno = "DN_"+lcbh;
@@ -494,7 +500,7 @@ public class PurService extends BaseBean {
             dtl.put("fdsgsrcoid",lcbh);
 
 
-            k3Service.getDailyNecPrice(detailData.get("wlbm"),dtl);
+            priceService.getDailyNecPrice(detailData.get("wlbm"),dtl);
 
             // 放弃采取采购单价
             // dtl.put("ftaxprice",detailData.get("cgdj"));
@@ -505,7 +511,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fentitylist",jsonArray);
         String param = jsonObject.toJSONString();
 
-        String resStr = k3Service.doK3Action(param,meIp,putHKSaleUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putHKSaleUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
