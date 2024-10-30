@@ -140,7 +140,7 @@ public class FuLunApiUtil extends BaseBean {
             }/*else if("15".equals(apiId)){
                 mainJson = getTranscodeJson(mainData);
             }*/
-            /*else if("16".equals(apiId)){
+            else if("16".equals(apiId)){
 
                 writeLog("mainJson="+mainJson.toJSONString());
                 if(detailData != null && detailData.size()>0) {
@@ -149,7 +149,7 @@ public class FuLunApiUtil extends BaseBean {
                     mainJson.put("products", detailArr);
                     writeLog("Ã÷Ï¸²ÎÊý" + detailArr.toJSONString());
                 }
-            }*/
+            }
         }
 
         params = mainJson.toJSONString();
