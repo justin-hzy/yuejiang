@@ -25,6 +25,8 @@ public class TransSaleTwPurService extends BaseBean {
 
     private String putTWPurUrl = getPropValue("k3_api_config","putTWPurUrl");
 
+    private String getTWPurPriceUrl = getPropValue("k3_api_config","getTWPurPriceUrl");
+
     public String putPur(String requestid){
         String mainSql = "select lcbh,chrq,fhdc,djrq,kh,ddje,bb from formtable_main_249 where requestId = ?";
         RecordSet rsMain = new RecordSet();
@@ -90,7 +92,6 @@ public class TransSaleTwPurService extends BaseBean {
         while (rsDt1.next()){
             String tm = Util.null2String(rsDt1.getString("tm"));
             String sl = Util.null2String(rsDt1.getString("sl"));
-            String xsj = Util.null2String(rsDt1.getString("xsj"));
 
             JSONObject dt1Json = new JSONObject();
 
@@ -121,7 +122,7 @@ public class TransSaleTwPurService extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,"/dmsK3Service/k3/getPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getTWPurPriceUrl);
 
         dt1Json.put("ftaxprice",fTaxPrice);
     }

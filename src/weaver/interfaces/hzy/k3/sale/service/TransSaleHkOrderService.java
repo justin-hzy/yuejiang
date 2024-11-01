@@ -21,6 +21,8 @@ public class TransSaleHkOrderService extends BaseBean {
 
     private String putHkSale = getPropValue("k3_api_config","putHKSaleUrl");
 
+    private String getTWPurPriceUrl = getPropValue("k3_api_config","getTWPurPriceUrl");
+
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
     public String putSale(String requestid){
@@ -119,7 +121,7 @@ public class TransSaleHkOrderService extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,"/dmsK3Service/k3/getPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getTWPurPriceUrl);
 
         dt1Json.put("ftaxprice",fTaxPrice);
     }

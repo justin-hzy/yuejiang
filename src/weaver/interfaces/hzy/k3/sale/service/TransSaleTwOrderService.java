@@ -19,13 +19,9 @@ import java.time.format.DateTimeFormatter;
 
 public class TransSaleTwOrderService extends BaseBean {
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
-
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
     private String putTWSaleUrl = getPropValue("k3_api_config","putTWSaleUrl");
-
-    private String getPriceUrl = getPropValue("k3_api_config","getPriceUrl");
 
     public String putSale(String requestid){
 
@@ -125,16 +121,6 @@ public class TransSaleTwOrderService extends BaseBean {
         String param = jsonObject.toJSONString();
 
         return param;
-    }
-
-    public void getPrice(String sku,JSONObject dt1Json){
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("sku",sku);
-
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getPriceUrl);
-
-        dt1Json.put("ftaxprice",fTaxPrice);
     }
 
     public String doK3Action(String param,String meIp,String url){
