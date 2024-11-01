@@ -71,10 +71,11 @@ public class TransSaleTwOrderService extends BaseBean {
         if("200".equals(code)){
             addLog(lcbh,"200");
             writeLog("同步金蝶销售出库单成功");
-
+            updateIsNext(requestid,0);
         }else {
             addLog(lcbh,"500");
             writeLog("同步金蝶销售出库单失败");
+            updateIsNext(requestid,1);
         }
 
         return code;
