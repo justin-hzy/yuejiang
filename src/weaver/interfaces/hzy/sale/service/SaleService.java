@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.sale.service;
+package weaver.interfaces.hzy.sale.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

@@ -20,7 +20,9 @@ public class InventoryService extends BaseBean {
 
     private String meIp = getPropValue("fulun_api_config","meIp");
 
-    private String getBatchInventoryUrl = getPropValue("k3_api_config","getBatchInventoryUrl");
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
+
+    private String getTwBatchInventoryUrl = getPropValue("k3_api_config","getTwBatchInventoryUrl");
 
     public Map<String,List<SupSale>> getInventory(Map<String, List<SaleDt1>> dt1Map, String fhdc){
 
@@ -348,20 +350,25 @@ public class InventoryService extends BaseBean {
 
 
 
-    public String getBatchInventory(List<String> skus,String fhdcxs){
+    public String getBatchTwInventory(List<String> skus,String fhdcxs){
+        writeLog("skus="+skus.toString());
         JSONObject reqJson = new JSONObject();
         JSONArray skuArr = new JSONArray();
 
         for(String sku:skus){
+            writeLog("sku="+sku);
             skuArr.add(sku);
         }
+
+        writeLog("skuArr="+skuArr.toJSONString());
 
         reqJson.put("skus",skuArr);
         reqJson.put("stockNumber",fhdcxs);
         reqJson.put("storeType","TW");
         K3Service k3Service = new K3Service();
         String params = reqJson.toJSONString();
-        String respStr = k3Service.doK3Action(params,meIp,getBatchInventoryUrl);
+        writeLog("params="+params);
+        String respStr = k3Service.doK3Action(params,k3Ip,getTwBatchInventoryUrl);
 
         //writeLog("respStr="+respStr);
 

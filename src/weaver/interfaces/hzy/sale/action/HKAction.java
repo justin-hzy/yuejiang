@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.action;
+package weaver.interfaces.hzy.sale.action;
 
 import com.icbc.api.internal.apache.http.impl.cookie.S;
 import org.docx4j.wml.P;
@@ -80,7 +80,6 @@ public class HKAction extends BaseBean implements Action {
                 dtSum.put("sl", sl);
                 //dtSum.put("xsj", xsj);
 
-                skus.add(tm);
                 dtSums.add(dtSum);
             }
 
@@ -88,13 +87,14 @@ public class HKAction extends BaseBean implements Action {
             if (detailDatas1.size() > 0) {
                 for (Map<String, String> detailData : detailDatas1) {
                     String hptxm = detailData.get("tm");
+                    writeLog("hptxm="+hptxm);
                     skus.add(hptxm);
                 }
             }
-
+            writeLog("skus="+skus.toString());
             //收集样品sku
 
-            String respStr = inventoryService.getBatchInventory(skus, fhdc);
+            String respStr = inventoryService.getBatchTwInventory(skus, fhdc);
 
             writeLog("respStr=" + respStr);
 

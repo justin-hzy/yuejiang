@@ -1,7 +1,6 @@
 package weaver.interfaces.hzy.k3.action;
 
 import weaver.general.BaseBean;
-import weaver.interfaces.hzy.k3.sale.service.SaleService;
 import weaver.interfaces.hzy.k3.service.K3Service;
 import weaver.interfaces.tx.util.WorkflowToolMethods;
 import weaver.interfaces.workflow.action.Action;
@@ -25,7 +24,7 @@ public class K3Action extends BaseBean implements Action {
 
         K3Service k3Service = new K3Service();
 
-        SaleService saleService = new SaleService();
+
 
         String requestid = requestInfo.getRequestid();
 
