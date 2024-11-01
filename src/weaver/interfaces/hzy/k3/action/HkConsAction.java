@@ -92,7 +92,7 @@ public class HkConsAction extends BaseBean implements Action {
                 dtSums.add(dtSum);
             }
 
-            String respStr = inventoryService.getBatchInventory(skus,fhdcxs);
+            String respStr = inventoryService.getBatchTwInventory(skus,fhdcxs);
 
             List<Map<String,String>> k3InvList = consService.anlysBatIn(respStr,skus);
 
