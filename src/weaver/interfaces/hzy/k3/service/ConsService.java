@@ -81,7 +81,7 @@ public class ConsService extends BaseBean {
                 dtSums.add(dtSum);
             }
 
-            String respStr = inventoryService.getBatchInventory(skus,fhdcxs);
+            String respStr = inventoryService.getBatchTwInventory(skus,fhdcxs);
 
             List<Map<String,String>> k3InvList = anlysBatIn(respStr);
 
