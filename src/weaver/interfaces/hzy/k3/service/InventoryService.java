@@ -287,7 +287,7 @@ public class InventoryService extends BaseBean {
 
             String params = reqJson.toJSONString();
 
-            String respStr = k3Service.doK3Action(params,meIp,getInventoryUrl);
+            String respStr = k3Service.doK3Action(params,k3Ip,getInventoryUrl);
             writeLog("respStr="+respStr);
             if(respStr.length()>0){
                 JSONObject respJson = JSONObject.parseObject(respStr);
