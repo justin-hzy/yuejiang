@@ -99,7 +99,7 @@ public class HKAction extends BaseBean implements Action {
             writeLog("respStr=" + respStr);
 
 
-            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr);
+            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr,skus);
 
             writeLog("k3InvList=" + k3InvList);
 

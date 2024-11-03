@@ -417,4 +417,47 @@ public class InventoryService extends BaseBean {
 
         return k3InvList;
     }
+
+    public List<Map<String,String>> anlysBatIn(String respStr,List<String> skus){
+
+        List<Map<String,String>> k3InvList = new ArrayList<>();
+        /*½âÎöÅúÁ¿¿â´æ*/
+        JSONObject resJson = JSONObject.parseObject(respStr);
+
+        JSONArray arr = resJson.getJSONArray("data");
+
+        for (int i = 0 ;i<arr.size();i++){
+            JSONObject jsonObj = arr.getJSONObject(i);
+
+            String sku = jsonObj.getString("FMaterialId.fnumber");
+
+            String fBaseQty = jsonObj.getString("FBaseQty");
+
+            fBaseQty = fBaseQty.substring(0,fBaseQty.indexOf("."));
+
+            Map<String,String> k3Inv = new HashMap<>();
+
+            k3Inv.put("sku",sku);
+            k3Inv.put("fBaseQty",fBaseQty);
+
+            k3InvList.add(k3Inv);
+        }
+
+        List<String> k3InvListSkus = new ArrayList<>();
+        for (Map<String,String> k3Inv : k3InvList){
+            k3InvListSkus.add(k3Inv.get("sku"));
+        }
+
+
+        for (String sku : skus){
+            if(!k3InvListSkus.contains(sku)){
+                Map<String,String> k3Inv = new HashMap<>();
+                k3Inv.put("sku",sku);
+                k3Inv.put("fBaseQty","0");
+                k3InvList.add(k3Inv);
+            }
+        }
+
+        return k3InvList;
+    }
 }
