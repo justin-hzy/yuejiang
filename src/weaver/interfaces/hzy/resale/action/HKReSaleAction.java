@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.action.resale;
+package weaver.interfaces.hzy.resale.action;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
@@ -13,21 +13,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GYJReSaleAction extends BaseBean implements Action {
+public class HKReSaleAction extends BaseBean implements Action {
+
+    private String type;
 
     @Override
     public String execute(RequestInfo requestInfo) {
 
         /*销售退*/
-        writeLog("销售退单执行ReSaleAction");
+        writeLog("销售退单执行HKReSaleAction");
 
         String requestid = requestInfo.getRequestid();
 
         Map<String, String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
 
+        InventoryService inventoryService = new InventoryService();
+
         List<Map<String, String>> detailDatas1 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 1);
 
         List<Map<String, String>> detailDatas2 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 2);
+
 
         writeLog("mainData=" + mainData.toString());
 
@@ -52,9 +57,13 @@ public class GYJReSaleAction extends BaseBean implements Action {
         //币别
         String bb = mainData.get("bb");
 
-        List<Map<String,String>> gyjList = new ArrayList<>();
+        Map<String,List<Map<String,String>>> twDtl = new HashMap<>();
 
-        Map<String,List<Map<String,String>>> gyjDtl = new HashMap<>();
+        List<Map<String,String>> twList = new ArrayList<>();
+
+        Map<String,List<Map<String,String>>> hkDtl = new HashMap<>();
+
+        List<Map<String,String>> hkList = new ArrayList<>();
 
         WorkflowUtil workflowUtil = new WorkflowUtil();
 
@@ -74,12 +83,11 @@ public class GYJReSaleAction extends BaseBean implements Action {
 
             dt1Rs.executeQuery(dt1Sql,requestid);
 
-            while (dt1Rs.next()){
 
+            while (dt1Rs.next()){
                 Map<String,String> map = new HashMap<>();
                 String tm = dt1Rs.getString("tm");
                 String sl = dt1Rs.getString("sl");
-                //含税单价
                 String xsj = dt1Rs.getString("xsj");
 
 
@@ -94,16 +102,28 @@ public class GYJReSaleAction extends BaseBean implements Action {
                 //税率
                 map.put("taxrate","5");
 
-                gyjList.add(map);
+                String org = inventoryService.getOrg(tm);
+                if("ZT021".equals(org)){
+                    hkList.add(map);
+                }
             }
 
-            writeLog("gyjList="+gyjList.toString());
+            writeLog("hkList="+hkList.toString());
 
-            if (gyjList.size()>0){
+            if (hkList.size()>0){
                 Map<String,String> mainTableData = new HashMap<>();
                 mainTableData.put("zlclj",lclj);
-                String twlcbh = "GYJ_"+lcbh;
-                mainTableData.put("lcbh",twlcbh);
+
+                String hklcbh = "";
+                String requestName = "";
+                if("S1".equals(shdc)){
+                    hklcbh = "GYJHK_"+lcbh;
+                    requestName = "GYJTW_销售退货_金蝶子流程";
+                }else {
+                    hklcbh = "HK_"+lcbh;
+                    requestName = "TW_销售退货_金蝶子流程";
+                }
+                mainTableData.put("lcbh",hklcbh);
                 mainTableData.put("kh",kh);
                 mainTableData.put("shdc",shdc);
                 mainTableData.put("fhdc",fhdc);
@@ -111,19 +131,22 @@ public class GYJReSaleAction extends BaseBean implements Action {
                 mainTableData.put("djrq",rkrq);
                 //币别
                 mainTableData.put("bb",bb);
+
                 mainTableData.put("ydh",lcbh);
 
-                gyjDtl.put("1",gyjList);
+                hkDtl.put("1",hkList);
 
                 writeLog("mainTableData="+mainTableData.toString());
-                writeLog("twDtl="+gyjDtl.toString());
-                int result = workflowUtil.creatRequest("1","165","GYJ_销售退货_金蝶子流程",mainTableData,gyjDtl,"1");
+                writeLog("hkDtl="+hkDtl.toString());
+
+                int result = workflowUtil.creatRequest("1","165",requestName,mainTableData,hkDtl,"1");
                 writeLog("触发成功的子流程请求id：" + result);
             }
+        }else {
+            writeLog("流程编号"+lcbh+"，没有明细数据");
         }
 
-        return SUCCESS;
+        return null;
     }
-
 
 }

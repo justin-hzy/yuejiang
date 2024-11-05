@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.action.resale;
+package weaver.interfaces.hzy.resale.action;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
