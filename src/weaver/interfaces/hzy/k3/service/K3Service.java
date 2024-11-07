@@ -26,6 +26,8 @@ public class K3Service extends BaseBean {
 
     private String meIp = getPropValue("fulun_api_config","meIp");
 
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
+
     private String putSaleUrl = getPropValue("k3_api_config","putSaleUrl");
 
     private String putPurUrl = getPropValue("k3_api_config","putPurUrl");
@@ -36,6 +38,9 @@ public class K3Service extends BaseBean {
 
     private String putRePurUrl = getPropValue("k3_api_config","putRePurUrl");
 
+    private String getTwPurPriceUrl = getPropValue("k3_api_config","getTwPurPriceUrl");
+
+    private String getDailyNecPriceUrl = getPropValue("k3_api_config","getDailyNecPriceUrl");
 
     public String putSale(String requestid,String flag){
 
@@ -1282,7 +1287,7 @@ public class K3Service extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getTwPurPriceUrl);
 
         dt1Json.put("ftaxprice",fTaxPrice);
     }
@@ -1293,7 +1298,7 @@ public class K3Service extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getDailyNecPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getDailyNecPriceUrl);
 
         dt1Json.put("ftaxprice",fTaxPrice);
     }
@@ -1304,7 +1309,7 @@ public class K3Service extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getDailyNecPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getDailyNecPriceUrl);
 
         return fTaxPrice;
 
@@ -1315,7 +1320,7 @@ public class K3Service extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),meIp,"/dmsBridge/k3/getPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getTwPurPriceUrl);
 
         return fTaxPrice;
     }

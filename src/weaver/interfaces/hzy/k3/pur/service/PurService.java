@@ -13,17 +13,15 @@ import java.util.Map;
 
 public class PurService extends BaseBean {
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
-
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    private String putPurUrl = getPropValue("k3_api_config","putPurUrl");
+
 
     private String putHKPurUrl = getPropValue("k3_api_config","putHKPurUrl");
 
-    private String putSaleUrl = getPropValue("k3_api_config","putSaleUrl");
-
     private String putHKSaleUrl = getPropValue("k3_api_config","putHKSaleUrl");
+
+    private String putTWPurUrl = getPropValue("k3_api_config","putTWPurUrl");
 
 
     public void tranTwPur_0(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service, String fentrytaxrate, String falldiscount){
@@ -72,7 +70,7 @@ public class PurService extends BaseBean {
         writeLog("json="+param);
 
 
-        String resStr = k3Service.doK3Action(param,meIp,putPurUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putTWPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
@@ -154,7 +152,7 @@ public class PurService extends BaseBean {
         writeLog("json="+param);
 
 
-        String resStr = k3Service.doK3Action(param,meIp,putPurUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putTWPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
@@ -226,7 +224,7 @@ public class PurService extends BaseBean {
         writeLog("json="+param);
 
 
-        String resStr = k3Service.doK3Action(param,k3Ip,putPurUrl);
+        String resStr = k3Service.doK3Action(param,k3Ip,putTWPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
@@ -345,7 +343,7 @@ public class PurService extends BaseBean {
 
         writeLog("json="+param);
 
-        String resStr = priceService.doK3Action(param,k3Ip,putPurUrl);
+        String resStr = priceService.doK3Action(param,k3Ip,putHKPurUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 
@@ -452,7 +450,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fentitylist",jsonArray);
         String param = jsonObject.toJSONString();
 
-        String resStr = priceService.doK3Action(param,k3Ip,putSaleUrl);
+        String resStr = priceService.doK3Action(param,k3Ip,putHKSaleUrl);
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
 

@@ -16,6 +16,8 @@ public class PriceService extends BaseBean {
 
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
+    private String getDailyNecPriceUrl = getPropValue("k3_api_config","getDailyNecPriceUrl");
+
     public void queryPriceTable(String sku, JSONObject dt1Json){
 
         String sql = "select FTAXPRICE from uf_T_PUR_PRICELIST where fnumber = "+"'"+sku+"'"+" and pricelist_fnumber = ?";
@@ -52,7 +54,7 @@ public class PriceService extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,"/dmsBridge/k3/getDailyNecPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getDailyNecPriceUrl);
 
         dt1Json.put("ftaxprice",fTaxPrice);
     }
@@ -63,7 +65,7 @@ public class PriceService extends BaseBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sku",sku);
 
-        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,"/dmsBridge/k3/getDailyNecPrice");
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getDailyNecPriceUrl);
 
         return fTaxPrice;
 

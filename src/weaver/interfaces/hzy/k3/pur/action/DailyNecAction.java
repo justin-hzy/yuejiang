@@ -39,8 +39,11 @@ public class DailyNecAction extends BaseBean implements Action {
         //供应商
         String gys = mainData.get("gys");
 
+        //发货仓
+        String fhdc1 = mainData.get("fhdc1");
+
         //出库仓库,后续用系统字段替代
-        String ckck = "20";
+        String ckck = fhdc1;
 
         //入库仓库
         String rkck = mainData.get("rkck");

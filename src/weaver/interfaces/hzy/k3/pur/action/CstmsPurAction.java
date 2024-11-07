@@ -65,11 +65,11 @@ public class CstmsPurAction extends BaseBean implements Action {
         K3Service k3Service = new K3Service();
 
         if("1".equals(cglx) || "2".equals(cglx)){
-            //大陆直发 & 总部发货
+            //大陆出口-永青/贝泰妮-工厂直发 & 大陆出口-总部发货
             String code = purService.tranHkPur_1(lcbh,gys,pushDate,rkck,bb,detailDatas1,k3Service,"0");
-            if("200".equals(code)){
+            /*if("200".equals(code)){
                 code = purService.tranHkSale_1(lcbh,gys,pushDate,rkck,"PRE005",detailDatas1,k3Service,"0");
-            }
+            }*/
         }
         return SUCCESS;
     }
