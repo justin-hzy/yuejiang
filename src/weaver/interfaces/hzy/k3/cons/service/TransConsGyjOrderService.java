@@ -68,10 +68,11 @@ public class TransConsGyjOrderService extends BaseBean {
         if("200".equals(code)){
             addLog(lcbh,"200");
             writeLog("同步金蝶寄售出库单成功");
-
+            updateIsNext(requestid,0);
         }else {
             addLog(lcbh,"500");
             writeLog("同步金蝶寄售出库单失败");
+            updateIsNext(requestid,1);
         }
         return code;
     }
@@ -147,6 +148,12 @@ public class TransConsGyjOrderService extends BaseBean {
 
         todayString = "'" + todayString + "'";
         insertRs.executeUpdate(insertSql,lcbh,status,todayString);
+    }
+
+    public void updateIsNext(String requestid,Integer isNext){
+        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        RecordSet updateRs = new RecordSet();
+        updateRs.executeUpdate(updateSql,isNext,requestid);
     }
 
 }
