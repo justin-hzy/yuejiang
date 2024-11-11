@@ -82,7 +82,7 @@ public class ConsGyjTWAction extends BaseBean implements Action {
 
                 mainTableData.put("shdc",shdc);
 
-                mainTableData.put("lcbh","GYJ_TW_"+lcbh);
+                mainTableData.put("lcbh","GYJTW_"+lcbh);
 
                 mainTableData.put("zlclj",lclj);
 

@@ -18,14 +18,14 @@ import java.util.Map;
 
 public class ConsMatchTwInvAction  extends BaseBean implements Action {
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    private String getBatchInventoryUrl = getPropValue("k3_api_config","getBatchInventoryUrl");
+    private String getTwBatchInventoryUrl = getPropValue("k3_api_config","getTwBatchInventoryUrl");
 
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("开始执行 ConsMatchTwInvAction");
+        writeLog("开始执行ConsMatchTwInvAction");
 
         Map<String, String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
 
@@ -71,7 +71,7 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
             reqJson.put("stockNumber","S1");
             K3Service k3Service = new K3Service();
             String params = reqJson.toJSONString();
-            String respStr = k3Service.doK3Action(params,meIp,getBatchInventoryUrl);
+            String respStr = k3Service.doK3Action(params,k3Ip,getTwBatchInventoryUrl);
 
             InventoryService inventoryService = new InventoryService();
 

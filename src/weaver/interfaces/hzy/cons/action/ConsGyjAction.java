@@ -19,9 +19,11 @@ public class ConsGyjAction extends BaseBean implements Action {
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("开始执行 ConsGyjAction");
+        writeLog("开始执行ConsGyjAction");
 
         Map<String, String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
+
+        writeLog("mainData="+mainData.toString());
 
         List<Map<String, String>> detailDatas1 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 1);
 
@@ -106,8 +108,6 @@ public class ConsGyjAction extends BaseBean implements Action {
                 int result = workflowUtil.creatRequest("1","165","广悦进_寄售发货_金蝶"+"（子流程）",mainTableData,gyjDetail,"1");
                 writeLog("触发成功的子流程请求id：" + result);
             }
-
-
             return SUCCESS;
         }else {
             return FAILURE_AND_CONTINUE;

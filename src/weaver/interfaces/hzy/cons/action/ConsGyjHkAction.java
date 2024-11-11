@@ -17,7 +17,7 @@ public class ConsGyjHkAction extends BaseBean implements Action {
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("开始执行 ConsGyjHkAction");
+        writeLog("开始执行ConsGyjHkAction");
 
         Map<String, String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
 
@@ -78,7 +78,7 @@ public class ConsGyjHkAction extends BaseBean implements Action {
 
                 mainTableData.put("shdc",shdc);
 
-                mainTableData.put("lcbh","GYJ_HK_"+lcbh);
+                mainTableData.put("lcbh","GYJHK_"+lcbh);
 
                 mainTableData.put("zlclj",lclj);
 

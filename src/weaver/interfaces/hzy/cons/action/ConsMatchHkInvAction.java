@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ConsMatchHkInvAction extends BaseBean implements Action {
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
     private String getBatchHkInventoryUrl = getPropValue("k3_api_config","getBatchHkInventoryUrl");
 
@@ -69,7 +69,7 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
             reqJson.put("stockNumber","S1");
             K3Service k3Service = new K3Service();
             String params = reqJson.toJSONString();
-            String respStr = k3Service.doK3Action(params,meIp,getBatchHkInventoryUrl);
+            String respStr = k3Service.doK3Action(params,k3Ip,getBatchHkInventoryUrl);
 
             InventoryService inventoryService = new InventoryService();
 
