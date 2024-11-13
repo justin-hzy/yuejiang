@@ -64,7 +64,7 @@ public class PurAction extends BaseBean implements Action {
 
         K3Service k3Service = new K3Service();
 
-        if("3".equals(cglx)){
+        if("3".equals(cglx) || "4".equals(cglx)){
             //²ÄÁÏ¹ºÂò
             purService.tranTwPur_0(lcbh,gys,rkrq,rkck,bb,detailDatas1,k3Service,"5","");
         }else if("1".equals(cglx)){
