@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.common.service.CommonService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -25,6 +26,8 @@ public class TransHkTrfService extends BaseBean {
 
 
     public String putTrf(String requestid, Map<String,String> mainData){
+
+        CommonService commonService = new CommonService();
 
         JSONObject jsonObject = new JSONObject();
 
@@ -81,10 +84,11 @@ public class TransHkTrfService extends BaseBean {
         if("200".equals(code)){
             addLog(lcbh,"200");
             writeLog("同步金蝶采购入库单成功");
-
+            commonService.updateIsNext(requestid,0);
         }else {
             addLog(lcbh,"500");
             writeLog("同步金蝶采购入库单失败");
+            commonService.updateIsNext(requestid,1);
         }
         return "success";
     }
