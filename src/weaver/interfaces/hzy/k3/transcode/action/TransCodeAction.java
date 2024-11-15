@@ -17,14 +17,16 @@ import java.util.Map;
 public class TransCodeAction extends BaseBean implements Action {
 
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    private String putAssemblyUrl = getPropValue("k3_api_config","putAssemblyUrl");
+    private String putHkAssemblyUrl = getPropValue("k3_api_config","putHkAssemblyUrl");
+
+    private String putTwAssemblyUrl = getPropValue("k3_api_config","putTwAssemblyUrl");
 
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("执行 TransCodeAction");
+        writeLog("开始执行TransCodeAction");
 
         String requestid  = requestInfo.getRequestid();
 
@@ -59,11 +61,7 @@ public class TransCodeAction extends BaseBean implements Action {
         String rkrq = mainData.get("rkrq");
         String szzt = mainData.get("szzt");
 
-        if("ZT026".equals(szzt)){
-            jsonObject.put("fstockorgid","ZT026");
-        }else if ("ZT021".equals(szzt)){
-            jsonObject.put("fstockorgid","ZT021");
-        }
+
         String lcbh = mainData.get("lcbh");
         jsonObject.put("fillno",lcbh);
         jsonObject.put("faffairtype","Dassembly");
@@ -110,13 +108,24 @@ public class TransCodeAction extends BaseBean implements Action {
             jsonObject.put("assyFEntities",assyFEntities);
         }
 
-        String param = jsonObject.toJSONString();
-        writeLog("param="+jsonObject);
 
 
-        String resStr = k3Service.doK3Action(param,meIp,putAssemblyUrl);
-        JSONObject resJson = JSONObject.parseObject(resStr);
-        //String code = resJson.getString("code");
+        if("ZT026".equals(szzt)){
+            jsonObject.put("fstockorgid","ZT026");
+            String param = jsonObject.toJSONString();
+            writeLog("param="+jsonObject);
+            String resStr = k3Service.doK3Action(param,k3Ip,putTwAssemblyUrl);
+            JSONObject resJson = JSONObject.parseObject(resStr);
+            writeLog("resJson="+resJson);
+        }else if ("ZT021".equals(szzt)){
+            jsonObject.put("fstockorgid","ZT021");
+            String param = jsonObject.toJSONString();
+            writeLog("param="+jsonObject);
+            String resStr = k3Service.doK3Action(param,k3Ip,putHkAssemblyUrl);
+            JSONObject resJson = JSONObject.parseObject(resStr);
+            writeLog("resJson="+resJson);
+        }
+
         return SUCCESS;
 
     }
