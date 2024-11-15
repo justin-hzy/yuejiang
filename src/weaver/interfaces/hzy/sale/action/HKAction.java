@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.sale.action;
 
+import cn.hutool.core.collection.CollUtil;
 import com.icbc.api.internal.apache.http.impl.cookie.S;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
@@ -44,7 +45,11 @@ public class HKAction extends BaseBean implements Action {
 
         writeLog("detailDatas=" + detailDatas1.toString());
 
+        Map<String,List<Map<String,String>>> respMap = new HashMap<>();
+
         List<Map<String, String>> hkSales1 = new ArrayList<>();
+
+        List<Map<String,String>> twNotEnoughList = new ArrayList<>();
 
         List<Map<String, String>> hkSales2 = new ArrayList<>();
 
@@ -103,106 +108,72 @@ public class HKAction extends BaseBean implements Action {
 
             writeLog("k3InvList=" + k3InvList);
 
-            hkSales1 = compareInv(k3InvList, dtSums, inventoryService, lcbh);
+            respMap = compareInv(k3InvList, dtSums, inventoryService, lcbh);
+
+
+
+
+            //hkSales1 = compareInv(k3InvList, dtSums, inventoryService, lcbh);
+
 
         }
 
-        //样品品 寄售销售 查询字段为 sku、销售数量、含税单价
 
-        /*if(detailDatas2.size()>0){
-            List<String> skus = new ArrayList<>();
-
-            //正品 寄售销售 查询字段为 sku、销售数量、含税单价
-            String sql1 = "select main.id,dt2.hpbh tm,sum(dt2.cksl )sl from formtable_main_272 main inner join formtable_main_272_dt2 dt2 on main.id = dt2.mainid where main.requestId = ? and fhsl is not null group by main.id,dt2.hpbh";
-
-            RecordSet dtRs = new RecordSet();
-
-            dtRs.executeQuery(sql1, requestid);
-
-            List<Map<String, String>> dtSums = new ArrayList<>();
-
-            while (dtRs.next()) {
-                Map<String, String> dtSum = new HashMap<>();
-                String id  = dtRs.getString("id");
-                String tm = dtRs.getString("tm");
-                String sl = dtRs.getString("sl");
-                //含税单价
-                String xsj = dtRs.getString("xsj");
-
-                dtSum.put("id",id);
-                dtSum.put("tm", tm);
-                dtSum.put("sl", sl);
-                dtSum.put("xsj", xsj);
-
-                skus.add(tm);
-                dtSums.add(dtSum);
+        if (respMap.containsKey("twNotEnoughList")){
+            twNotEnoughList = respMap.get("twNotEnoughList");
+            if (twNotEnoughList.size()>0){
+                writeLog("twNotEnoughList=" + twNotEnoughList.toString());
+                String updateSql = "update formtable_main_272 set hk_status  = ?,is_tw_enough = ? where requestid = ? ";
+                writeLog("updateSql="+updateSql);
+                RecordSet rs  = new RecordSet();
+                rs.executeUpdate(updateSql,null,"1",requestid);
             }
+        }else {
+            if (respMap.containsKey("hkSales")){
+                hkSales1 = respMap.get("hkSales");
 
-            //收集正品sku
-            if (detailDatas1.size() > 0) {
-                for (Map<String, String> detailData : detailDatas1) {
-                    String hptxm = detailData.get("hptxm");
-                    skus.add(hptxm);
+                writeLog("hkSales1=" + hkSales1.toString());
+
+                String updateSql = "update formtable_main_272 set hk_status  = ?,is_tw_enough = ? where requestid = ? ";
+
+                RecordSet rs  = new RecordSet();
+
+                if(hkSales1.size()>0){
+                    rs.executeUpdate(updateSql,"0","0",requestid);
+
+                    String id = getSaleId(requestid);
+
+                    String deleteSql = "DELETE FROM formtable_main_272_dt3 where mainid = ?";
+                    RecordSet deleteRs = new RecordSet();
+                    deleteRs.executeUpdate(deleteSql,id);
+
+                    for (Map<String,String> hkSale: hkSales1){
+
+                        String tm = hkSale.get("tm");
+                        String sl = hkSale.get("sl");
+
+                        String insertSql = "insert into formtable_main_272_dt3 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
+                        RecordSet insertRs = new RecordSet();
+                        insertRs.executeUpdate(insertSql);
+                    }
                 }
+            }else if(hkSales1.size()==0){
+                String updateSql = "update formtable_main_272 set hk_status  = ?,is_tw_enough = ? where requestid = ? ";
+                RecordSet rs  = new RecordSet();
+                rs.executeUpdate(updateSql,"1","0",requestid);
             }
-
-            //收集样品sku
-
-            String respStr = inventoryService.getBatchInventory(skus, fhdc);
-
-            writeLog("respStr=" + respStr);
-
-
-            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr);
-
-            writeLog("k3InvList=" + k3InvList);
-
-            hkSales2 = compareInv(k3InvList, dtSums, inventoryService, lcbh);
-
-            //遍历hkSales2,hkSales2元素加入 hkSales1里面
-
-            for (Map<String,String> hkSales : hkSales2){
-                hkSales1.add(hkSales);
-            }
-        }*/
-
-
-        writeLog("hkSales1=" + hkSales1.toString());
-
-        String updateSql = "update formtable_main_272 set hk_status  = ? where requestid = ? ";
-
-        RecordSet rs  = new RecordSet();
-
-
-
-        if(hkSales1.size()>0){
-
-            rs.executeUpdate(updateSql,"0",requestid);
-
-            String id = getSaleId(requestid);
-
-            String deleteSql = "DELETE FROM formtable_main_272_dt3 where mainid = ?";
-            RecordSet deleteRs = new RecordSet();
-            deleteRs.executeUpdate(deleteSql,id);
-
-            for (Map<String,String> hkSale: hkSales1){
-
-                String tm = hkSale.get("tm");
-                String sl = hkSale.get("sl");
-
-                String insertSql = "insert into formtable_main_272_dt3 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
-                RecordSet insertRs = new RecordSet();
-                insertRs.executeUpdate(insertSql);
-            }
-        }else if(hkSales1.size()==0){
-            rs.executeUpdate(updateSql,"1",requestid);
         }
         return SUCCESS;
     }
 
-    public List<Map<String,String>> compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dtSums, InventoryService inventoryService,String lcbh){
+    public Map<String,List<Map<String,String>>> compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dtSums, InventoryService inventoryService,String lcbh){
+
+        Map<String,List<Map<String,String>>> respMap = new HashMap<>();
 
         List<Map<String,String>> hkSales = new ArrayList<>();
+
+        List<Map<String,String>> twNotEnoughList = new ArrayList<>();
+
 
         writeLog("dtSums="+dtSums.toString());
 
@@ -224,6 +195,7 @@ public class HKAction extends BaseBean implements Action {
 
 
                     Map<String,String> hkSale = new HashMap<>();
+                    Map<String,String> twNotEnough = new HashMap<>();
                     String fBaseQty = k3Inv.get("fBaseQty");
 //                    writeLog("fBaseQty="+fBaseQty);
 
@@ -248,6 +220,10 @@ public class HKAction extends BaseBean implements Action {
                             String dateString = tokenizer.nextToken();
                             String timeString = tokenizer.nextToken();
 
+                            twNotEnough.put("tm",sku);
+
+                            twNotEnoughList.add(twNotEnough);
+
                             sku = sku+"库存不足";
 
                             String insertError = "insert into dms_k3_error_log (billNo,message,createTime,date,time) values ('" +lcbh+"','"+sku+"','"+now+"','"+dateString+"','"+timeString+"')";
@@ -255,6 +231,7 @@ public class HKAction extends BaseBean implements Action {
                             RecordSet insertRs = new RecordSet();
 
                             insertRs.executeUpdate(insertError);
+
                         }else {
                             if(Integer.valueOf(fBaseQty)<0){
                                 writeLog(wlbm+"的台湾即时库存为负数");
@@ -273,7 +250,15 @@ public class HKAction extends BaseBean implements Action {
                 }
             }
         }
-        return  hkSales;
+
+        if(CollUtil.isNotEmpty(hkSales)){
+            respMap.put("hkSales",hkSales);
+        }
+
+        if(CollUtil.isNotEmpty(twNotEnoughList)){
+            respMap.put("twNotEnoughList",twNotEnoughList);
+        }
+        return  respMap;
     }
 
 
