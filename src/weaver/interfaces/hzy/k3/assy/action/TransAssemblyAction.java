@@ -16,16 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AssyAction extends BaseBean implements Action {
+public class TransAssemblyAction extends BaseBean implements Action {
 
-    private String meIp = getPropValue("fulun_api_config","meIp");
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    private String putAssemblyUrl = getPropValue("k3_api_config","putAssemblyUrl");
+    private String putHkAssemblyUrl = getPropValue("k3_api_config","putHkAssemblyUrl");
+
+    private String putTwAssemblyUrl = getPropValue("k3_api_config","putTwAssemblyUrl");
 
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("执行 AssyAction");
+        writeLog("开始执行TransAssemblyAction");
 
         K3Service k3Service = new K3Service();
 
@@ -65,11 +67,7 @@ public class AssyAction extends BaseBean implements Action {
         //实际完成时间
         String sjwcsj = mainData.get("sjwcsj");
 
-        if("ZT026".equals(szzt)){
-            jsonObject.put("fstockorgid","ZT026");
-        }else if ("ZT021".equals(szzt)){
-            jsonObject.put("fstockorgid","ZT021");
-        }
+
 
 
         if(lx.equals("0")){
@@ -90,11 +88,12 @@ public class AssyAction extends BaseBean implements Action {
 
             String fxwlbm = recordSet.getString("fxwlbm");
             String bombm = recordSet.getString("bombm");
+            //实际组套父项数量
             String sjztfxsl = recordSet.getString("sjztfxsl");
 
 //            writeLog("fxwlbm="+fxwlbm);
 //            writeLog("bombm="+bombm);
-//            writeLog("sjztfxsl="+sjztfxsl);
+            writeLog("sjztfxsl="+sjztfxsl);
 
             if(!list.contains(fxwlbm)){
                 list.add(fxwlbm);
@@ -110,7 +109,10 @@ public class AssyAction extends BaseBean implements Action {
 
                 String spbm = recordSet.getString("spbm");
 
+                //实际组套数量
                 String sjztsl = recordSet.getString("sjztsl");
+
+                writeLog("sjztsl="+sjztsl);
 
                 assyFSubEntitiy.put("fmaterialdsety",spbm);
 
@@ -154,13 +156,30 @@ public class AssyAction extends BaseBean implements Action {
             }
         }
         list.clear();
-        String param = jsonObject.toJSONString();
-        writeLog("param="+jsonObject);
 
 
-        String resStr = k3Service.doK3Action(param,meIp,putAssemblyUrl);
-        JSONObject resJson = JSONObject.parseObject(resStr);
-        String code = resJson.getString("code");
+
+        if("ZT026".equals(szzt)){
+            jsonObject.put("fstockorgid","ZT026");
+            String param = jsonObject.toJSONString();
+            writeLog("param="+jsonObject);
+            String resStr = k3Service.doK3Action(param,k3Ip,putTwAssemblyUrl);
+            JSONObject resJson = JSONObject.parseObject(resStr);
+            String code = resJson.getString("code");
+            writeLog("code="+code);
+        }else if ("ZT021".equals(szzt)){
+            jsonObject.put("fstockorgid","ZT021");
+            String param = jsonObject.toJSONString();
+            writeLog("param="+jsonObject);
+            String resStr = k3Service.doK3Action(param,k3Ip,putHkAssemblyUrl);
+            JSONObject resJson = JSONObject.parseObject(resStr);
+            String code = resJson.getString("code");
+            writeLog("code="+code);
+        }
+
+
+
+
         return SUCCESS;
     }
 }
