@@ -48,7 +48,8 @@ import java.util.Map;
 
             List<String> skus = new ArrayList<>();
 
-            String sql1 = "select main.id,dt1.hptxm tm,sum(dt1.fhl) sl from formtable_main_263 main inner join formtable_main_263_dt1 dt1 on main.id = dt1.mainid where dt1.fhl is not null and main.requestId = ? group by main.id, dt1.hptxm";
+            String sql1 = "select main.id,dt1.hptxm tm,sum(dt1.fhl) sl from formtable_main_263 main inner join formtable_main_263_dt1 dt1 on main.id = dt1.mainid " +
+                    "where dt1.fhl is not null and dt1.fhl > 0 and main.requestId = ? group by main.id, dt1.hptxm";
 
             RecordSet dtRs = new RecordSet();
 
@@ -134,6 +135,7 @@ import java.util.Map;
 
                 if (CollUtil.isNotEmpty(twReTrfList) && CollUtil.isEmpty(twNotEnoughList)){
 
+                    rs.executeUpdate(updateHkStatusSql, 0, 1, requestid);
 
                     String id = getSaleId(requestid);
                     String deleteSql = "DELETE FROM formtable_main_263_dt4 where mainid = ?";
