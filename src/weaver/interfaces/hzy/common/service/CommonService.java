@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.common.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -10,8 +11,24 @@ import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class CommonService extends BaseBean {
+
+    private String k3Ip = getPropValue("fulun_api_config","k3Ip");
+
+    private String getTwPurPriceUrl = getPropValue("k3_api_config","getTwPurPriceUrl");
+
+    public void getPrice(String sku, JSONObject dt1Json){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sku",sku);
+
+        String fTaxPrice = doK3Action(jsonObject.toJSONString(),k3Ip,getTwPurPriceUrl);
+
+        dt1Json.put("ftaxprice",fTaxPrice);
+    }
 
     public String doK3Action(String param,String meIp,String url){
         CloseableHttpResponse response;// œÏ”¶¿‡,
@@ -39,5 +56,16 @@ public class CommonService extends BaseBean {
         String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
+    }
+
+    public void addLog(String lcbh,String status){
+        String insertSql = "insert into k3_tran_log (lcbh,status,createTime) values (?,?,?)";
+        RecordSet insertRs = new RecordSet();
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String todayString = today.format(formatter);
+
+        todayString = "'" + todayString + "'";
+        insertRs.executeUpdate(insertSql,lcbh,status,todayString);
     }
 }
