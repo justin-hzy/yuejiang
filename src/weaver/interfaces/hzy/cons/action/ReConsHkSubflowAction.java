@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.k3.action;
+package weaver.interfaces.hzy.cons.action;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
@@ -13,13 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReConsAction extends BaseBean implements Action {
-
-    /*寄售完结*/
+public class ReConsHkSubflowAction extends BaseBean implements Action {
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("月结接受退执行HKReConsAction");
+        writeLog("月结接受退执行ReConsSubflowAction");
 
         String requestid = requestInfo.getRequestid();
 
@@ -49,8 +47,6 @@ public class ReConsAction extends BaseBean implements Action {
         String ddrq = mainData.get("ddrq");
 
         Map<String,List<Map<String,String>>> twDtl = new HashMap<>();
-
-        List<Map<String,String>> twList = new ArrayList<>();
 
         Map<String,List<Map<String,String>>> hkDtl = new HashMap<>();
 
@@ -85,14 +81,9 @@ public class ReConsAction extends BaseBean implements Action {
                 if("ZT021".equals(org)){
                     hkList.add(map);
                 }
-                twList.add(map);
             }
 
             writeLog("hkList="+hkList.toString());
-
-            writeLog("twList="+twList.toString());
-
-
 
             if (hkList.size()>0){
                 Map<String,String> mainTableData = new HashMap<>();
@@ -117,33 +108,10 @@ public class ReConsAction extends BaseBean implements Action {
                 int result = workflowUtil.creatRequest("1","165","HK_寄售退货_金蝶子流程",mainTableData,hkDtl,"1");
                 writeLog("触发成功的子流程请求id：" + result);
             }
-
-            if (twList.size()>0){
-                Map<String,String> mainTableData = new HashMap<>();
-                mainTableData.put("zlclj",lclj);
-                String twlcbh = "TW_"+lcbh;
-                mainTableData.put("lcbh",twlcbh);
-                mainTableData.put("kh",kh);
-                mainTableData.put("shdc",shdcth);
-                mainTableData.put("fhdc",fhdcth);
-                //单据日期 = 订单日期
-                mainTableData.put("djrq",ddrq);
-                //币别
-                mainTableData.put("bb","PRE005");
-                mainTableData.put("ydh",lcbh);
-
-                twDtl.put("1",twList);
-
-                writeLog("mainTableData="+mainTableData.toString());
-                writeLog("twDtl="+twDtl.toString());
-                int result = workflowUtil.creatRequest("1","165","TW_寄售退货_金蝶子流程",mainTableData,twDtl,"1");
-                writeLog("触发成功的子流程请求id：" + result);
-            }
         }else {
             writeLog("流程编号"+lcbh+"，没有明细数据");
         }
 
         return SUCCESS;
     }
-
 }
