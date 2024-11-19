@@ -135,7 +135,7 @@ import java.util.Map;
 
                 if (CollUtil.isNotEmpty(twReTrfList) && CollUtil.isEmpty(twNotEnoughList)){
 
-                    rs.executeUpdate(updateHkStatusSql, 0, 1, requestid);
+                    rs.executeUpdate(updateHkStatusSql, 1, 0, requestid);
 
                     String id = getSaleId(requestid);
                     String deleteSql = "DELETE FROM formtable_main_263_dt4 where mainid = ?";
