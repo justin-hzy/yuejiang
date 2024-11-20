@@ -316,7 +316,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
 
-        jsonObject.put("fsettlecurrid","PRE005");
+        jsonObject.put("fsettlecurrid","PRE001");
         jsonObject.put("fisincludedtax","true");
 
         JSONArray jsonArray = new JSONArray();
@@ -478,7 +478,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fdsgbase","ZT021");
         jsonObject.put("fsettleorgid","ZT025");
         jsonObject.put("type","DN");
-        jsonObject.put("fsettlecurrid",bb);
+        jsonObject.put("fsettlecurrid","PRE001");
         jsonObject.put("fthirdbillno",lcbh);
         jsonObject.put("fdate",yjjcr);
 
