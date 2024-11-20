@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.k3.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.icbc.api.internal.apache.http.impl.cookie.S;
@@ -271,11 +272,16 @@ public class InventoryService extends BaseBean {
 
         List<Map<String,String>> twMapList = new ArrayList<>();
 
+        List<Map<String,String>> twNotEnoughList = new ArrayList<>();
+
+
         for (Map<String,String> map : list){
 
             HashMap<String,String> hkMap = new HashMap<>();
 
             HashMap<String,String> twMap = new HashMap<>();
+
+            HashMap<String,String> twNotEnough = new HashMap<>();
 
             String hpbh = map.get("hpbh");
             String sl = map.get("sl");
@@ -296,6 +302,7 @@ public class InventoryService extends BaseBean {
                     String data = respJson.getString("data");
                     JSONArray dataJsonArr = JSONArray.parseArray(data);
                     if(dataJsonArr.size()>0){
+                        writeLog("查询库存范围数据不为空");
                         JSONObject dataJson = dataJsonArr.getJSONObject(0);
                         Integer fBaseQty = dataJson.getInteger("FBaseQty");
 
@@ -306,6 +313,10 @@ public class InventoryService extends BaseBean {
                             if("ZT026".equals(szzt)){
                                 writeLog("该商品的所属组织为台湾，进入错误日志");
                                 k3Service.addDmsKErrorLog(hpbh,lcbh);
+
+                                twNotEnough.put("tm",hpbh);
+                                twNotEnoughList.add(twNotEnough);
+
                             }else {
                                 writeLog("计算香港商品的发货数");
                                 //台湾库存不足，订单数量-台湾库存=香港出库数量
@@ -325,7 +336,6 @@ public class InventoryService extends BaseBean {
                                     twMap.put("sl",String.valueOf(twNumber));
                                     twMapList.add(twMap);
                                 }
-
                             }
                         }else {
                             writeLog("台湾库存充足，在台湾生成单据");
@@ -336,6 +346,25 @@ public class InventoryService extends BaseBean {
 
                             writeLog("twMapList="+twMapList.toString());
                         }
+                    }else {
+                        writeLog("查询库存范围数据为空");
+                        String szzt = inventoryService.getOrg(hpbh);
+                        if("ZT026".equals(szzt)){
+                            writeLog("该商品的所属组织为台湾，进入错误日志");
+                            k3Service.addDmsKErrorLog(hpbh,lcbh);
+
+                            twNotEnough.put("tm",hpbh);
+                            twNotEnoughList.add(twNotEnough);
+                        }else {
+                            writeLog("计算香港商品的发货数");
+                            //查询库存范围数据为空 台湾没货，全部调拨数量为香港调拨数量
+                            Integer hkNumber = Integer.valueOf(sl);
+                            if(hkNumber>0){
+                                hkMap.put("tm",hpbh);
+                                hkMap.put("sl",String.valueOf(hkNumber));
+                                hkMapList.add(hkMap);
+                            }
+                        }
                     }
                 }
             }
@@ -344,6 +373,10 @@ public class InventoryService extends BaseBean {
         resMap.put("tw",twMapList);
 
         resMap.put("hk",hkMapList);
+
+        if(CollUtil.isNotEmpty(twNotEnoughList)){
+            resMap.put("twNotEnoughList",twNotEnoughList);
+        }
 
         return resMap;
     }

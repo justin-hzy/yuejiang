@@ -18,6 +18,7 @@ public class TrfService extends BaseBean {
 
     public String trf(RequestInfo requestInfo){
 
+        writeLog("开始执行TrfService");
 
         RequestManager requestManager = requestInfo.getRequestManager();
 
@@ -68,31 +69,40 @@ public class TrfService extends BaseBean {
 
             writeLog("resMap="+resMap);
 
-            if(resMap.containsKey("tw")){
-                mainTableData.put("lcbh","TW_"+lcbh);
-                Map<String, List<Map<String, String>>> detail = new HashMap<>();
+            String updateSql = "update formtable_main_228 set is_tw_enough = ? where requestid = ?";
+            RecordSet updateRs = new RecordSet();
 
-                List<Map<String,String>> mapList = resMap.get("tw");
+            if(resMap.containsKey("twNotEnoughList")){
+                updateRs.executeUpdate(updateSql,1,requestid);
+            }else {
+                updateRs.executeUpdate(updateSql,0,requestid);
 
-                if(mapList.size()>0){
-                    detail.put("1",mapList);
+                if(resMap.containsKey("tw")){
+                    mainTableData.put("lcbh","TW_"+lcbh);
+                    Map<String, List<Map<String, String>>> detail = new HashMap<>();
 
-                    int result = workflowUtil.creatRequest("1","165","HK_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-                    writeLog("触发成功的子流程请求id：" + result);
+                    List<Map<String,String>> mapList = resMap.get("tw");
+
+                    if(mapList.size()>0){
+                        detail.put("1",mapList);
+
+                        int result = workflowUtil.creatRequest("1","165","HK_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+                        writeLog("触发成功的子流程请求id：" + result);
+                    }
                 }
-            }
 
-            if(resMap.containsKey("hk")){
-                mainTableData.put("lcbh","HK_"+lcbh);
-                Map<String, List<Map<String, String>>> detail = new HashMap<>();
+                if(resMap.containsKey("hk")){
+                    mainTableData.put("lcbh","HK_"+lcbh);
+                    Map<String, List<Map<String, String>>> detail = new HashMap<>();
 
-                List<Map<String,String>> mapList = resMap.get("hk");
+                    List<Map<String,String>> mapList = resMap.get("hk");
 
-                if(mapList.size()>0){
-                    detail.put("1",mapList);
+                    if(mapList.size()>0){
+                        detail.put("1",mapList);
 
-                    int result = workflowUtil.creatRequest("1","165","HK_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-                    writeLog("触发成功的子流程请求id：" + result);
+                        int result = workflowUtil.creatRequest("1","165","HK_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+                        writeLog("触发成功的子流程请求id：" + result);
+                    }
                 }
             }
         }else if("3".equals(dbxz1)){
@@ -109,33 +119,41 @@ public class TrfService extends BaseBean {
 
             writeLog("resMap="+resMap);
 
-            if(resMap.containsKey("tw")){
-                mainTableData.put("lcbh","TW_"+lcbh);
-                Map<String, List<Map<String, String>>> detail = new HashMap<>();
+            String updateSql = "update formtable_main_228 set is_tw_enough = ? where requestid = ?";
+            RecordSet updateRs = new RecordSet();
 
-                List<Map<String,String>> mapList = resMap.get("tw");
+            if(resMap.containsKey("twNotEnoughList")){
+                updateRs.executeUpdate(updateSql,1,requestid);
+            }else {
+                updateRs.executeUpdate(updateSql,0,requestid);
 
-                if(mapList.size()>0){
-                    detail.put("1",mapList);
+                if(resMap.containsKey("tw")){
+                    mainTableData.put("lcbh","TW_"+lcbh);
+                    Map<String, List<Map<String, String>>> detail = new HashMap<>();
 
-                    int result = workflowUtil.creatRequest("1","165","TW_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-                    writeLog("触发成功的子流程请求id：" + result);
+                    List<Map<String,String>> mapList = resMap.get("tw");
+
+                    if(mapList.size()>0){
+                        detail.put("1",mapList);
+
+                        int result = workflowUtil.creatRequest("1","165","TW_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+                        writeLog("触发成功的子流程请求id：" + result);
+                    }
+                }
+
+                if(resMap.containsKey("hk")){
+                    mainTableData.put("lcbh","HK_"+lcbh);
+                    Map<String, List<Map<String, String>>> detail = new HashMap<>();
+
+                    List<Map<String,String>> mapList = resMap.get("hk");
+
+                    if(mapList.size()>0){
+                        detail.put("1",mapList);
+                        int result = workflowUtil.creatRequest("1","165","TW_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+                        writeLog("触发成功的子流程请求id：" + result);
+                    }
                 }
             }
-
-            if(resMap.containsKey("hk")){
-                mainTableData.put("lcbh","HK_"+lcbh);
-                Map<String, List<Map<String, String>>> detail = new HashMap<>();
-
-                List<Map<String,String>> mapList = resMap.get("hk");
-
-                if(mapList.size()>0){
-                    detail.put("1",mapList);
-                    int result = workflowUtil.creatRequest("1","165","TW_寄售出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-                    writeLog("触发成功的子流程请求id：" + result);
-                }
-            }
-
         }else if("7".equals(dbxz1)){
             //获取出库日期
             String chrqSql = "select chrq from formtable_main_228 where requestid = ?";
@@ -165,30 +183,39 @@ public class TrfService extends BaseBean {
 
             writeLog("resMap="+resMap);
 
-            if(resMap.containsKey("tw")){
-                mainTableData.put("lcbh","TW_"+lcbh);
-                Map<String, List<Map<String, String>>> detail = new HashMap<>();
+            String updateSql = "update formtable_main_228 set is_tw_enough = ? where requestid = ?";
+            RecordSet updateRs = new RecordSet();
 
-                List<Map<String,String>> mapList = resMap.get("tw");
+            if(resMap.containsKey("twNotEnoughList")){
+                updateRs.executeUpdate(updateSql,1,requestid);
+            }else {
+                updateRs.executeUpdate(updateSql,0,requestid);
 
-                if(mapList.size()>0){
-                    detail.put("1",mapList);
+                if(resMap.containsKey("tw")){
+                    mainTableData.put("lcbh","TW_"+lcbh);
+                    Map<String, List<Map<String, String>>> detail = new HashMap<>();
 
-                    int result = workflowUtil.creatRequest("1","165","TW_效期品移仓出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-                    writeLog("触发成功的子流程请求id：" + result);
+                    List<Map<String,String>> mapList = resMap.get("tw");
+
+                    if(mapList.size()>0){
+                        detail.put("1",mapList);
+
+                        int result = workflowUtil.creatRequest("1","165","TW_效期品移仓出库_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+                        writeLog("触发成功的子流程请求id：" + result);
+                    }
                 }
-            }
 
-            if(resMap.containsKey("hk")){
-                mainTableData.put("lcbh","HK_"+lcbh);
-                Map<String, List<Map<String, String>>> detail = new HashMap<>();
+                if(resMap.containsKey("hk")){
+                    mainTableData.put("lcbh","HK_"+lcbh);
+                    Map<String, List<Map<String, String>>> detail = new HashMap<>();
 
-                List<Map<String,String>> mapList = resMap.get("hk");
+                    List<Map<String,String>> mapList = resMap.get("hk");
 
-                if(mapList.size()>0){
-                    detail.put("1",mapList);
-                    int result = workflowUtil.creatRequest("1","165","HK_效期品移仓_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-                    writeLog("触发成功的子流程请求id：" + result);
+                    if(mapList.size()>0){
+                        detail.put("1",mapList);
+                        int result = workflowUtil.creatRequest("1","165","HK_效期品移仓_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+                        writeLog("触发成功的子流程请求id：" + result);
+                    }
                 }
             }
         }else if("6".equals(dbxz1)){
