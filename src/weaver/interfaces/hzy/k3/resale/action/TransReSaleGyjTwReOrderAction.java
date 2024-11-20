@@ -13,7 +13,7 @@ public class TransReSaleGyjTwReOrderAction extends BaseBean implements Action {
 
     @Override
     public String execute(RequestInfo requestInfo) {
-        writeLog("开始执行TransReSaleGyjRePurAction");
+        writeLog("开始执行TransReSaleGyjTwReOrderAction");
 
         String requestid = requestInfo.getRequestid();
 
