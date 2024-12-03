@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.retrf.service;
 
+import cn.hutool.core.collection.CollUtil;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.k3.service.InventoryService;
@@ -49,14 +50,17 @@ public class ReTrfTwProcessService extends BaseBean {
         List<Map<String,String>> dtMapList = getTrfDt4(requestid);
         writeLog("dtMapList="+dtMapList.toString());
 
-
-        mainTableData.put("lcbh","TW_"+lcbh);
-        Map<String, List<Map<String, String>>> detail = new HashMap<>();
-        detail.put("1",dtMapList);
-        writeLog("mainTableData="+mainTableData.toString());
-        writeLog("detail="+detail.toString());
-        int result = workflowUtil.creatRequest("1","165","TW_调拨寄售退_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
-        writeLog("触发成功的子流程请求id：" + result);
+        if(CollUtil.isNotEmpty(dtMapList)){
+            mainTableData.put("lcbh","TW_"+lcbh);
+            Map<String, List<Map<String, String>>> detail = new HashMap<>();
+            detail.put("1",dtMapList);
+            writeLog("mainTableData="+mainTableData.toString());
+            writeLog("detail="+detail.toString());
+            int result = workflowUtil.creatRequest("1","165","TW_调拨寄售退_金蝶"+"（子流程）",mainTableData,detail,"1");//创建子流程
+            writeLog("触发成功的子流程请求id：" + result);
+        }else {
+            writeLog("明细表4无数据无需生成金蝶子流程");
+        }
     }
 
 
