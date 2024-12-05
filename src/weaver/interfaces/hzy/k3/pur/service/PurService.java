@@ -332,7 +332,9 @@ public class PurService extends BaseBean {
             dtl.put("frealqty",detailData.get("cgsl"));
             dtl.put("fstockid",rkck);
 
-            dtl.put("ftaxprice",detailData.get("cgdj"));
+            //dtl.put("ftaxprice",detailData.get("cgdj"));
+            //之前是取dms的采购单机字段，目前改为取日用品价目表的价格
+            priceService.getDailyNecPrice(detailData.get("wlbm"),dtl);
 
             jsonArray.add(dtl);
         }
