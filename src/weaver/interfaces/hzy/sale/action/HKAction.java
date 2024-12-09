@@ -35,11 +35,7 @@ public class HKAction extends BaseBean implements Action {
 
         List<Map<String, String>> detailDatas1 = new ArrayList<>();
 
-        List<Map<String, String>> detailDatas2 = new ArrayList<>();
-
         detailDatas1 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 1);
-
-        detailDatas2 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 2);
 
         writeLog("mainData=" + mainData.toString());
 
@@ -50,8 +46,6 @@ public class HKAction extends BaseBean implements Action {
         List<Map<String, String>> hkSales1 = new ArrayList<>();
 
         List<Map<String,String>> twNotEnoughList = new ArrayList<>();
-
-        List<Map<String, String>> hkSales2 = new ArrayList<>();
 
         String fhdc = mainData.get("fhdc");
         String lcbh = mainData.get("lcbh");
@@ -122,11 +116,21 @@ public class HKAction extends BaseBean implements Action {
         if (respMap.containsKey("twNotEnoughList")){
             twNotEnoughList = respMap.get("twNotEnoughList");
             if (twNotEnoughList.size()>0){
+                String errorMessage = "";
                 writeLog("twNotEnoughList=" + twNotEnoughList.toString());
-                String updateSql = "update formtable_main_272 set hk_status  = ?,is_tw_enough = ? where requestid = ? ";
+                for (Map<String,String> twNotEnough : twNotEnoughList){
+                    String sku = twNotEnough.get("tm");
+                    String qty = twNotEnough.get("qty");
+
+                    errorMessage = errorMessage+"sku = "+sku+",qty= -"+qty+";";
+                }
+
+
+
+                String updateSql = "update formtable_main_272 set hk_status  = ?,is_tw_enough = ?,error_message = ? where requestid = ? ";
                 writeLog("updateSql="+updateSql);
                 RecordSet rs  = new RecordSet();
-                rs.executeUpdate(updateSql,null,"1",requestid);
+                rs.executeUpdate(updateSql,null,"1",errorMessage,requestid);
             }
         }else {
             if (respMap.containsKey("hkSales")){
@@ -220,7 +224,10 @@ public class HKAction extends BaseBean implements Action {
                             String dateString = tokenizer.nextToken();
                             String timeString = tokenizer.nextToken();
 
+                            Integer qty = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty);
+
                             twNotEnough.put("tm",sku);
+                            twNotEnough.put("qty",String.valueOf(qty));
 
                             twNotEnoughList.add(twNotEnough);
 
