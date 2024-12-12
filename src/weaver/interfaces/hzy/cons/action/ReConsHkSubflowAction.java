@@ -17,7 +17,7 @@ public class ReConsHkSubflowAction extends BaseBean implements Action {
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("月结接受退执行ReConsSubflowAction");
+        writeLog("月结接受退执行ReConsHkSubflowAction");
 
         String requestid = requestInfo.getRequestid();
 
