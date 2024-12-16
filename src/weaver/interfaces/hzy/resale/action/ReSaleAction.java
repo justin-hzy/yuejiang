@@ -55,6 +55,9 @@ public class ReSaleAction extends BaseBean implements Action {
         //币别
         String bb = mainData.get("bb");
 
+        //主表入库日期
+        String rkrq = mainData.get("rkrq");
+
         Map<String,List<Map<String,String>>> twDtl = new HashMap<>();
 
         List<Map<String,String>> twList = new ArrayList<>();
@@ -68,11 +71,11 @@ public class ReSaleAction extends BaseBean implements Action {
 
         if(detailDatas1.size()>0){
 
-            //入库日期
-            String rkrq = "";
+            //废弃从明细表中获取入库日期
+            /*String rkrq = "";
             if (detailDatas1.size()>0){
-                rkrq = detailDatas1.get(0).get("rkrq");
-            }
+                    rkrq = detailDatas1.get(0).get("rkrq");
+            }*/
 
             String dt1Sql = "select dt1.hptxm tm,dt1.fhl sl,dt1.ddje xsj,dt1.rkrq from formtable_main_263 main inner join formtable_main_263_dt1 dt1 on main.id = dt1.mainid  where requestId = ?";
 
