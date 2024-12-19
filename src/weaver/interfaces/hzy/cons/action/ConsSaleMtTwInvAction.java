@@ -1,8 +1,10 @@
 package weaver.interfaces.hzy.cons.action;
 
+import cn.hutool.core.collection.CollUtil;
+import com.icbc.api.internal.apache.http.impl.cookie.S;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
-import weaver.interfaces.hzy.k3.service.ConsService;
+import weaver.interfaces.hzy.cons.service.ConsService;
 import weaver.interfaces.hzy.k3.service.InventoryService;
 import weaver.interfaces.hzy.k3.service.K3Service;
 import weaver.interfaces.tx.util.WorkflowUtil;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HkConsAction extends BaseBean implements Action {
+public class ConsSaleMtTwInvAction extends BaseBean implements Action {
 
     @Override
     public String execute(RequestInfo requestInfo) {
@@ -98,7 +100,9 @@ public class HkConsAction extends BaseBean implements Action {
 
             writeLog("k3InvList="+k3InvList);
 
-            hkSales = consService.compareInv(k3InvList,dtSums,inventoryService,lcbh);
+            Map<String,List<Map<String,String>>> respMap = consService.compareInv(k3InvList,dtSums,inventoryService,lcbh);
+
+            hkSales = respMap.get("hkSales");
 
             writeLog("hkSales="+hkSales.toString());
         }
@@ -111,7 +115,7 @@ public class HkConsAction extends BaseBean implements Action {
 
         String id = getSaleId(requestid);
 
-        if(hkSales.size()>0){
+        if(CollUtil.isNotEmpty(hkSales)){
 
             rs.executeUpdate(updateSql,"0",requestid);
 

@@ -1,10 +1,12 @@
-package weaver.interfaces.hzy.k3.service;
+package weaver.interfaces.hzy.cons.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.k3.pojo.SupSale;
+import weaver.interfaces.hzy.k3.service.InventoryService;
+import weaver.interfaces.hzy.k3.service.K3Service;
 import weaver.interfaces.tx.util.WorkflowUtil;
 import weaver.interfaces.zxg.binaryCode.DMS.util.WorkflowToolMethods;
 import weaver.soa.workflow.request.RequestInfo;
@@ -87,7 +89,10 @@ public class ConsService extends BaseBean {
 
             writeLog("k3InvList="+k3InvList);
 
-            List<Map<String,String>> hkSales = compareInv(k3InvList,dtSums,inventoryService,lcbh);
+            Map<String,List<Map<String,String>>> respMap = compareInv(k3InvList,dtSums,inventoryService,lcbh);
+
+            List<Map<String,String>> hkSales = respMap.get("hkSales");
+
 
 
             writeLog("hkSales="+hkSales.toString());
@@ -229,9 +234,10 @@ public class ConsService extends BaseBean {
     }
 
 
-    public List<Map<String,String>> compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dtSums, InventoryService inventoryService,String lcbh){
-
+    public Map<String,List<Map<String,String>>> compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dtSums, InventoryService inventoryService,String lcbh){
+        Map<String,List<Map<String,String>>> resMap = new HashMap<>();
         List<Map<String,String>> hkSales = new ArrayList<>();
+        List<Map<String,String>> tw = new ArrayList<>();
         writeLog("dtSums="+dtSums);
         for (Map<String,String> dtSum : dtSums) {
 
@@ -280,6 +286,9 @@ public class ConsService extends BaseBean {
                             RecordSet insertRs = new RecordSet();
 
                             insertRs.executeUpdate(insertError);
+
+
+
                         }else {
                             Integer hkNumber = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty) ;
                             hkSale.put("tm",wlbm);
@@ -290,6 +299,10 @@ public class ConsService extends BaseBean {
                 }
             }
         }
-        return  hkSales;
+
+
+
+
+        return  resMap;
     }
 }
