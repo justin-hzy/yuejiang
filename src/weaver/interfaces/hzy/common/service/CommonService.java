@@ -30,14 +30,14 @@ public class CommonService extends BaseBean {
         dt1Json.put("ftaxprice",fTaxPrice);
     }
 
-    public String doK3Action(String param,String meIp,String url){
+    public String doK3Action(String param,String ip,String url){
         CloseableHttpResponse response;// 响应类,
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
-        HttpPost httpPost = new HttpPost(meIp+url);
+        HttpPost httpPost = new HttpPost(ip+url);
 
-        writeLog("ip+url="+meIp+url);
+        writeLog("ip+url="+ip+url);
 
         //设置请求头
         httpPost.addHeader("Content-Type", "application/json;charset=utf-8");
