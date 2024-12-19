@@ -44,7 +44,8 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
 
             dt1Rs.executeQuery(querySql,id);
 
-            JSONArray skus = new JSONArray();
+            JSONArray skuJsonArr = new JSONArray();
+            List<String> skus = new ArrayList<>();
 
             List<Map<String, String>> dtMapList = new ArrayList<>();
 
@@ -57,6 +58,7 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
                 dtSum.put("trfSku", trfSku);
                 dtSum.put("trfQty", trfQty);
 
+                skuJsonArr.add(trfSku);
                 skus.add(trfSku);
                 dtMapList.add(dtSum);
 
@@ -66,7 +68,7 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
 
             JSONObject reqJson = new JSONObject();
 
-            reqJson.put("skus",skus);
+            reqJson.put("skus",skuJsonArr);
             reqJson.put("stockNumber","S1");
             K3Service k3Service = new K3Service();
             String params = reqJson.toJSONString();
@@ -74,7 +76,7 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
 
             InventoryService inventoryService = new InventoryService();
 
-            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr);
+            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr,skus);
 
             writeLog("k3InvList=" + k3InvList);
 
@@ -103,6 +105,14 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
                     RecordSet insertRs = new RecordSet();
                     insertRs.executeUpdate(insertSql);
                 }
+            }else {
+                String updateIsTwReSale = "update formtable_main_228 set is_tw_resale = ? where id = ?";
+                RecordSet updateRs = new RecordSet();
+                updateRs.executeUpdate(updateIsTwReSale,1,id);
+
+                String deleteSql = "DELETE FROM formtable_main_228_dt3 where mainid = ?";
+                RecordSet deleteRs = new RecordSet();
+                deleteRs.executeUpdate(deleteSql,id);
             }
         }
         return SUCCESS;
