@@ -68,4 +68,28 @@ public class CommonService extends BaseBean {
         todayString = "'" + todayString + "'";
         insertRs.executeUpdate(insertSql,lcbh,status,todayString);
     }
+
+    public void queryRetPrice(String sku,JSONObject dt1Json){
+
+        String sql = "select lsdj from uf_spk where hpbh = " +"'"+sku+"'";
+
+        RecordSet rs = new RecordSet();
+
+        writeLog("零售价sql="+sql);
+
+        rs.executeQuery(sql);
+
+        if(rs.next()){
+            //writeLog("1111111111111111111111111111111");
+            //零售定价
+            String lsdj = rs.getString("lsdj");
+            double price = Double.parseDouble(lsdj);
+            double discountedPrice = price * 0.36;
+            dt1Json.put("ftaxprice",discountedPrice);
+        }else {
+            //writeLog("22222222222222222222222222222222");
+            dt1Json.put("ftaxprice","0.0");
+        }
+
+    }
 }
