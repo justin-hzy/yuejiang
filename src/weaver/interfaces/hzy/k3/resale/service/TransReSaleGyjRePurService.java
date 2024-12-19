@@ -124,7 +124,7 @@ public class TransReSaleGyjRePurService extends BaseBean {
             //¡„ €∂®º€
             String lsdj = rs.getString("lsdj");
             double price = Double.parseDouble(lsdj);
-            double discountedPrice = price * 0.35;
+            double discountedPrice = price * 0.36;
             dt1Json.put("ftaxprice",discountedPrice);
         }else {
             //writeLog("22222222222222222222222222222222");
