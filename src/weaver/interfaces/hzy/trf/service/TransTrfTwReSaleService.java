@@ -20,7 +20,7 @@ public class TransTrfTwReSaleService extends BaseBean {
 
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    private String putGyjReSaleUrl = getPropValue("k3_api_config","putGyjReSaleUrl");
+    private String putGyjTwReSaleUrl = getPropValue("k3_api_config","putGyjTwReSaleUrl");
 
     public String putGyjTwReSale(RequestInfo requestInfo){
         String requestid = requestInfo.getRequestid();
@@ -69,7 +69,7 @@ public class TransTrfTwReSaleService extends BaseBean {
 
             dt1Json.put("fmaterialId",sku);
 
-            dt1Json.put("fentrytaxrate","0");
+            dt1Json.put("fentrytaxrate","5");
 
             commonService.getPrice(sku,dt1Json);
 
@@ -87,7 +87,7 @@ public class TransTrfTwReSaleService extends BaseBean {
 
         writeLog("param="+param);
 
-        String resStr = commonService.doK3Action(param,k3Ip,putGyjReSaleUrl);
+        String resStr = commonService.doK3Action(param,k3Ip,putGyjTwReSaleUrl);
 
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
