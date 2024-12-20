@@ -40,7 +40,7 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
 
             RecordSet dt1Rs = new RecordSet();
 
-            String querySql = "select hptxm,dbsl from formtable_main_228_dt1 where mainid = ?";
+            String querySql = "select hptxm,sum(dbsl) dbsl from formtable_main_228_dt1 where mainid = ? group by hptxm";
 
             dt1Rs.executeQuery(querySql,id);
 
