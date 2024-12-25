@@ -23,7 +23,7 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
     @Override
     public String execute(RequestInfo requestInfo) {
 
-        writeLog("Ö´ÐÐHkConsAction");
+        writeLog("Ö´ÐÐConsSaleMtTwInvAction");
 
         String requestid = requestInfo.getRequestid();
 
@@ -103,11 +103,9 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
             Map<String,List<Map<String,String>>> respMap = consService.compareInv(k3InvList,dtSums,inventoryService,lcbh);
 
             hkSales = respMap.get("hkSales");
-
-            writeLog("hkSales="+hkSales.toString());
         }
 
-        writeLog("hkSales=" + hkSales.toString());
+
 
         String updateSql = "update formtable_main_238 set hk_status  = ? where requestid = ? ";
 
@@ -116,6 +114,8 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
         String id = getSaleId(requestid);
 
         if(CollUtil.isNotEmpty(hkSales)){
+
+            writeLog("hkSales=" + hkSales.toString());
 
             rs.executeUpdate(updateSql,"0",requestid);
 
