@@ -45,7 +45,7 @@ public class TransConsGyjTwOrderService extends BaseBean {
 
             jsonObject.put("fstockorgid","ZT026");
             jsonObject.put("fsaleorgid","ZT026");
-            jsonObject.put("fcustomerid","Shopee");
+            jsonObject.put("fcustomerid","CUST0354");
             jsonObject.put("fdsgbase","Shopee");
             jsonObject.put("fsettleorgid","ZT026");
             jsonObject.put("fsettlecurrid","PRE005");
