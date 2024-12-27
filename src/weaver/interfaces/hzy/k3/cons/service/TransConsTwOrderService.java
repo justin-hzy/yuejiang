@@ -98,11 +98,12 @@ public class TransConsTwOrderService extends BaseBean {
             dt1Json.put("fentryid",0);
             dt1Json.put("fmaterialId",tm);
             //香港税率为0
-            dt1Json.put("fentrytaxrate","0");
+            dt1Json.put("fentrytaxrate","5");
 
             //查询价目表
             //queryPriceTable(tm,dt1Json);
-            getPrice(tm,dt1Json);
+            //getPrice(tm,dt1Json);
+            dt1Json.put("ftaxprice",xsj);
 
             dt1Json.put("frealqty",sl);
             String fhdc = jsonObject.getString("fhdc");
