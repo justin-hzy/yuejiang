@@ -4,7 +4,6 @@ import weaver.general.BaseBean;
 import weaver.general.Util;
 import weaver.interfaces.hzy.common.service.CommonService;
 import weaver.interfaces.hzy.th.util.SfApiUtil;
-import weaver.interfaces.hzy.vn.flash.util.FlashApiUtil;
 import weaver.interfaces.workflow.action.Action;
 import weaver.interfaces.zxg.binaryCode.DMS.util.WorkflowToolMethods;
 import weaver.soa.workflow.request.RequestInfo;
