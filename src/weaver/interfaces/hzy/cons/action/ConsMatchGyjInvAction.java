@@ -40,22 +40,25 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
 
             RecordSet dt1Rs = new RecordSet();
 
-            String querySql = "select wlbm tm ,xssl sl from formtable_main_238_dt1 where mainid = ?";
+            String querySql = "select wlbm tm ,sum(xssl) sl  from formtable_main_238_dt1 where mainid = ? group by tm";
 
             dt1Rs.executeQuery(querySql,id);
 
-            JSONArray skus = new JSONArray();
+            JSONArray skuJsonArr = new JSONArray();
+
+            List<String> skus = new ArrayList<>();
 
             List<Map<String, String>> dtMapList = new ArrayList<>();
 
             while (dt1Rs.next()){
-
                 Map<String, String> dtSum = new HashMap<>();
                 String tm = dt1Rs.getString("tm");
                 String sl = dt1Rs.getString("sl");
 
                 dtSum.put("tm", tm);
                 dtSum.put("sl", sl);
+
+                skuJsonArr.add(tm);
 
                 skus.add(tm);
                 dtMapList.add(dtSum);
@@ -65,7 +68,7 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
 
             JSONObject reqJson = new JSONObject();
 
-            reqJson.put("skus",skus);
+            reqJson.put("skus",skuJsonArr);
             reqJson.put("stockNumber","S1");
             K3Service k3Service = new K3Service();
             String params = reqJson.toJSONString();
@@ -73,10 +76,9 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
 
             InventoryService inventoryService = new InventoryService();
 
-            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr);
+            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr,skus);
 
             writeLog("k3InvList=" + k3InvList);
-
 
 
             String lcbh = mainData.get("lcbh");

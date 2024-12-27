@@ -46,6 +46,8 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
             JSONArray skuArr = new JSONArray();
 
+            List<String> skus = new ArrayList<>();
+
             List<Map<String, String>> dt6MapList = new ArrayList<>();
 
             while (dt6Rs.next()){
@@ -56,6 +58,8 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
                 dtSum.put("sku", sku);
                 dtSum.put("quantity", quantity);
+
+                skus.add(sku);
 
                 skuArr.add(sku);
                 dt6MapList.add(dtSum);
@@ -73,7 +77,7 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
             InventoryService inventoryService = new InventoryService();
 
-            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr);
+            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr,skus);
 
             writeLog("k3InvList=" + k3InvList);
 

@@ -47,6 +47,8 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
 
             JSONArray skuArr = new JSONArray();
 
+            List<String> skus = new ArrayList<>();
+
             List<Map<String, String>> dt5MapList = new ArrayList<>();
 
             while (dt5Rs.next()){
@@ -59,6 +61,7 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
                 dtSum.put("quantity", quantity);
 
                 skuArr.add(sku);
+                skus.add(sku);
                 dt5MapList.add(dtSum);
             }
 
@@ -75,7 +78,7 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
 
             InventoryService inventoryService = new InventoryService();
 
-            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr);
+            List<Map<String, String>> k3InvList = inventoryService.anlysBatIn(respStr,skus);
 
             writeLog("k3InvList=" + k3InvList);
 
@@ -88,6 +91,9 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
 
             if (CollUtil.isNotEmpty(hkSales)){
 
+                String deleteSql = "DELETE FROM formtable_main_238_dt6 where mainid = ?";
+                RecordSet deleteRs = new RecordSet();
+                deleteRs.executeUpdate(deleteSql,id);
 
                 for (Map<String, String> hkSale : hkSales){
 

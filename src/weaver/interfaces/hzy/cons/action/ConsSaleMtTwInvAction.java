@@ -2,6 +2,7 @@ package weaver.interfaces.hzy.cons.action;
 
 import cn.hutool.core.collection.CollUtil;
 import com.icbc.api.internal.apache.http.impl.cookie.S;
+import org.xlsx4j.sml.Col;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.cons.service.ConsService;
@@ -61,6 +62,7 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
         mainTableData.put("shdc",kh);
 
 
+        Map<String,List<Map<String,String>>> respMap = new HashMap<>();
         if("0".equals(lx)){
             String fhdcxs = mainData.get("fhdcxs");
 
@@ -100,9 +102,9 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
 
             writeLog("k3InvList="+k3InvList);
 
-            Map<String,List<Map<String,String>>> respMap = consService.compareInv(k3InvList,dtSums,inventoryService,lcbh);
+            respMap = consService.compareInv(k3InvList,dtSums,inventoryService,lcbh);
 
-            hkSales = respMap.get("hkSales");
+
         }
 
 
@@ -113,29 +115,32 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
 
         String id = getSaleId(requestid);
 
-        if(CollUtil.isNotEmpty(hkSales)){
+        if(CollUtil.isNotEmpty(respMap)){
+            if(CollUtil.isNotEmpty(hkSales)){
 
-            writeLog("hkSales=" + hkSales.toString());
+                writeLog("hkSales=" + hkSales.toString());
 
-            rs.executeUpdate(updateSql,"0",requestid);
+                rs.executeUpdate(updateSql,"0",requestid);
 
-            String deleteSql = "DELETE FROM formtable_main_238_dt3 where mainid = ?";
-            RecordSet deleteRs = new RecordSet();
-            deleteRs.executeUpdate(deleteSql,id);
+                String deleteSql = "DELETE FROM formtable_main_238_dt3 where mainid = ?";
+                RecordSet deleteRs = new RecordSet();
+                deleteRs.executeUpdate(deleteSql,id);
 
-            for (Map<String,String> hkSale: hkSales){
+                for (Map<String,String> hkSale: hkSales){
 
-                String tm = hkSale.get("tm");
-                String sl = hkSale.get("sl");
+                    String tm = hkSale.get("tm");
+                    String sl = hkSale.get("sl");
 
-                String insertSql = "insert into formtable_main_238_dt3 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
-                RecordSet insertRs = new RecordSet();
-                insertRs.executeUpdate(insertSql);
-            }
-        }else if(hkSales.size()==0){
+                    String insertSql = "insert into formtable_main_238_dt3 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
+                    RecordSet insertRs = new RecordSet();
+                    insertRs.executeUpdate(insertSql);
+                }
+            }/*else if(hkSales.size()==0){
+                rs.executeUpdate(updateSql,"1",requestid);
+            }*/
+        }else {
             rs.executeUpdate(updateSql,"1",requestid);
         }
-
         return SUCCESS;
     }
 
