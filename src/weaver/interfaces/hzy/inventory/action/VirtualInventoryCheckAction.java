@@ -113,8 +113,11 @@ import java.util.Map;
                 String updateTwStatusSql = "update formtable_main_263 set is_tw_enough  = ? where requestid = ? ";
                 rs.executeUpdate(updateTwStatusSql,1,requestid);
             }else {
+                //默认 reTrfHkStatus = 1 不需要香港出单
+                int reTrfHkStatus = 1;
                 if (CollUtil.isNotEmpty(hkReTrfList) && CollUtil.isEmpty(twNotEnoughList)) {
-                    rs.executeUpdate(updateHkStatusSql, 0, 0, requestid);
+                    reTrfHkStatus = 0;
+                    rs.executeUpdate(updateHkStatusSql, reTrfHkStatus, 0, requestid);
 
                     String id = getSaleId(requestid);
                     String deleteSql = "DELETE FROM formtable_main_263_dt3 where mainid = ?";
@@ -130,12 +133,11 @@ import java.util.Map;
                         RecordSet insertRs = new RecordSet();
                         insertRs.executeUpdate(insertSql);
                     }
-
                 }
 
                 if (CollUtil.isNotEmpty(twReTrfList) && CollUtil.isEmpty(twNotEnoughList)){
 
-                    rs.executeUpdate(updateHkStatusSql, 1, 0, requestid);
+                    rs.executeUpdate(updateHkStatusSql, reTrfHkStatus, 0, requestid);
 
                     String id = getSaleId(requestid);
                     String deleteSql = "DELETE FROM formtable_main_263_dt4 where mainid = ?";
