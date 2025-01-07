@@ -13,8 +13,6 @@ public class ThSaleCheckAction extends BaseBean implements Action {
 
         writeLog("开始执行ThSaleCheckAction");
 
-        writeLog("开始执行CheckSaleAction");
-
         List<Map<String, String>> detailDatas1 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 1);
 
         String requestId = requestInfo.getRequestid();
