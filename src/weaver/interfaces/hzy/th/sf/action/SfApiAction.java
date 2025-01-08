@@ -1,5 +1,7 @@
 package weaver.interfaces.hzy.th.sf.action;
 
+import com.alibaba.fastjson.JSONObject;
+import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.general.Util;
 import weaver.interfaces.hzy.common.service.CommonService;
@@ -57,6 +59,24 @@ public class SfApiAction extends BaseBean implements Action {
         String respJsonStr = commonService.doK3Action(param,sfIp,url);
         writeLog("respJsonStr="+respJsonStr);
 
-        return null;
+        JSONObject respJson = JSONObject.parseObject(respJsonStr);
+        JSONObject dataJson = respJson.getJSONObject("data");
+
+        String note = dataJson.getString("note");
+        String isSf = dataJson.getString("isSf");
+
+        //更新每个流程的状态状态
+        if("1".equals(apiId)){
+            //更新添加销售出库流程表状态
+            RecordSet rs = new RecordSet();
+            String updateSql = "update formtable_main_347 set is_sf = ? , sf_request_result = ? where requestid = ?";
+            rs.executeUpdate(updateSql,isSf,note,requestId);
+        }else if("2".equals(apiId)){
+            //更新添加销售出库流程表状态
+            RecordSet rs = new RecordSet();
+            String updateSql = "update formtable_main_348 set is_sf = ? , sf_request_result = ? where requestid = ?";
+            rs.executeUpdate(updateSql,isSf,note,requestId);
+        }
+        return SUCCESS;
     }
 }
