@@ -74,9 +74,9 @@ public class SfApiUtil extends BaseBean {
 
             writeLog("detailArr="+detailArr);
 
-            if("1".equals(apiId)){
+            if("1".equals(apiId) || "4".equals(apiId)){
                 mainJson = getOrderJSONObject(mainJson,detailArr);
-            }else if("2".equals(apiId)){
+            }else if("2".equals(apiId) || "3".equals(apiId)){
                 mainJson = getRefundJSONObject(mainJson,detailArr);
             }
         }
