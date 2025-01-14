@@ -8,7 +8,9 @@ import weaver.soa.workflow.request.RequestInfo;
 
 import java.util.Map;
 
-public class QueueAction extends BaseBean implements Action {
+public class DmsQueueAction extends BaseBean implements Action {
+
+    private String type;
 
     @Override
     public String execute(RequestInfo requestInfo) {
@@ -17,13 +19,17 @@ public class QueueAction extends BaseBean implements Action {
 
         String processId = mainData.get("lcbh");
 
-        writeLog("开始执行QueueAction");
+        int requestId = requestInfo.getRequestManager().getBillid();
 
-        String insertSql = "insert into queue (process_id, is_finish) values (?,?)";
+        writeLog("开始执行DmsQueueAction");
+
+        String insertSql = "insert into dms_queue (process_id,request_id,type,is_finish) values (?,?,?,?)";
 
         RecordSet insertRs = new RecordSet();
 
-        insertRs.executeUpdate(insertSql,processId,0);
+        insertRs.executeUpdate(insertSql,processId,requestId,type,0);
+
+        writeLog("DmsQueueAction执行完毕");
 
         return SUCCESS;
     }
