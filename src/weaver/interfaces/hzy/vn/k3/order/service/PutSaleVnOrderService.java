@@ -15,7 +15,7 @@ public class PutSaleVnOrderService extends BaseBean {
 
     public void putSale(String requestid){
         CommonService commonService = new CommonService();
-        String mainSql = "select lcbh,send_date,consignee_address,fcustomer_id,send_date,warehouse_id from formtable_main_345 where requestId = ?";
+        String mainSql = "select lcbh,send_date,consignee_address,fcustomer_id,send_date,warehouse_id from formtable_main_351 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -64,8 +64,8 @@ public class PutSaleVnOrderService extends BaseBean {
 
     public String getDtl(String requestid,JSONObject jsonObject){
 
-        String dt1Sql = "select dt1.bar_code,dt1.num,dt1.price from formtable_main_345 as main " +
-                "inner join formtable_main_345_dt1 as dt1 on main.id = dt1.mainid " +
+        String dt1Sql = "select dt1.bar_code,dt1.num,dt1.price from formtable_main_351 as main " +
+                "inner join formtable_main_351_dt1 as dt1 on main.id = dt1.mainid " +
                 "where requestid = ? and dt1.num > 0 and dt1.num is not null";
 
         RecordSet rsDt1 = new RecordSet();
