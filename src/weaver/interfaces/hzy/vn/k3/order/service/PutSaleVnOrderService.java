@@ -15,7 +15,7 @@ public class PutSaleVnOrderService extends BaseBean {
 
     public void putSale(String requestid){
         CommonService commonService = new CommonService();
-        String mainSql = "select lcbh,send_date,consignee_address,fcustomer_id,send_date,warehouse_id from formtable_main_351 where requestId = ?";
+        String mainSql = "select lcbh,send_date,consignee_address,fcustomer_id,send_date,fhdc from formtable_main_351 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -29,7 +29,7 @@ public class PutSaleVnOrderService extends BaseBean {
             //String fReceiveAddress = Util.null2String(rsMain.getString("freceive_address"));
             String fcustomerId = Util.null2String(rsMain.getString("fcustomer_id"));
             String sendDate = Util.null2String(rsMain.getString("send_date"));
-            String warehouseId = Util.null2String(rsMain.getString("warehouse_id"));
+            String fhdc = Util.null2String(rsMain.getString("fhdc"));
 
             processCode = "VN_"+processCode;
             jsonObject.put("fbillno",processCode);
@@ -41,7 +41,7 @@ public class PutSaleVnOrderService extends BaseBean {
             jsonObject.put("fsettlecurrid","PRE009");
             jsonObject.put("fthirdbillno",processCode);
             jsonObject.put("fdate",sendDate);
-            jsonObject.put("warehouseId",warehouseId);
+            jsonObject.put("fhdc",fhdc);
         }
 
         String param = getDtl(requestid,jsonObject);
@@ -88,16 +88,16 @@ public class PutSaleVnOrderService extends BaseBean {
             dt1Json.put("ftaxprice",price);
 
             dt1Json.put("frealqty",num);
-            String warehouseId = jsonObject.getString("warehouseId");
+            String fhdc = jsonObject.getString("fhdc");
             //发货仓
-            dt1Json.put("fstockid",warehouseId);
+            dt1Json.put("fstockid",fhdc);
 
             dt1Json.put("fsoorderno",jsonObject.getString("fbillno"));
             dt1Json.put("fdsgsrcoid",jsonObject.getString("fbillno"));
             jsonArray.add(dt1Json);
         }
         //出去发货店仓
-        jsonObject.remove("warehouseId");
+        jsonObject.remove("fhdc");
 
         jsonObject.put("fentitylist",jsonArray);
 

@@ -18,7 +18,7 @@ public class PutRefundVnOrderService extends BaseBean {
 
         CommonService commonService = new CommonService();
         //待补充
-        String mainSql = "select lcbh,fretcust_id,entry_date,warehouse_id from formtable_main_352 where requestId = ?";
+        String mainSql = "select lcbh,fretcust_id,entry_date,shdc from formtable_main_352 where requestId = ?";
 
 
         RecordSet rsMain = new RecordSet();
@@ -31,7 +31,7 @@ public class PutRefundVnOrderService extends BaseBean {
             processCode = Util.null2String(rsMain.getString("lcbh"));
             String fRetCustId = Util.null2String(rsMain.getString("fretcust_id"));
             String entryDate = Util.null2String(rsMain.getString("entry_date"));
-            String warehouseId = Util.null2String(rsMain.getString("warehouse_id"));
+            String shdc = Util.null2String(rsMain.getString("shdc"));
 
 
             processCode = "VN_"+processCode;
@@ -45,7 +45,7 @@ public class PutRefundVnOrderService extends BaseBean {
             jsonObject.put("fsettlecurrid","PRE009");
             jsonObject.put("fthirdbillno",processCode);
             jsonObject.put("fdate",entryDate);
-            jsonObject.put("warehouseId",warehouseId);
+            jsonObject.put("shdc",shdc);
         }
 
         String param = getDtl(requestid,jsonObject);
@@ -92,14 +92,14 @@ public class PutRefundVnOrderService extends BaseBean {
 
             dt1Json.put("frealqty",num);
 
-            String warehouseId = jsonObject.getString("warehouseId");
+            String shdc = jsonObject.getString("shdc");
             //发货仓
-            dt1Json.put("fstockid",warehouseId);
+            dt1Json.put("fstockid",shdc);
 
             jsonArray.add(dt1Json);
         }
         //出去发货店仓
-        jsonObject.remove("warehouseId");
+        jsonObject.remove("shdc");
 
         jsonObject.put("fentitylist",jsonArray);
 
