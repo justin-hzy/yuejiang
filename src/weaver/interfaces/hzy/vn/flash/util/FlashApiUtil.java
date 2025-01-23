@@ -78,6 +78,10 @@ public class FlashApiUtil extends BaseBean {
                 mainJson = getOrderJSONObject(mainJson,detailArr);
             }else if("2".equals(apiId)){
                 mainJson = getRefundJSONObject(mainJson,detailArr);
+            }if("3".equals(apiId)){
+                mainJson = getOrderJSONObject(mainJson,detailArr);
+            }else if("4".equals(apiId)){
+                mainJson = getRefundJSONObject(mainJson,detailArr);
             }
         }
 

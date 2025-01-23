@@ -63,6 +63,12 @@ public class FlashApiAction extends BaseBean implements Action {
         }else if("2".equals(apiId)){
             String respJsonStr = commonService.doK3Action(param,flashIp,putFlashInOrderUrl);
             writeLog("respJsonStr="+respJsonStr);
+        }else if("3".equals(apiId)){
+            String respJsonStr = commonService.doK3Action(param,flashIp,putFlashOutOrderUrl);
+            writeLog("respJsonStr="+respJsonStr);
+        }else if("4".equals(apiId)){
+            String respJsonStr = commonService.doK3Action(param,flashIp,putFlashInOrderUrl);
+            writeLog("respJsonStr="+respJsonStr);
         }
 
         return SUCCESS;
