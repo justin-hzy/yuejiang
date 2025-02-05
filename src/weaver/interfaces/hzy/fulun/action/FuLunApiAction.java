@@ -52,6 +52,8 @@ public class FuLunApiAction extends BaseBean implements Action {
 
         writeLog("detailData="+detailData.toString());
 
+        String processCode = mainData.get("lcbh");
+
         //构建接口入参
         String params = apiUtil.getParams(apiId, mainData, detailData);
 
@@ -123,8 +125,8 @@ public class FuLunApiAction extends BaseBean implements Action {
             //请求入参
             try{
                 RecordSet rs = new RecordSet();
-                String sql = "insert into uf_fl_transfer_order_request (requestId,apiid,params,status,createTime) values ("
-                        +requestId+","+apiId+","+params+","+status+","+todayString+")";
+                String sql = "insert into uf_fl_transfer_order_request (requestId,apiid,process_code,params,status,createTime) values ("
+                        +requestId+","+apiId+","+processCode+","+params+","+status+","+todayString+")";
                 rs.executeUpdate(sql);
             }catch (Exception e){
                 apiUtil.errlogMessage(apiId,requestId,params,e.getMessage());
