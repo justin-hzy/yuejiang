@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.tha.k3.order.service;
+package weaver.interfaces.hzy.tha.k3.refund.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -7,15 +7,17 @@ import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.interfaces.hzy.common.service.CommonService;
 
-public class PutSaleThaOrderService extends BaseBean {
-
-    private String putHKSaleUrl = getPropValue("k3_api_config","putHKSaleUrl");
+public class PutSaleThaRefundService extends BaseBean {
 
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    public void putSale(String requestid){
+    private String putHkReSaleUrl = getPropValue("k3_api_config","putHkReSaleUrl");
+
+    public void putRefund(String requestid){
         CommonService commonService = new CommonService();
-        String mainSql = "select lcbh,receiver_address,fcustomer_id,send_date,fhdc from formtable_main_347 where requestId = ?";
+
+        //待补充
+        String mainSql = "select lcbh,fretcust_id,entry_date,shdc from formtable_main_348 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -25,29 +27,29 @@ public class PutSaleThaOrderService extends BaseBean {
         String processCode = "";
 
         while (rsMain.next()){
-
             processCode = Util.null2String(rsMain.getString("lcbh"));
+            String fRetCustId = Util.null2String(rsMain.getString("fretcust_id"));
+            String entryDate = Util.null2String(rsMain.getString("entry_date"));
+            String shdc = Util.null2String(rsMain.getString("shdc"));
 
-            String fcustomerId = Util.null2String(rsMain.getString("fcustomer_id"));
-            String sendDate = Util.null2String(rsMain.getString("send_date"));
-            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+
+            processCode = "THA_"+processCode;
 
             jsonObject.put("fbillno",processCode);
             jsonObject.put("fstockorgid","ZT031");
             jsonObject.put("fsaleorgid","ZT031");
-            jsonObject.put("fcustomerid",fcustomerId);
+            jsonObject.put("fretcustid",fRetCustId);
             //jsonObject.put("fdsgbase","");
             jsonObject.put("fsettleorgid","ZT031");
             jsonObject.put("fsettlecurrid","PRE012");
             jsonObject.put("fthirdbillno",processCode);
-            jsonObject.put("fdate",sendDate);
-            jsonObject.put("fhdc",fhdc);
+            jsonObject.put("fdate",entryDate);
+            jsonObject.put("shdc",shdc);
         }
-
 
         String param = getDtl(requestid,jsonObject);
 
-        String resStr = commonService.doK3Action(param,k3Ip,putHKSaleUrl);
+        String resStr = commonService.doK3Action(param,k3Ip,putHkReSaleUrl);
 
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
@@ -58,13 +60,15 @@ public class PutSaleThaOrderService extends BaseBean {
             writeLog("同步金蝶销售出库单失败");
             updateIsNext(requestid,1);
         }
+
     }
 
     public String getDtl(String requestid,JSONObject jsonObject){
 
-        String dt1Sql = "select dt1.sku_no,dt1.frealqty,dt1.ftaxprice from formtable_main_347 as main " +
-                "inner join formtable_main_347_dt1 as dt1 on main.id = dt1.mainid " +
-                "where requestid = ? and dt1.frealqty > 0 and dt1.frealqty is not null";
+        //待修改，字段还没定
+        String dt1Sql = "select dt1.sku_no,dt1.actual_qty,dt1.price from formtable_main_348 as main " +
+                "inner join formtable_main_348_dt1 as dt1 on main.id = dt1.mainid " +
+                "where requestid = ? and dt1.actual_qty > 0 and dt1.actual_qty is not null";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -72,30 +76,29 @@ public class PutSaleThaOrderService extends BaseBean {
         JSONArray jsonArray = new JSONArray();
         while (rsDt1.next()){
             String skuNo = Util.null2String(rsDt1.getString("sku_no"));
-            String fRealQty = Util.null2String(rsDt1.getString("frealqty"));
-            String fTaxPrice = Util.null2String(rsDt1.getString("ftaxprice"));
+            String fRealQty = Util.null2String(rsDt1.getString("actual_qty"));
+            String fTaxPrice = Util.null2String(rsDt1.getString("price"));
 
             JSONObject dt1Json = new JSONObject();
-            dt1Json.put("fentryid",0);
+
             dt1Json.put("fmaterialId",skuNo);
 
             //泰国税率为0
             dt1Json.put("fentrytaxrate","7");
 
-            //获取价格
+            //查询价目表
             dt1Json.put("ftaxprice",fTaxPrice);
 
             dt1Json.put("frealqty",fRealQty);
-            String fhdc = jsonObject.getString("fhdc");
-            //发货仓
-            dt1Json.put("fstockid",fhdc);
 
-            dt1Json.put("fsoorderno",jsonObject.getString("fbillno"));
-            dt1Json.put("fdsgsrcoid",jsonObject.getString("fbillno"));
+            String shdc = jsonObject.getString("shdc");
+            //发货仓
+            dt1Json.put("fstockid",shdc);
+
             jsonArray.add(dt1Json);
         }
-        //出去发货店仓
-        jsonObject.remove("fhdc");
+        //除去收货店仓
+        jsonObject.remove("shdc");
 
         jsonObject.put("fentitylist",jsonArray);
 
@@ -105,8 +108,11 @@ public class PutSaleThaOrderService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_347 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_348 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }
+
+
+
 }
