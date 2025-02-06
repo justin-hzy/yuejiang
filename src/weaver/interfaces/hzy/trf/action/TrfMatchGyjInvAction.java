@@ -137,19 +137,23 @@ public class TrfMatchGyjInvAction extends BaseBean implements Action {
 
                 if(sku.equals(trfSku)){
                     String fBaseQty = k3Inv.get("fBaseQty");
-                    //当广悦进库存<调拨单数量，广悦进库存数量全部退回到台湾，故reSaleQty = fBaseQty
-                    if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(trfQty)) < 0){
-                        String reSaleQty = fBaseQty;
-                        twReSale.put("reSaleSku",trfSku);
-                        twReSale.put("reSaleQty",reSaleQty);
-                        twReSales.add(twReSale);
+                    Integer zero  = 0;
+                    //判断库存是否大于0
+                    if(Integer.compare(Integer.valueOf(fBaseQty),zero) > 0){
+                        //当广悦进库存<调拨单数量，广悦进库存数量全部退回到台湾，故reSaleQty = fBaseQty
+                        if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(trfQty)) < 0){
+                            String reSaleQty = fBaseQty;
+                            twReSale.put("reSaleSku",trfSku);
+                            twReSale.put("reSaleQty",reSaleQty);
+                            twReSales.add(twReSale);
 
-                    }else {
-                        String reSaleQty = trfQty;
-                        ////当广悦进库存>调拨单数量，
-                        twReSale.put("reSaleSku",trfSku);
-                        twReSale.put("reSaleQty",reSaleQty);
-                        twReSales.add(twReSale);
+                        }else {
+                            String reSaleQty = trfQty;
+                            ////当广悦进库存>调拨单数量，
+                            twReSale.put("reSaleSku",trfSku);
+                            twReSale.put("reSaleQty",reSaleQty);
+                            twReSales.add(twReSale);
+                        }
                     }
                 }
             }
