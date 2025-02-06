@@ -81,8 +81,13 @@ public class TransMaBangSaleOrderService extends BaseBean {
             dt1Json.put("fentryid",0);
             dt1Json.put("fmaterialId",stockSku);
 
-            //越南税率为0
-            dt1Json.put("fentrytaxrate","10");
+            //越南税率为10 泰国税率为7
+            if ("PRE009".equals(jsonObject.getString("fsettlecurrid"))){
+                dt1Json.put("fentrytaxrate","10");
+            }else if("PRE012".equals(jsonObject.getString("fsettlecurrid"))){
+                dt1Json.put("fentrytaxrate","7");
+            }
+
 
             //查询价目表
             dt1Json.put("ftaxprice",sellPrice);
