@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.th.refund;
+package weaver.interfaces.hzy.tha.refund;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
