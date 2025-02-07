@@ -1,11 +1,11 @@
-package weaver.interfaces.hzy.th.sf.action;
+package weaver.interfaces.hzy.tha.sf.action;
 
 import com.alibaba.fastjson.JSONObject;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
 import weaver.general.Util;
 import weaver.interfaces.hzy.common.service.CommonService;
-import weaver.interfaces.hzy.th.sf.util.SfApiUtil;
+import weaver.interfaces.hzy.tha.sf.util.SfApiUtil;
 import weaver.interfaces.workflow.action.Action;
 import weaver.interfaces.zxg.binaryCode.DMS.util.WorkflowToolMethods;
 import weaver.soa.workflow.request.RequestInfo;
@@ -72,9 +72,19 @@ public class SfApiAction extends BaseBean implements Action {
             String updateSql = "update formtable_main_347 set is_sf = ? , sf_request_result = ? where requestid = ?";
             rs.executeUpdate(updateSql,isSf,note,requestId);
         }else if("2".equals(apiId)){
-            //更新添加销售出库流程表状态
+            //更新添加销售退库流程表状态
             RecordSet rs = new RecordSet();
             String updateSql = "update formtable_main_348 set is_sf = ? , sf_request_result = ? where requestid = ?";
+            rs.executeUpdate(updateSql,isSf,note,requestId);
+        }else if("3".equals(apiId)){
+            //更新 调拨 添加销售退库流程表状态
+            RecordSet rs = new RecordSet();
+            String updateSql = "update formtable_main_356 set in_is_sf = ? , in_sf_request_result = ? where requestid = ?";
+            rs.executeUpdate(updateSql,isSf,note,requestId);
+        }else if("4".equals(apiId)){
+            //更新 调拨 添加销售出库流程表状态
+            RecordSet rs = new RecordSet();
+            String updateSql = "update formtable_main_356 set out_is_sf = ? , out_sf_request_result = ? where requestid = ?";
             rs.executeUpdate(updateSql,isSf,note,requestId);
         }
         return SUCCESS;

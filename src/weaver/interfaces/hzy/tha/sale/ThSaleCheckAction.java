@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.th.sale;
+package weaver.interfaces.hzy.tha.sale;
 
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;

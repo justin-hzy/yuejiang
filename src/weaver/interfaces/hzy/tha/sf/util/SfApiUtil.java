@@ -1,4 +1,4 @@
-package weaver.interfaces.hzy.th.sf.util;
+package weaver.interfaces.hzy.tha.sf.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -78,6 +78,8 @@ public class SfApiUtil extends BaseBean {
                 mainJson = getOrderJSONObject(mainJson,detailArr);
             }else if("2".equals(apiId) || "3".equals(apiId)){
                 mainJson = getRefundJSONObject(mainJson,detailArr);
+            }else if("5".equals(apiId)){
+
             }
         }
 
