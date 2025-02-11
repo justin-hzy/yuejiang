@@ -122,6 +122,8 @@ public class FuLunApiAction extends BaseBean implements Action {
 
             params = "'"+params+"'";
 
+            processCode = "'"+processCode+"'";
+
             //«Î«Û»Î≤Œ
             try{
                 RecordSet rs = new RecordSet();
