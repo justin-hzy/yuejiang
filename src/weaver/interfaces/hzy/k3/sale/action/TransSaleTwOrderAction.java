@@ -19,13 +19,16 @@ public class TransSaleTwOrderAction extends BaseBean implements Action {
 
         String requestid = requestInfo.getRequestid();
 
+        Integer id = requestInfo.getRequestManager().getBillid();
+
+
         //获取流程主表，明细表数据
         Map<String,String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
         writeLog("mainData="+mainData);
         String lcbh = mainData.get("lcbh");
 
         if(lcbh != null){
-            transSaleTwOrderService.putSale(requestid);
+            transSaleTwOrderService.putSale(requestid,id);
         }
 
         return SUCCESS;

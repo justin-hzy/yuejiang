@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.common.service.CommonService;
 import weaver.interfaces.workflow.action.Action;
 import weaver.soa.workflow.request.RequestInfo;
 
@@ -27,8 +28,55 @@ public class TransSaleTwPurService extends BaseBean {
 
     private String getTwPurPriceUrl = getPropValue("k3_api_config","getTwPurPriceUrl");
 
-    public String putPur(String requestid){
-        String mainSql = "select lcbh,chrq,fhdc,djrq,kh,ddje,bb from formtable_main_249 where requestId = ?";
+    public void putPur(String requestid,Integer id){
+
+
+        String mainSql = "select lcbh,chrq,fhdc,kh,ddje,bb from formtable_main_272 where requestId = ?";
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String chrq = Util.null2String(rsMain.getString("chrq"));
+            String sendWareHouse = Util.null2String(rsMain.getString("fhdc"));
+            String bb = Util.null2String(rsMain.getString("bb"));
+            lcbh= lcbh.replace("HK_","TW_");
+
+
+            jsonObject.put("fbillno","TW_"+lcbh);
+            jsonObject.put("fstockorgid","ZT026");
+            jsonObject.put("fpurchaseorgid","ZT026");
+            jsonObject.put("fsupplierId","ZT021");
+            jsonObject.put("fdemandorgid","ZT026");
+            jsonObject.put("fsettleorgid","ZT021");
+            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fdate",chrq);
+            jsonObject.put("sendWareHouse",sendWareHouse);
+            jsonObject.put("fsettlecurrid",bb);
+        }
+
+        String param = getDtl(id,jsonObject);
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,k3Ip,putTWPurUrl);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶采购入库单成功");
+            updateIsNext(requestid,0);
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶采购入库单失败");
+            updateIsNext(requestid,1);
+        }
+
+        /*String mainSql = "select lcbh,chrq,fhdc,djrq,kh,ddje,bb from formtable_main_249 where requestId = ?";
         RecordSet rsMain = new RecordSet();
 
         rsMain.executeQuery(mainSql,requestid);
@@ -72,7 +120,7 @@ public class TransSaleTwPurService extends BaseBean {
             writeLog("同步金蝶采购入库单失败");
             updateIsNext(requestid,1);
         }
-        return code;
+        return code;*/
 
     }
 
@@ -109,6 +157,42 @@ public class TransSaleTwPurService extends BaseBean {
         }
 
         jsonObject.remove("fhdc");
+        jsonObject.put("fentrylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        return param;
+    }
+
+
+    public String getDtl(Integer id,JSONObject jsonObject){
+        CommonService commonService = new CommonService();
+        String dt1Sql = "select tm,sl from formtable_main_272_dt3 where mainid = ?";
+
+        RecordSet rsDt1 = new RecordSet();
+
+        rsDt1.executeQuery(dt1Sql,id);
+        JSONArray jsonArray = new JSONArray();
+        while (rsDt1.next()) {
+            String sku = Util.null2String(rsDt1.getString("tm"));
+            String qty = Util.null2String(rsDt1.getString("sl"));
+
+            JSONObject dt1Json = new JSONObject();
+
+            dt1Json.put("fmaterialId",sku);
+
+            dt1Json.put("fentrytaxrate","0");
+
+            //查询价目表
+            commonService.getPrice(sku,dt1Json);
+            dt1Json.put("frealqty",qty);
+            String sendWareHouse = jsonObject.getString("sendWareHouse");
+            dt1Json.put("fstockid",sendWareHouse);
+
+            jsonArray.add(dt1Json);
+        }
+
+        jsonObject.remove("sendWareHouse");
         jsonObject.put("fentrylist",jsonArray);
 
         String param = jsonObject.toJSONString();
@@ -161,7 +245,7 @@ public class TransSaleTwPurService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_272 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }

@@ -25,8 +25,55 @@ public class TransSaleHkOrderService extends BaseBean {
 
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
-    public String putSale(String requestid){
-        String mainSql = "select lcbh,chrq,fhdc,djrq,kh,ddje,bb,ydh,ck from formtable_main_249 where requestId = ?";
+    public void putSale(String requestid,Integer id){
+
+        String mainSql = "select lcbh,chrq,fhdc,bb from formtable_main_272 where requestId = ?";
+
+        RecordSet rsMain = new RecordSet();
+
+        rsMain.executeQuery(mainSql,requestid);
+        JSONObject jsonObject = new JSONObject();
+        String lcbh = "";
+        while (rsMain.next()){
+            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            String sendDate = Util.null2String(rsMain.getString("chrq"));
+            String sendWareHouse = Util.null2String(rsMain.getString("fhdc"));
+            String currencyId =  Util.null2String(rsMain.getString("bb"));
+
+
+            jsonObject.put("fbillno","HK_"+lcbh);
+            jsonObject.put("fstockorgid","ZT021");
+            jsonObject.put("fsaleorgid","ZT021");
+            jsonObject.put("fcustomerid","CUST0558");
+            jsonObject.put("fdsgbase","ZT026");
+            jsonObject.put("fsettleorgid","ZT021");
+            jsonObject.put("fsettlecurrid",currencyId);
+            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fdate",sendDate);
+            jsonObject.put("fhdc",sendWareHouse);
+        }
+
+        String param = getDtl(id,jsonObject);
+
+        writeLog("param="+param);
+
+        String resStr = doK3Action(param,k3Ip,putHkSale);
+
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+        if("200".equals(code)){
+            addLog(lcbh,"200");
+            writeLog("同步金蝶销售出库单成功");
+            updateIsNext(requestid,0);
+        }else {
+            addLog(lcbh,"500");
+            writeLog("同步金蝶销售出库单失败");
+            updateIsNext(requestid,1);
+        }
+
+
+
+        /*String mainSql = "select lcbh,chrq,fhdc,djrq,kh,ddje,bb,ydh,ck from formtable_main_249 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -69,10 +116,11 @@ public class TransSaleHkOrderService extends BaseBean {
             updateIsNext(requestid,1);
         }
 
-        return code;
+        return code;*/
     }
 
 
+    // 获取销售发货金蝶子流程明细方法(废弃)
     public String getDtl(String requestid,JSONObject jsonObject){
 
         String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.hplx,dt1.taxrate " +
@@ -115,6 +163,48 @@ public class TransSaleHkOrderService extends BaseBean {
 
         return param;
     }
+
+
+    public String getDtl(Integer id,JSONObject jsonObject){
+
+        String dt1Sql = "select tm,sl from formtable_main_272_dt3 where mainid = ?";
+
+        RecordSet rsDt1 = new RecordSet();
+
+        rsDt1.executeQuery(dt1Sql,id);
+        JSONArray jsonArray = new JSONArray();
+        while (rsDt1.next()){
+            String tm = Util.null2String(rsDt1.getString("tm"));
+            String sl = Util.null2String(rsDt1.getString("sl"));
+
+            JSONObject dt1Json = new JSONObject();
+            dt1Json.put("fentryid",0);
+            dt1Json.put("fmaterialId",tm);
+
+            //香港税率为0
+            dt1Json.put("fentrytaxrate","0");
+
+            //查询价目表
+            getPrice(tm,dt1Json);
+
+            dt1Json.put("frealqty",sl);
+            String fhdc = jsonObject.getString("fhdc");
+            dt1Json.put("fstockid",fhdc);
+
+            dt1Json.put("fsoorderno",jsonObject.getString("fbillno"));
+            dt1Json.put("fdsgsrcoid",jsonObject.getString("fbillno"));
+            jsonArray.add(dt1Json);
+        }
+
+        jsonObject.remove("fhdc");
+
+        jsonObject.put("fentitylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        return param;
+    }
+
 
     public void getPrice(String sku,JSONObject dt1Json){
 
@@ -160,7 +250,7 @@ public class TransSaleHkOrderService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_272 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }

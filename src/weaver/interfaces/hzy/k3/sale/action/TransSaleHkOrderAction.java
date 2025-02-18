@@ -21,6 +21,8 @@ public class TransSaleHkOrderAction extends BaseBean implements Action {
 
         String requestid = requestInfo.getRequestid();
 
+        Integer id = requestInfo.getRequestManager().getBillid();
+
         //获取流程主表，明细表数据
         Map<String,String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
 
@@ -28,7 +30,7 @@ public class TransSaleHkOrderAction extends BaseBean implements Action {
         String lcbh = mainData.get("lcbh");
 
         if(lcbh != null){
-            transSaleHkOrderService.putSale(requestid);
+            transSaleHkOrderService.putSale(requestid,id);
         }
 
         return SUCCESS;
