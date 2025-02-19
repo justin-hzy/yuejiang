@@ -31,30 +31,33 @@ public class TransSaleTwPurService extends BaseBean {
     public void putPur(String requestid,Integer id){
 
 
-        String mainSql = "select lcbh,chrq,fhdc,kh,ddje,bb from formtable_main_272 where requestId = ?";
+        String mainSql = "select lcbh,fddh,chrq,fhdc,kh,ddje,hk_bb from formtable_main_272 where requestId = ?";
         RecordSet rsMain = new RecordSet();
 
         rsMain.executeQuery(mainSql,requestid);
         JSONObject jsonObject = new JSONObject();
-        String lcbh = "";
+        String processCode = "";
         while (rsMain.next()){
-            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            //流程单号
+            processCode = Util.null2String(rsMain.getString("lcbh"));
+            //富仑单号
+            String flOrderCode = Util.null2String(rsMain.getString("fddh"));
             String chrq = Util.null2String(rsMain.getString("chrq"));
             String sendWareHouse = Util.null2String(rsMain.getString("fhdc"));
-            String bb = Util.null2String(rsMain.getString("bb"));
-            lcbh= lcbh.replace("HK_","TW_");
+            String hkBb = Util.null2String(rsMain.getString("hk_bb"));
 
 
-            jsonObject.put("fbillno","TW_"+lcbh);
+            jsonObject.put("fbillno",processCode);
             jsonObject.put("fstockorgid","ZT026");
             jsonObject.put("fpurchaseorgid","ZT026");
             jsonObject.put("fsupplierId","ZT021");
             jsonObject.put("fdemandorgid","ZT026");
             jsonObject.put("fsettleorgid","ZT021");
-            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fthirdbillno",flOrderCode);
             jsonObject.put("fdate",chrq);
             jsonObject.put("sendWareHouse",sendWareHouse);
-            jsonObject.put("fsettlecurrid",bb);
+            jsonObject.put("fsettlecurrid",hkBb);
+            jsonObject.put("fisincludedtax",true);
         }
 
         String param = getDtl(id,jsonObject);
@@ -67,11 +70,11 @@ public class TransSaleTwPurService extends BaseBean {
         String code = resJson.getString("code");
 
         if("200".equals(code)){
-            addLog(lcbh,"200");
+            addLog(processCode,"200");
             writeLog("同步金蝶采购入库单成功");
             updateIsNext(requestid,0);
         }else {
-            addLog(lcbh,"500");
+            addLog(processCode,"500");
             writeLog("同步金蝶采购入库单失败");
             updateIsNext(requestid,1);
         }

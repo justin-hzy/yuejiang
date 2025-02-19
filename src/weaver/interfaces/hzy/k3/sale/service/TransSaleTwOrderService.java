@@ -25,7 +25,7 @@ public class TransSaleTwOrderService extends BaseBean {
 
     public String putSale(String requestid,Integer id){
 
-        String mainSql = "select lcbh,chrq,fhdc,djrq,kh,bb,lxr from formtable_main_272 where requestId = ?";
+        String mainSql = "select lcbh,fddh,chrq,fhdc,djrq,kh,bb,lxr from formtable_main_272 where requestId = ?";
         RecordSet rsMain = new RecordSet();
 
         rsMain.executeQuery(mainSql,requestid);
@@ -33,7 +33,10 @@ public class TransSaleTwOrderService extends BaseBean {
         String processCode = "";
 
         while (rsMain.next()){
+            //流程单号
             processCode = Util.null2String(rsMain.getString("lcbh"));
+            //富仑单号
+            String flOrderCode = Util.null2String(rsMain.getString("fddh"));
             String sendDate = Util.null2String(rsMain.getString("chrq"));
             String sendWareHouse = Util.null2String(rsMain.getString("fhdc"));
             String customerId = Util.null2String(rsMain.getString("kh"));
@@ -41,7 +44,7 @@ public class TransSaleTwOrderService extends BaseBean {
             String receiveWareHouse = Util.null2String(rsMain.getString("lxr"));
 
 
-            jsonObject.put("fbillno","TW_"+processCode);
+            jsonObject.put("fbillno",processCode);
             jsonObject.put("fstockorgid","ZT026");
             jsonObject.put("fsaleorgid","ZT026");
             jsonObject.put("fcustomerid",customerId);
@@ -51,7 +54,7 @@ public class TransSaleTwOrderService extends BaseBean {
             jsonObject.put("freceiveaddress",receiveWareHouse);
             jsonObject.put("fsettlecurrid",currencyId);
 
-            jsonObject.put("fthirdbillno",processCode);
+            jsonObject.put("fthirdbillno",flOrderCode);
 
             jsonObject.put("fdate",sendDate);
             jsonObject.put("sendWareHouse",sendWareHouse);

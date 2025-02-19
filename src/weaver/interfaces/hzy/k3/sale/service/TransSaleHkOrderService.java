@@ -27,28 +27,31 @@ public class TransSaleHkOrderService extends BaseBean {
 
     public void putSale(String requestid,Integer id){
 
-        String mainSql = "select lcbh,chrq,fhdc,bb from formtable_main_272 where requestId = ?";
+        String mainSql = "select lcbh,fddh,chrq,fhdc,hk_bb from formtable_main_272 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
         rsMain.executeQuery(mainSql,requestid);
         JSONObject jsonObject = new JSONObject();
-        String lcbh = "";
+        String processCode = "";
         while (rsMain.next()){
-            lcbh = Util.null2String(rsMain.getString("lcbh"));
+            //流程编号
+            processCode = Util.null2String(rsMain.getString("lcbh"));
+            //富仑单号
+            String flOrderCode = Util.null2String(rsMain.getString("fddh"));
             String sendDate = Util.null2String(rsMain.getString("chrq"));
             String sendWareHouse = Util.null2String(rsMain.getString("fhdc"));
-            String currencyId =  Util.null2String(rsMain.getString("bb"));
+            String currencyId =  Util.null2String(rsMain.getString("hk_bb"));
 
 
-            jsonObject.put("fbillno","HK_"+lcbh);
+            jsonObject.put("fbillno",processCode);
             jsonObject.put("fstockorgid","ZT021");
             jsonObject.put("fsaleorgid","ZT021");
             jsonObject.put("fcustomerid","CUST0558");
             jsonObject.put("fdsgbase","ZT026");
             jsonObject.put("fsettleorgid","ZT021");
             jsonObject.put("fsettlecurrid",currencyId);
-            jsonObject.put("fthirdbillno",lcbh);
+            jsonObject.put("fthirdbillno",flOrderCode);
             jsonObject.put("fdate",sendDate);
             jsonObject.put("fhdc",sendWareHouse);
         }
@@ -62,11 +65,11 @@ public class TransSaleHkOrderService extends BaseBean {
         JSONObject resJson = JSONObject.parseObject(resStr);
         String code = resJson.getString("code");
         if("200".equals(code)){
-            addLog(lcbh,"200");
+            addLog(processCode,"200");
             writeLog("同步金蝶销售出库单成功");
             updateIsNext(requestid,0);
         }else {
-            addLog(lcbh,"500");
+            addLog(processCode,"500");
             writeLog("同步金蝶销售出库单失败");
             updateIsNext(requestid,1);
         }
