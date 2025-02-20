@@ -391,11 +391,11 @@ public class InventoryService extends BaseBean {
         JSONArray skuArr = new JSONArray();
 
         for(String sku:skus){
-            writeLog("sku="+sku);
+            //writeLog("sku="+sku);
             skuArr.add(sku);
         }
 
-        writeLog("skuArr="+skuArr.toJSONString());
+        //writeLog("skuArr="+skuArr.toJSONString());
 
         reqJson.put("skus",skuArr);
         reqJson.put("stockNumber",fhdcxs);
