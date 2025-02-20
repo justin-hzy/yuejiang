@@ -26,35 +26,34 @@ public class TransReSaleGyjRePurService extends BaseBean {
 
         writeLog("执行putGYJRePur");
 
-        String mainSql = "select lcbh,djrq,kh,bb from formtable_main_249 where requestId = ?";
+        String mainSql = "select lcbh,rkrq,kh,bb from formtable_main_263 where requestId =  ?";
 
         RecordSet rsMain = new RecordSet();
         rsMain.executeQuery(mainSql,requestid);
         JSONObject jsonObject = new JSONObject();
-        String lcbh = "";
+        String processCode = "";
 
         while (rsMain.next()) {
-            lcbh = Util.null2String(rsMain.getString("lcbh"));
-            String djrq = Util.null2String(rsMain.getString("djrq"));
-            String bb = Util.null2String(rsMain.getString("bb"));
+            processCode = Util.null2String(rsMain.getString("lcbh"));
+            String receiveDate = Util.null2String(rsMain.getString("rkrq"));
+            String currency = Util.null2String(rsMain.getString("bb"));
 
             jsonObject.put("fstockorgid","ZT030");
             jsonObject.put("fpurchaseorgid","ZT030");
             jsonObject.put("fsupplierid","ZT026");
             jsonObject.put("fdemandorgid","ZT030");
-            //GYJTW_-> GYJ_
-            lcbh = lcbh.replace("GYJTW_","GYJ_");
-            jsonObject.put("fbillno",lcbh);
-            lcbh = lcbh.substring(lcbh.indexOf("GYJ_")+4,lcbh.length());
-            jsonObject.put("fthirdbillno",lcbh);
 
-            jsonObject.put("fdate",djrq);
-            jsonObject.put("fsettlecurrid",bb);
+            jsonObject.put("fbillno","GYJ_"+processCode);
+            jsonObject.put("fthirdbillno",processCode);
+
+            jsonObject.put("fdate",receiveDate);
+            jsonObject.put("fsettlecurrid",currency);
         }
 
         writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ? and dt1.sl > 0";
+        String dt1Sql = "select dt1.hptxm tm,dt1.fhl sl,main.shdc from formtable_main_263 main " +
+                "inner join formtable_main_263_dt1 dt1 on main.id = dt1.mainid  where requestId = ? and dt1.fhl > 0 and dt1.fhl is not null";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -64,19 +63,17 @@ public class TransReSaleGyjRePurService extends BaseBean {
         while (rsDt1.next()){
             String tm = Util.null2String(rsDt1.getString("tm"));
             String sl = Util.null2String(rsDt1.getString("sl"));
-            String xsj = Util.null2String(rsDt1.getString("xsj"));
-            String taxrate = Util.null2String(rsDt1.getString("taxrate"));
             String shdc = Util.null2String(rsDt1.getString("shdc"));
 
             JSONObject dt1Json = new JSONObject();
 
             dt1Json.put("fmaterialid",tm);
-            dt1Json.put("fentrytaxrate","0");
+            dt1Json.put("fentrytaxrate","5");
 
             queryRetPrice(tm,dt1Json);
 
             dt1Json.put("frmrealqty",sl);
-            //String fhdc = jsonObject.getString("fhdc");
+
             dt1Json.put("fstockid",shdc);
 
             jsonArray.add(dt1Json);
@@ -96,11 +93,11 @@ public class TransReSaleGyjRePurService extends BaseBean {
         String code = resJson.getString("code");
 
         if("200".equals(code)){
-            addLog(lcbh,"200");
+            addLog(processCode,"200");
             writeLog("同步金蝶广悦进-香港-退货单成功");
             updateIsNext(requestid,0);
         }else {
-            addLog(lcbh,"500");
+            addLog(processCode,"500");
             writeLog("同步金蝶广悦进-香港-退货单失败");
             updateIsNext(requestid,1);
         }
@@ -167,7 +164,7 @@ public class TransReSaleGyjRePurService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_263 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }

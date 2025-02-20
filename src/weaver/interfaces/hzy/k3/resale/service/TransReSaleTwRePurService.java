@@ -27,30 +27,28 @@ public class TransReSaleTwRePurService extends BaseBean {
     public String putTwRePur(String requestid) {
         writeLog("执行putTwRePur");
 
-        String mainSql = "select lcbh,djrq,kh,bb from formtable_main_249 where requestId = ?";
+        String mainSql = "select lcbh,rkrq,hk_bb from formtable_main_263 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
         rsMain.executeQuery(mainSql, requestid);
         JSONObject jsonObject = new JSONObject();
-        String lcbh = "";
+        String processCode = "";
 
         while (rsMain.next()){
 
-            lcbh = Util.null2String(rsMain.getString("lcbh"));
-            String djrq = Util.null2String(rsMain.getString("djrq"));
-            String kh = Util.null2String(rsMain.getString("kh"));
-            String bb = Util.null2String(rsMain.getString("bb"));
+            processCode = Util.null2String(rsMain.getString("lcbh"));
 
-            String fbillno = lcbh.replace("HK_","TW_");
-            jsonObject.put("fbillno",fbillno);
+            String receiveDate = Util.null2String(rsMain.getString("rkrq"));
+            String hkCurrency = Util.null2String(rsMain.getString("hk_bb"));
+
+            jsonObject.put("fbillno","TW_"+processCode);
             jsonObject.put("fstockorgid","ZT026");
             jsonObject.put("fpurchaseorgid","ZT026");
             jsonObject.put("fsupplierid","ZT021");
             jsonObject.put("fdemandorgid","ZT026");
-            lcbh = lcbh.substring(lcbh.indexOf("HK_")+3,lcbh.length());
-            jsonObject.put("fthirdbillno",lcbh);
-            jsonObject.put("fdate",djrq);
-            jsonObject.put("fsettlecurrid",bb);
+            jsonObject.put("fthirdbillno",processCode);
+            jsonObject.put("fdate",receiveDate);
+            jsonObject.put("fsettlecurrid",hkCurrency);
         }
 
         writeLog("jsonObject="+jsonObject.toJSONString());
@@ -65,11 +63,11 @@ public class TransReSaleTwRePurService extends BaseBean {
         String code = resJson.getString("code");
 
         if("200".equals(code)){
-            addLog(lcbh,"200");
+            addLog(processCode,"200");
             writeLog("同步金蝶销售退货单成功");
             updateIsNext(requestid,0);
         }else {
-            addLog(lcbh,"500");
+            addLog(processCode,"500");
             writeLog("同步金蝶销售退货单失败");
             updateIsNext(requestid,1);
         }
@@ -77,24 +75,24 @@ public class TransReSaleTwRePurService extends BaseBean {
     }
 
     public String getDtl(String requestid,JSONObject jsonObject){
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.taxrate,main.shdc " +
-                "from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 " +
-                "on main.id = dt1.mainid where requestId = ? and dt1.sl > 0 and dt1.sl is not null";
+        String dt1Sql = "select dt5.sku,dt5.refund_qty,main.shdc " +
+                "from formtable_main_263 as main inner join formtable_main_263_dt5 dt5 " +
+                "on main.id = dt5.mainid where requestId = ? and dt5.refund_qty > 0 and dt5.refund_qty is not null";
         RecordSet rsDt1 = new RecordSet();
         rsDt1.executeQuery(dt1Sql,requestid);
         JSONArray jsonArray = new JSONArray();
 
         while (rsDt1.next()){
-            String tm = Util.null2String(rsDt1.getString("tm"));
-            String sl = Util.null2String(rsDt1.getString("sl"));
+            String sku = Util.null2String(rsDt1.getString("sku"));
+            String refundQty = Util.null2String(rsDt1.getString("refund_qty"));
             String shdc = Util.null2String(rsDt1.getString("shdc"));
 
             JSONObject dt1Json = new JSONObject();
-            dt1Json.put("fmaterialid",tm);
+            dt1Json.put("fmaterialid",sku);
             dt1Json.put("fentrytaxrate","0");
             //查询价目表
-            getPrice(tm,dt1Json);
-            dt1Json.put("frmrealqty",sl);
+            getPrice(sku,dt1Json);
+            dt1Json.put("frmrealqty",refundQty);
             dt1Json.put("fstockid",shdc);
             jsonArray.add(dt1Json);
         }
@@ -148,7 +146,7 @@ public class TransReSaleTwRePurService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_263 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }
