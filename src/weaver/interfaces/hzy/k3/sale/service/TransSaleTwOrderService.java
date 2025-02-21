@@ -180,7 +180,7 @@ public class TransSaleTwOrderService extends BaseBean {
     }
 
     public String getDtl(Integer id,JSONObject jsonObject){
-        String dt1Sql = "select tm,sl,ddje,gg from formtable_main_272_dt1 where mainid = ?";
+        String dt1Sql = "select tm,fhl,ddje,gg from formtable_main_272_dt1 where mainid = ? and fhl > 0 and fhl is not null";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -188,7 +188,7 @@ public class TransSaleTwOrderService extends BaseBean {
         JSONArray jsonArray = new JSONArray();
         while (rsDt1.next()){
             String sku = Util.null2String(rsDt1.getString("tm"));
-            String qty = Util.null2String(rsDt1.getString("sl"));
+            String qty = Util.null2String(rsDt1.getString("fhl"));
             String taxRate = Util.null2String(rsDt1.getString("gg"));
             String price = Util.null2String(rsDt1.getString("ddje"));
 
