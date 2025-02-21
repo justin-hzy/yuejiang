@@ -27,35 +27,33 @@ public class TransConsTwPurService extends BaseBean {
 
     public String putConsTwPur(String requestid){
 
-        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+        String mainSql = "select lcbh,fhdcxs,ddrq from formtable_main_238 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
         rsMain.executeQuery(mainSql,requestid);
         JSONObject jsonObject = new JSONObject();
-        String lcbh = "";
+        String processCode = "";
         while (rsMain.next()){
-            lcbh = Util.null2String(rsMain.getString("lcbh"));
-            String djrq = Util.null2String(rsMain.getString("djrq"));
-            writeLog("djrq="+djrq);
-            String fhdc = Util.null2String(rsMain.getString("fhdc"));
+            processCode = Util.null2String(rsMain.getString("lcbh"));
+            String receiveDate = Util.null2String(rsMain.getString("ddrq"));
+            String sendWareHouse = Util.null2String(rsMain.getString("fhdcxs"));
             //String bb = Util.null2String(rsMain.getString("bb"));
-            lcbh= lcbh.replace("HK_","TW_");
-            jsonObject.put("fbillno",lcbh);
+            jsonObject.put("fbillno",processCode);
             jsonObject.put("fstockorgid","ZT026");
             jsonObject.put("fpurchaseorgid","ZT026");
             jsonObject.put("fsupplierId","ZT021");
             jsonObject.put("fdemandorgid","ZT026");
             jsonObject.put("fsettleorgid","ZT021");
-            lcbh = lcbh.substring(lcbh.indexOf("TW_")+3,lcbh.length());
-            jsonObject.put("fthirdbillno",lcbh);
-            jsonObject.put("fdate",djrq);
-            jsonObject.put("fhdc",fhdc);
-            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fthirdbillno",processCode);
+            jsonObject.put("fdate",receiveDate);
+            jsonObject.put("sendWareHouse",sendWareHouse);
+            jsonObject.put("fsettlecurrid","PRE007");
+            jsonObject.put("fisincludedtax",true);
         }
         writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt1Sql = "select dt3.tm,dt3.sl from formtable_main_238 as main inner join formtable_main_238_dt3 dt3 on main.id = dt3.mainid where requestId = ?";
 
         RecordSet rsDt1 = new RecordSet();
 
@@ -65,7 +63,6 @@ public class TransConsTwPurService extends BaseBean {
         while (rsDt1.next()){
             String tm = Util.null2String(rsDt1.getString("tm"));
             String sl = Util.null2String(rsDt1.getString("sl"));
-            String xsj = Util.null2String(rsDt1.getString("xsj"));
 
             JSONObject dt1Json = new JSONObject();
 
@@ -74,15 +71,14 @@ public class TransConsTwPurService extends BaseBean {
             dt1Json.put("fentrytaxrate","0");
             //查询价目表
             getPrice(tm,dt1Json);
-            //dt1Json.put("ftaxprice",xsj);
 
             dt1Json.put("frealqty",sl);
-            String fhdc = jsonObject.getString("fhdc");
+            String fhdc = jsonObject.getString("sendWareHouse");
             dt1Json.put("fstockid",fhdc);
 
             jsonArray.add(dt1Json);
         }
-        jsonObject.remove("fhdc");
+        jsonObject.remove("sendWareHouse");
         jsonObject.put("fentrylist",jsonArray);
 
         String param = jsonObject.toJSONString();
@@ -95,11 +91,11 @@ public class TransConsTwPurService extends BaseBean {
         String code = resJson.getString("code");
 
         if("200".equals(code)){
-            addLog(lcbh,"200");
+            addLog(processCode,"200");
             writeLog("同步金蝶采购入库单成功");
             updateIsNext(requestid,0);
         }else {
-            addLog(lcbh,"500");
+            addLog(processCode,"500");
             writeLog("同步金蝶采购入库单失败");
             updateIsNext(requestid,1);
         }

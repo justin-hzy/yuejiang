@@ -129,7 +129,7 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
                         writeLog("fBaseQty"+Integer.valueOf(fBaseQty));
                         writeLog("hkQuantity"+Integer.valueOf(hkQuantity));
                         if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(hkQuantity)) < 0){
-                            writeLog("Ïã¸Û¿â´æ²»×ã,Æ¥ÅäÏã¸Û¿â´æÊ§°Ü");
+                                writeLog("Ïã¸Û¿â´æ²»×ã,Æ¥ÅäÏã¸Û¿â´æÊ§°Ü");
                             String updateSql = "update formtable_main_238 set match_inv_fail = ? ,is_gyj_hk = ? where lcbh = ?";
                             RecordSet rs = new RecordSet();
                             rs.executeUpdate(updateSql,0,1,lcbh);

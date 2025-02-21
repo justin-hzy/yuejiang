@@ -30,6 +30,8 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
 
         RequestManager requestManager = requestInfo.getRequestManager();
 
+        int id = requestInfo.getRequestManager().getBillid();
+
         K3Service k3Service = new K3Service();
 
         WorkflowUtil workflowUtil = new WorkflowUtil();
@@ -37,6 +39,8 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
         ConsService consService = new ConsService();
 
         List<Map<String, String>> hkSales = new ArrayList<>();
+
+        List<Map<String,String>> twNotEnoughList = new ArrayList<>();
 
         /*获取主流程主表数据*/
         Map<String,String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
@@ -104,42 +108,57 @@ public class ConsSaleMtTwInvAction extends BaseBean implements Action {
 
             respMap = consService.compareInv(k3InvList,dtSums,inventoryService,lcbh);
 
-
         }
 
+        if (respMap.containsKey("twNotEnoughList")){
+            twNotEnoughList = respMap.get("twNotEnoughList");
+            if (twNotEnoughList.size()>0){
+                String errorMessage = "";
+                writeLog("twNotEnoughList=" + twNotEnoughList.toString());
+                for (Map<String,String> twNotEnough : twNotEnoughList){
+                    String sku = twNotEnough.get("tm");
+                    String qty = twNotEnough.get("qty");
 
+                    errorMessage = errorMessage+"sku = "+sku+",qty= -"+qty+";";
+                }
 
-        String updateSql = "update formtable_main_238 set hk_status  = ? where requestid = ? ";
-
-        RecordSet rs  = new RecordSet();
-
-        String id = getSaleId(requestid);
-
-        if(CollUtil.isNotEmpty(respMap)){
-            if(CollUtil.isNotEmpty(hkSales)){
+                String updateSql = "update formtable_main_238 set hk_status  = ?,is_tw_enough = ?,error_message = ? where requestid = ? ";
+                writeLog("updateSql="+updateSql);
+                RecordSet rs  = new RecordSet();
+                rs.executeUpdate(updateSql,null,"1",errorMessage,requestid);
+            }
+        }else {
+            if (respMap.containsKey("hkSales")){
+                hkSales = respMap.get("hkSales");
 
                 writeLog("hkSales=" + hkSales.toString());
 
-                rs.executeUpdate(updateSql,"0",requestid);
+                String updateSql = "update formtable_main_238 set hk_status  = ?,is_tw_enough = ? where requestid = ? ";
 
-                String deleteSql = "DELETE FROM formtable_main_238_dt3 where mainid = ?";
-                RecordSet deleteRs = new RecordSet();
-                deleteRs.executeUpdate(deleteSql,id);
+                RecordSet rs  = new RecordSet();
 
-                for (Map<String,String> hkSale: hkSales){
+                if(hkSales.size()>0){
+                    rs.executeUpdate(updateSql,"0","0",requestid);
 
-                    String tm = hkSale.get("tm");
-                    String sl = hkSale.get("sl");
+                    String deleteSql = "DELETE FROM formtable_main_238_dt3 where mainid = ?";
+                    RecordSet deleteRs = new RecordSet();
+                    deleteRs.executeUpdate(deleteSql,id);
 
-                    String insertSql = "insert into formtable_main_238_dt3 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
-                    RecordSet insertRs = new RecordSet();
-                    insertRs.executeUpdate(insertSql);
+                    for (Map<String,String> hkSale: hkSales){
+
+                        String tm = hkSale.get("tm");
+                        String sl = hkSale.get("sl");
+
+                        String insertSql = "insert into formtable_main_238_dt3 (mainid,tm,sl) values ('"+id+"','"+tm+"','"+sl+"')";
+                        RecordSet insertRs = new RecordSet();
+                        insertRs.executeUpdate(insertSql);
+                    }
                 }
-            }/*else if(hkSales.size()==0){
-                rs.executeUpdate(updateSql,"1",requestid);
-            }*/
-        }else {
-            rs.executeUpdate(updateSql,"1",requestid);
+            }else if(hkSales.size()==0){
+                String updateSql = "update formtable_main_238 set hk_status  = ?,is_tw_enough = ? where requestid = ? ";
+                RecordSet rs  = new RecordSet();
+                rs.executeUpdate(updateSql,"1","0",requestid);
+            }
         }
         return SUCCESS;
     }

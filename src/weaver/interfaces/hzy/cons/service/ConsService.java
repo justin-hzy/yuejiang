@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.cons.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import weaver.conn.RecordSet;
@@ -237,7 +238,9 @@ public class ConsService extends BaseBean {
     public Map<String,List<Map<String,String>>> compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dtSums, InventoryService inventoryService,String lcbh){
         Map<String,List<Map<String,String>>> resMap = new HashMap<>();
         List<Map<String,String>> hkSales = new ArrayList<>();
-        List<Map<String,String>> tw = new ArrayList<>();
+        List<Map<String,String>> twSales = new ArrayList<>();
+        List<Map<String,String>> twNotEnoughList = new ArrayList<>();
+
         writeLog("dtSums="+dtSums);
         for (Map<String,String> dtSum : dtSums) {
 
@@ -247,38 +250,30 @@ public class ConsService extends BaseBean {
 
             for (Map<String,String> k3Inv : k3InvList){
                 String sku = k3Inv.get("sku");
-                writeLog("sku="+sku);
-                writeLog("wlbm="+wlbm);
+
                 if(sku.equals(wlbm)){
 
                     Map<String,String> hkSale = new HashMap<>();
+                    Map<String,String> twNotEnough = new HashMap<>();
+
                     String fBaseQty = k3Inv.get("fBaseQty");
 
 
                     if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(xssl)) < 0){
-                        writeLog("生成香港数据");
-
                         String szzt = inventoryService.getOrg(wlbm);
 
-
                         if("ZT026".equals(szzt)){
-                            writeLog("发现库存不足");
+                            writeLog("sku:"+sku+"发现库存不足");
 
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             String now = dateFormat.format(new Date());
 
-                            //now = "'"+now+"'";
 
                             StringTokenizer tokenizer = new StringTokenizer(now, " ");
 
                             String dateString = tokenizer.nextToken();
                             String timeString = tokenizer.nextToken();
 
-//                            dateString= "'"+dateString+"'";
-//
-//                            timeString= "'"+timeString+"'";
-//                            lcbh = "'"+lcbh+"'";
-//
                             sku = sku+"库存不足";
 
                             String insertError = "insert into dms_k3_error_log (billNo,message,createTime,date,time) values ('" +lcbh+"','"+sku+"','"+now+"','"+dateString+"','"+timeString+"')";
@@ -287,20 +282,40 @@ public class ConsService extends BaseBean {
 
                             insertRs.executeUpdate(insertError);
 
+                            Integer qty = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty);
+
+                            twNotEnough.put("tm",sku);
+                            twNotEnough.put("qty",String.valueOf(qty));
+                            twNotEnoughList.add(twNotEnough);
 
 
                         }else {
-                            Integer hkNumber = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty) ;
-                            hkSale.put("tm",wlbm);
-                            hkSale.put("sl",String.valueOf(hkNumber));
-                            hkSales.add(hkSale);
+                            if(Integer.valueOf(fBaseQty)<0){
+                                writeLog(wlbm+"的台湾即时库存为负数");
+                                Integer hkNumber = Integer.valueOf(xssl);
+                                hkSale.put("tm",wlbm);
+                                hkSale.put("sl",String.valueOf(hkNumber));
+                                hkSales.add(hkSale);
+                            }else {
+                                writeLog("sku:"+sku+",生成香港数据");
+                                Integer hkNumber = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty) ;
+                                hkSale.put("tm",wlbm);
+                                hkSale.put("sl",String.valueOf(hkNumber));
+                                hkSales.add(hkSale);
+                            }
                         }
                     }
                 }
             }
         }
 
+        if(CollUtil.isNotEmpty(hkSales)){
+            resMap.put("hkSales",hkSales);
+        }
 
+        if(CollUtil.isNotEmpty(twNotEnoughList)){
+            resMap.put("twNotEnoughList",twNotEnoughList);
+        }
 
 
         return  resMap;
