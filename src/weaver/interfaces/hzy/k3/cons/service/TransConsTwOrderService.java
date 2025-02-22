@@ -80,7 +80,7 @@ public class TransConsTwOrderService extends BaseBean {
     }
 
     public String getDtl(String requestid,JSONObject jsonObject){
-        String dt1Sql = "select dt1.wlbm,dt1.hsdj,dt1.xssl from formtable_main_238 as main inner join formtable_main_238_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt1Sql = "select dt1.wlbm,dt1.hsdj,dt1.xssl from formtable_main_238 as main inner join formtable_main_238_dt1 dt1 on main.id = dt1.mainid where requestId = ? and dt1.xssl > 0 and dt1.xssl is not null";
 
         RecordSet rsDt1 = new RecordSet();
 
