@@ -36,13 +36,18 @@ public class PutTrfThaOrderService extends BaseBean {
         jsonObject.put("fdate",receiveDate);
         jsonObject.put("fthirdsrcbillno",lcbh);
 
-        String dtSql = "select dt3.sku_no,dt3.actual_qty from formtable_main_356 main inner join formtable_main_356_dt3 dt3 on main.id = dt3.mainid where main.requestId = ?";
-
-        RecordSet rs = new RecordSet();
-
-        rs.executeQuery(dtSql,requestId);
+        String trfType = mainData.get("dbxzpd");
 
         JSONArray jsonArray = new JSONArray();
+        RecordSet rs = new RecordSet();
+        if("1".equals(trfType)){
+            String dtSql = "select dt2.sku_no,dt2.actual_qty from formtable_main_356 main inner join formtable_main_356_dt2 dt2 on main.id = dt2.mainid where main.requestId = ?";
+            rs.executeQuery(dtSql,requestId);
+        }else if("2".equals(trfType) || "3".equals(trfType)){
+            String dtSql = "select dt3.sku_no,dt3.actual_qty from formtable_main_356 main inner join formtable_main_356_dt3 dt3 on main.id = dt3.mainid where main.requestId = ?";
+            rs.executeQuery(dtSql,requestId);
+        }
+
 
         while (rs.next()){
             /*skuÌõÂë*/
@@ -59,6 +64,7 @@ public class PutTrfThaOrderService extends BaseBean {
 
             jsonArray.add(dt1Json);
         }
+
 
         jsonObject.put("fentitylist",jsonArray);
 
