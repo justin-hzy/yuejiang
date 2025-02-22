@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.common.service.CommonService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -25,6 +26,8 @@ public class TransConsGyjPurService extends BaseBean {
     private String getTwPurPriceUrl = getPropValue("k3_api_config","getTwPurPriceUrl");
 
     public String putGYJConsPur(String requestid){
+
+        CommonService commonService = new CommonService();
 
         String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
 
@@ -73,7 +76,7 @@ public class TransConsGyjPurService extends BaseBean {
             //Ë°ÂÊ5
             dt1Json.put("fentrytaxrate","5");
 
-            getPrice(tm,dt1Json);
+            commonService.queryRetPrice(tm,dt1Json);
 
             dt1Json.put("frealqty",sl);
             String fhdc = jsonObject.getString("fhdc");

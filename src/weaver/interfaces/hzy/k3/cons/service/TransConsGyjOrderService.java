@@ -12,6 +12,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.common.service.CommonService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,6 +25,8 @@ public class TransConsGyjOrderService extends BaseBean {
     private String k3Ip = getPropValue("fulun_api_config","k3Ip");
 
     public String putGyjConsSale(String requestid){
+
+        CommonService commonService = new CommonService();
 
         String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
 
@@ -57,7 +60,7 @@ public class TransConsGyjOrderService extends BaseBean {
 
         //writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String param = getDtl(requestid,jsonObject);
+        String param = getDtl(requestid,jsonObject,commonService);
 
         //writeLog("param="+param);
 
@@ -77,7 +80,7 @@ public class TransConsGyjOrderService extends BaseBean {
         return code;
     }
 
-    public String getDtl(String requestid,JSONObject jsonObject){
+    public String getDtl(String requestid,JSONObject jsonObject,CommonService commonService){
         String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.hplx,dt1.taxrate from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
 
         RecordSet rsDt1 = new RecordSet();
@@ -97,7 +100,8 @@ public class TransConsGyjOrderService extends BaseBean {
             dt1Json.put("fmaterialId",tm);
 
             dt1Json.put("fentrytaxrate","5");
-            dt1Json.put("ftaxprice",xsj);
+
+            commonService.queryRetPrice(tm,dt1Json);
 
             dt1Json.put("frealqty",sl);
             String fhdc = jsonObject.getString("fhdc");

@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.common.service.CommonService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,6 +27,8 @@ public class TransConsGyjTwPurService extends BaseBean {
 
 
     public String putGyjTwConsPur(String requestid){
+
+        CommonService commonService = new CommonService();
 
         String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
 
@@ -53,7 +56,7 @@ public class TransConsGyjTwPurService extends BaseBean {
             jsonObject.put("fthirdbillno",lcbh);
             jsonObject.put("fdate",djrq);
             jsonObject.put("fhdc",fhdc);
-            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fsettlecurrid","PRE007");
             jsonObject.put("fisincludedtax","true");
         }
         writeLog("jsonObject="+jsonObject.toJSONString());
@@ -74,7 +77,7 @@ public class TransConsGyjTwPurService extends BaseBean {
             //Ë°ÂÊ5
             dt1Json.put("fentrytaxrate","5");
 
-            getPrice(tm,dt1Json);
+            commonService.queryRetPrice(tm,dt1Json);
 
             dt1Json.put("frealqty",sl);
             String fhdc = jsonObject.getString("fhdc");

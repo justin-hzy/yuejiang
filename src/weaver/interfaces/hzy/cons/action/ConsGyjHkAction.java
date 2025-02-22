@@ -58,7 +58,7 @@ public class ConsGyjHkAction extends BaseBean implements Action {
                 Map<String, List<Map<String, String>>> hkDetail = new HashMap<>();
 
                 String kh = mainData.get("kh");
-                String bb  = "PRE005";
+                String bb  = "PRE007";
                 String fhdc = mainData.get("fhdcxs");
                 String shdc = mainData.get("shdcxs");
                 String lcbh = mainData.get("lcbh");

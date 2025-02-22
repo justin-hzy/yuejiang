@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import weaver.conn.RecordSet;
 import weaver.general.BaseBean;
+import weaver.interfaces.hzy.common.service.CommonService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -25,6 +26,8 @@ public class TransConsGyjTwOrderService extends BaseBean {
     private String putTWSaleUrl = getPropValue("k3_api_config","putTWSaleUrl");
 
     public String putGyjTWConsSale(String requestid){
+
+        CommonService commonService = new CommonService();
 
         String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
 
@@ -57,7 +60,7 @@ public class TransConsGyjTwOrderService extends BaseBean {
 
         writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String param = getDtl(requestid,jsonObject,"GYJ_TW");
+        String param = getDtl(requestid,jsonObject,commonService);
 
         writeLog("param="+param);
 
@@ -78,7 +81,7 @@ public class TransConsGyjTwOrderService extends BaseBean {
         return code;
     }
 
-    public String getDtl(String requestid,JSONObject jsonObject,String flag){
+    public String getDtl(String requestid,JSONObject jsonObject,CommonService commonService){
         String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.hplx,dt1.taxrate from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
 
         RecordSet rsDt1 = new RecordSet();
@@ -88,8 +91,7 @@ public class TransConsGyjTwOrderService extends BaseBean {
         while (rsDt1.next()){
             String tm = Util.null2String(rsDt1.getString("tm"));
             String sl = Util.null2String(rsDt1.getString("sl"));
-            String xsj = Util.null2String(rsDt1.getString("xsj"));
-            String taxrate = Util.null2String(rsDt1.getString("taxrate"));
+
 
 
             JSONObject dt1Json = new JSONObject();
@@ -97,7 +99,8 @@ public class TransConsGyjTwOrderService extends BaseBean {
             dt1Json.put("fmaterialId",tm);
 
             dt1Json.put("fentrytaxrate","5");
-            getPrice(tm,dt1Json);
+
+            commonService.queryRetPrice(tm,dt1Json);
 
             dt1Json.put("frealqty",sl);
             String fhdc = jsonObject.getString("fhdc");

@@ -48,7 +48,7 @@ public class TransConsGyjHkOrderService extends BaseBean {
             jsonObject.put("fcustomerid","CUST0558");
             jsonObject.put("fdsgbase","ZT026");
             jsonObject.put("fsettleorgid","ZT021");
-            jsonObject.put("fsettlecurrid","PRE005");
+            jsonObject.put("fsettlecurrid","PRE007");
             jsonObject.put("fthirdbillno",lcbh);
             jsonObject.put("fdate",djrq);
             jsonObject.put("fhdc",fhdc);
