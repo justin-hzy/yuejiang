@@ -69,6 +69,7 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
             }
 
             writeLog("dt6MapList="+dt6MapList);
+            writeLog("skus"+skus.toString());
 
             JSONObject reqJson = new JSONObject();
 
