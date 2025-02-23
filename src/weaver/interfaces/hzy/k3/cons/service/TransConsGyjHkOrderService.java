@@ -26,7 +26,7 @@ public class TransConsGyjHkOrderService extends BaseBean {
 
     public String putGyjHKConsSale(String requestid){
 
-        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+        String mainSql = "select lcbh,fhdcxs,ddrq from formtable_main_238 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -35,13 +35,10 @@ public class TransConsGyjHkOrderService extends BaseBean {
         String lcbh = "";
         while (rsMain.next()){
             lcbh = Util.null2String(rsMain.getString("lcbh"));
-            String fhdc = Util.null2String(rsMain.getString("fhdc"));
-            String kh = Util.null2String(rsMain.getString("kh"));
-            String djrq = Util.null2String(rsMain.getString("djrq"));
-            writeLog("djrq="+djrq);
-            //String bb = Util.null2String(rsMain.getString("bb"));
+            String fhdcxs = Util.null2String(rsMain.getString("fhdcxs"));
+            String ddrq = Util.null2String(rsMain.getString("ddrq"));
 
-            jsonObject.put("fbillno",lcbh);
+            jsonObject.put("fbillno","GYJHK_"+lcbh);
 
             jsonObject.put("fstockorgid","ZT021");
             jsonObject.put("fsaleorgid","ZT021");
@@ -50,14 +47,14 @@ public class TransConsGyjHkOrderService extends BaseBean {
             jsonObject.put("fsettleorgid","ZT021");
             jsonObject.put("fsettlecurrid","PRE007");
             jsonObject.put("fthirdbillno",lcbh);
-            jsonObject.put("fdate",djrq);
-            jsonObject.put("fhdc",fhdc);
+            jsonObject.put("fdate",ddrq);
+            jsonObject.put("fhdcxs",fhdcxs);
 
         }
 
         writeLog("jsonObject="+jsonObject.toJSONString());
 
-        String param = getDtl(requestid,jsonObject,"GYJ_HK");
+        String param = getDtl(requestid,jsonObject);
 
         writeLog("param="+param);
 
@@ -78,49 +75,38 @@ public class TransConsGyjHkOrderService extends BaseBean {
         return code;
     }
 
-    public String getDtl(String requestid,JSONObject jsonObject,String flag){
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.hplx,dt1.taxrate from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+    public String getDtl(String requestid,JSONObject jsonObject){
+        String dt1Sql = "select dt6.sku,dt6.quantity from formtable_main_238 as main inner join formtable_main_238_dt6 dt6 on main.id = dt6.mainid where requestId = ?";
 
         RecordSet rsDt1 = new RecordSet();
 
         rsDt1.executeQuery(dt1Sql,requestid);
         JSONArray jsonArray = new JSONArray();
         while (rsDt1.next()){
-            String tm = Util.null2String(rsDt1.getString("tm"));
-            String sl = Util.null2String(rsDt1.getString("sl"));
-            String xsj = Util.null2String(rsDt1.getString("xsj"));
-            //String hplx = Util.null2String(rsDt1.getString("hplx"));
-            String taxrate = Util.null2String(rsDt1.getString("taxrate"));
-
+            String tm = Util.null2String(rsDt1.getString("sku"));
+            String sl = Util.null2String(rsDt1.getString("quantity"));
 
             JSONObject dt1Json = new JSONObject();
             dt1Json.put("fentryid",0);
             dt1Json.put("fmaterialId",tm);
 
-            if("HK".equals(flag) || "GYJ_HK".equals(flag)){
-                //香港税率为0
-                dt1Json.put("fentrytaxrate","0");
+            //香港税率为0
+            dt1Json.put("fentrytaxrate","0");
 
-                //查询价目表
-                //queryPriceTable(tm,dt1Json);
-                getPrice(tm,dt1Json);
-            }else if("TW".equals(flag)){
-                //台湾税率5
-                dt1Json.put("fentrytaxrate",taxrate);
-                dt1Json.put("ftaxprice",xsj);
-            }else if("GYJ_TW".equals(flag) || "GYJ".equals(flag)){
-                dt1Json.put("fentrytaxrate","5");
-                getPrice(tm,dt1Json);
-            }
+            //查询价目表
+            //queryPriceTable(tm,dt1Json);
+            getPrice(tm,dt1Json);
+
+
             dt1Json.put("frealqty",sl);
-            String fhdc = jsonObject.getString("fhdc");
-            dt1Json.put("fstockid",fhdc);
+            String fhdcxs = jsonObject.getString("fhdcxs");
+            dt1Json.put("fstockid",fhdcxs);
 
             dt1Json.put("fsoorderno",jsonObject.getString("fbillno"));
             dt1Json.put("fdsgsrcoid",jsonObject.getString("fbillno"));
             jsonArray.add(dt1Json);
         }
-        jsonObject.remove("fhdc");
+        jsonObject.remove("fhdcxs");
 
         jsonObject.put("fentitylist",jsonArray);
 
@@ -173,7 +159,7 @@ public class TransConsGyjHkOrderService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_238 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }

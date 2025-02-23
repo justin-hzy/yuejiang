@@ -29,7 +29,7 @@ public class TransConsGyjTwOrderService extends BaseBean {
 
         CommonService commonService = new CommonService();
 
-        String mainSql = "select lcbh,fhdc,djrq,kh from formtable_main_249 where requestId = ?";
+        String mainSql = "select lcbh,fhdcxs,ddrq,kh from formtable_main_238 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -38,13 +38,10 @@ public class TransConsGyjTwOrderService extends BaseBean {
         String lcbh = "";
         while (rsMain.next()){
             lcbh = Util.null2String(rsMain.getString("lcbh"));
-            String fhdc = Util.null2String(rsMain.getString("fhdc"));
-            String kh = Util.null2String(rsMain.getString("kh"));
-            String djrq = Util.null2String(rsMain.getString("djrq"));
-            writeLog("djrq="+djrq);
-            //String bb = Util.null2String(rsMain.getString("bb"));
+            String fhdcxs = Util.null2String(rsMain.getString("fhdcxs"));
+            String ddrq = Util.null2String(rsMain.getString("ddrq"));
 
-            jsonObject.put("fbillno",lcbh);
+            jsonObject.put("fbillno","GYJTW_"+lcbh);
 
             jsonObject.put("fstockorgid","ZT026");
             jsonObject.put("fsaleorgid","ZT026");
@@ -53,8 +50,8 @@ public class TransConsGyjTwOrderService extends BaseBean {
             jsonObject.put("fsettleorgid","ZT026");
             jsonObject.put("fsettlecurrid","PRE005");
             jsonObject.put("fthirdbillno",lcbh);
-            jsonObject.put("fdate",djrq);
-            jsonObject.put("fhdc",fhdc);
+            jsonObject.put("fdate",ddrq);
+            jsonObject.put("fhdcxs",fhdcxs);
 
         }
 
@@ -82,17 +79,15 @@ public class TransConsGyjTwOrderService extends BaseBean {
     }
 
     public String getDtl(String requestid,JSONObject jsonObject,CommonService commonService){
-        String dt1Sql = "select dt1.tm,dt1.sl,dt1.xsj,dt1.hplx,dt1.taxrate from formtable_main_249 as main inner join formtable_main_249_dt1 dt1 on main.id = dt1.mainid where requestId = ?";
+        String dt5Sql = "select dt5.sku,dt5.quantity from formtable_main_238 as main inner join formtable_main_238_dt5 dt5 on main.id = dt5.mainid where requestId = ?";
 
         RecordSet rsDt1 = new RecordSet();
 
-        rsDt1.executeQuery(dt1Sql,requestid);
+        rsDt1.executeQuery(dt5Sql,requestid);
         JSONArray jsonArray = new JSONArray();
         while (rsDt1.next()){
-            String tm = Util.null2String(rsDt1.getString("tm"));
-            String sl = Util.null2String(rsDt1.getString("sl"));
-
-
+            String tm = Util.null2String(rsDt1.getString("sku"));
+            String sl = Util.null2String(rsDt1.getString("quantity"));
 
             JSONObject dt1Json = new JSONObject();
             dt1Json.put("fentryid",0);
@@ -103,14 +98,14 @@ public class TransConsGyjTwOrderService extends BaseBean {
             commonService.queryRetPrice(tm,dt1Json);
 
             dt1Json.put("frealqty",sl);
-            String fhdc = jsonObject.getString("fhdc");
-            dt1Json.put("fstockid",fhdc);
+            String fhdcxs = jsonObject.getString("fhdcxs");
+            dt1Json.put("fstockid",fhdcxs);
 
             dt1Json.put("fsoorderno",jsonObject.getString("fbillno"));
             dt1Json.put("fdsgsrcoid",jsonObject.getString("fbillno"));
             jsonArray.add(dt1Json);
         }
-        jsonObject.remove("fhdc");
+        jsonObject.remove("fhdcxs");
 
         jsonObject.put("fentitylist",jsonArray);
 
@@ -163,7 +158,7 @@ public class TransConsGyjTwOrderService extends BaseBean {
     }
 
     public void updateIsNext(String requestid,Integer isNext){
-        String updateSql = "update formtable_main_249 set is_next = ? where requestId = ?";
+        String updateSql = "update formtable_main_238 set is_next = ? where requestId = ?";
         RecordSet updateRs = new RecordSet();
         updateRs.executeUpdate(updateSql,isNext,requestid);
     }

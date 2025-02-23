@@ -1,5 +1,6 @@
 package weaver.interfaces.hzy.cons.action;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import weaver.conn.RecordSet;
@@ -28,6 +29,8 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
         writeLog("ø™ º÷¥–– ConsMatchHkInvAction");
 
         Map<String, String> mainData = WorkflowToolMethods.getMainTableInfo(requestInfo);
+
+        String requestId = requestInfo.getRequestid();
 
         List<Map<String, String>> detailDatas6 = weaver.interfaces.tx.util.WorkflowToolMethods.getDetailTableInfo(requestInfo, 6);
 
@@ -84,16 +87,35 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
             String lcbh = mainData.get("lcbh");
 
-            compareInv(k3InvList, dt6MapList, lcbh);
+            Map<String,List<Map<String,String>>> respMap = compareInv(k3InvList, dt6MapList, lcbh);
+
+            if (respMap.containsKey("hkNotEnoughList")){
+                List<Map<String,String>> hkNotEnoughList = respMap.get("hkNotEnoughList");
+                writeLog("hkNotEnoughList="+hkNotEnoughList.toString());
+                String invErrorMsg = "";
+                for (Map<String,String> hkNotEnoughMap : hkNotEnoughList){
+                    String sku = hkNotEnoughMap.get("sku");
+                    String qty = hkNotEnoughMap.get("qty");
+
+                    invErrorMsg = invErrorMsg+"sku = "+sku+"»±ªı¡ø="+qty+";";
+                }
+
+                String updateSql = "update formtable_main_238 set inv_error_msg = ? where requestid = ? ";
+                writeLog("updateSql="+updateSql);
+                RecordSet rs  = new RecordSet();
+                rs.executeUpdate(updateSql,invErrorMsg,requestId);
+            }
 
         }
         return SUCCESS;
     }
 
 
-    public void compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dt6MapList,String lcbh){
+    public Map<String,List<Map<String,String>>> compareInv(List<Map<String,String>> k3InvList,List<Map<String,String>> dt6MapList,String lcbh){
 
-        List<Map<String,String>> hkSales = new ArrayList<>();
+        Map<String,List<Map<String,String>>> respMap = new HashMap<>();
+
+        List<Map<String,String>> hkNotEnoughList = new ArrayList<>();
 
         writeLog("dt6MapList="+dt6MapList.toString());
 
@@ -129,7 +151,15 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
                         writeLog("fBaseQty"+Integer.valueOf(fBaseQty));
                         writeLog("hkQuantity"+Integer.valueOf(hkQuantity));
                         if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(hkQuantity)) < 0){
-                                writeLog("œ„∏€ø‚¥Ê≤ª◊„,∆•≈‰œ„∏€ø‚¥Ê ß∞‹");
+
+                            Map<String,String> hkNotEnough = new HashMap<>();
+                            Integer  enoughNumber = Integer.valueOf(fBaseQty) - Integer.valueOf(hkQuantity);
+                            hkNotEnough.put("sku",sku);
+
+                            hkNotEnough.put("qty",String.valueOf(enoughNumber));
+                            hkNotEnoughList.add(hkNotEnough);
+
+                            writeLog("œ„∏€ø‚¥Ê≤ª◊„,∆•≈‰œ„∏€ø‚¥Ê ß∞‹");
                             String updateSql = "update formtable_main_238 set match_inv_fail = ? ,is_gyj_hk = ? where lcbh = ?";
                             RecordSet rs = new RecordSet();
                             rs.executeUpdate(updateSql,0,1,lcbh);
@@ -143,6 +173,12 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
                 }
             }
         }
+
+        if (CollUtil.isNotEmpty(hkNotEnoughList)){
+            respMap.put("hkNotEnoughList",hkNotEnoughList);
+        }
+
+        return respMap;
     }
 
 }
