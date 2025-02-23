@@ -160,15 +160,7 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
                             hkNotEnough.put("qty",String.valueOf(enoughNumber));
                             hkNotEnoughList.add(hkNotEnough);
 
-                            writeLog("œ„∏€ø‚¥Ê≤ª◊„,∆•≈‰œ„∏€ø‚¥Ê ß∞‹");
-                            String updateSql = "update formtable_main_238 set match_inv_fail = ? ,is_gyj_hk = ? where lcbh = ?";
-                            RecordSet rs = new RecordSet();
-                            rs.executeUpdate(updateSql,0,1,lcbh);
-                        }else {
-                            writeLog("œ„∏€ø‚¥Ê◊„πª,∆•≈‰œ„∏€ø‚¥Ê≥…π¶");
-                            String updateSql = "update formtable_main_238 set is_gyj_hk = ? where lcbh = ?";
-                            RecordSet rs = new RecordSet();
-                            rs.executeUpdate(updateSql,0,lcbh);
+
                         }
                     }
                 }
@@ -177,6 +169,16 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
         if (CollUtil.isNotEmpty(hkNotEnoughList)){
             respMap.put("hkNotEnoughList",hkNotEnoughList);
+
+            writeLog("œ„∏€ø‚¥Ê≤ª◊„,∆•≈‰œ„∏€ø‚¥Ê ß∞‹");
+            String updateSql = "update formtable_main_238 set match_inv_fail = ? ,is_gyj_hk = ? where lcbh = ?";
+            RecordSet rs = new RecordSet();
+            rs.executeUpdate(updateSql,0,1,lcbh);
+        }else {
+            writeLog("œ„∏€ø‚¥Ê◊„πª,∆•≈‰œ„∏€ø‚¥Ê≥…π¶");
+            String updateSql = "update formtable_main_238 set is_gyj_hk = ? where lcbh = ?";
+            RecordSet rs = new RecordSet();
+            rs.executeUpdate(updateSql,0,lcbh);
         }
 
         return respMap;
