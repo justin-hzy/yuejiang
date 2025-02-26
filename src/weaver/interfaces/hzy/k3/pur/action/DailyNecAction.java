@@ -50,6 +50,8 @@ public class DailyNecAction extends BaseBean implements Action {
 
         //币别
         String bb = mainData.get("bb");
+        //香港-台湾币别
+        String hkBb = mainData.get("hk_bb");
 
         //子流程单据日期，暂时取预计进仓日
         LocalDate today = LocalDate.now();
@@ -80,7 +82,7 @@ public class DailyNecAction extends BaseBean implements Action {
                 return FAILURE_AND_CONTINUE;
             }
         }else if("3".equals(apiId)){
-            String code = purService.tranHkSale_2(lcbh,gys,pushDate,rkck,bb,detailDatas1,k3Service,"0");
+            String code = purService.tranHkSale_2(lcbh,gys,pushDate,rkck,hkBb,detailDatas1,k3Service,"0");
             if("200".equals(code)){
                 k3Service.addLog(lcbh,"200");
                 writeLog("同步金蝶-香港-销售出库单成功");

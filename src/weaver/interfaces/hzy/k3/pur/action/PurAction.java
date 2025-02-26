@@ -54,8 +54,9 @@ public class PurAction extends BaseBean implements Action {
         //子流程单据日期，暂时取预计进仓日
         String rkrq = mainData.get("rkrq");
 
+        //香港-台湾币别
 
-
+        String hkBb = mainData.get("hk_bb");
 
 
         List<Map<String,String>> twList = new ArrayList<>();
@@ -81,7 +82,7 @@ public class PurAction extends BaseBean implements Action {
             //进口税
             writeLog("大陆出口-永青工厂直发");
             String jks = mainData.get("jks");
-            purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
+            purService.tranTwPur_1(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks);
         }else if("0".equals(cglx)){
             //台湾资生堂
             purService.tranHkPur_1(lcbh,gys,rkrq,rkck,bb,detailDatas1,k3Service,"0");
@@ -98,11 +99,11 @@ public class PurAction extends BaseBean implements Action {
             //进口税
             writeLog("大陆出口-总部发货");
             String jks = mainData.get("jks");
-            purService.tranTwPur_1(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
+            purService.tranTwPur_1(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks);
         }else if("5".equals(cglx)){
             writeLog("大陆出口-工厂直发");
             String jks = mainData.get("jks");
-            purService.tranTwPur_2(lcbh,gys,rkrq,rkck,"PRE005",detailDatas1,k3Service,"0",jks);
+            purService.tranTwPur_2(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks);
         }
 
         return SUCCESS;
