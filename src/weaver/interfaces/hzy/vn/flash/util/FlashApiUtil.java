@@ -82,6 +82,8 @@ public class FlashApiUtil extends BaseBean {
                 mainJson = getOrderJSONObject(mainJson,detailArr);
             }else if("4".equals(apiId)){
                 mainJson = getRefundJSONObject(mainJson,detailArr);
+            }else if("5".equals(apiId)){
+                mainJson = getPurJSONObject(mainJson,detailArr);
             }
         }
 
@@ -175,6 +177,15 @@ public class FlashApiUtil extends BaseBean {
 
     public JSONObject getRefundJSONObject(JSONObject mainJson,JSONArray detailArr){
 
+        writeLog("明细参数" + detailArr.toJSONString());
+        writeLog("主参数"+mainJson.toJSONString());
+        mainJson.put("goods",detailArr);
+        writeLog("主参数"+mainJson.toJSONString());
+
+        return mainJson;
+    }
+
+    public JSONObject getPurJSONObject(JSONObject mainJson,JSONArray detailArr){
         writeLog("明细参数" + detailArr.toJSONString());
         writeLog("主参数"+mainJson.toJSONString());
         mainJson.put("goods",detailArr);
