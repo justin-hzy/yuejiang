@@ -86,6 +86,11 @@ public class SfApiAction extends BaseBean implements Action {
             RecordSet rs = new RecordSet();
             String updateSql = "update formtable_main_356 set out_is_sf = ? , out_sf_request_result = ? where requestid = ?";
             rs.executeUpdate(updateSql,isSf,note,requestId);
+        }else if("6".equals(apiId)){
+            //更新 入库 添加采购入库流程表状态
+            RecordSet rs = new RecordSet();
+            String updateSql = "update formtable_main_366 set in_is_sf = ? , in_sf_request_result = ? where requestid = ?";
+            rs.executeUpdate(updateSql,isSf,note,requestId);
         }
         return SUCCESS;
     }

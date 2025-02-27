@@ -80,6 +80,8 @@ public class SfApiUtil extends BaseBean {
                 mainJson = getRefundJSONObject(mainJson,detailArr);
             }else if("5".equals(apiId)){
 
+            }else if("6".equals(apiId)){
+                mainJson = getPurJSONObject(mainJson,detailArr);
             }
         }
 
@@ -171,6 +173,16 @@ public class SfApiUtil extends BaseBean {
     }
 
     public JSONObject getRefundJSONObject(JSONObject mainJson,JSONArray detailArr){
+
+        writeLog("明细参数" + detailArr.toJSONString());
+        writeLog("主参数"+mainJson.toJSONString());
+        mainJson.put("goods",detailArr);
+        writeLog("主参数"+mainJson.toJSONString());
+
+        return mainJson;
+    }
+
+    public JSONObject getPurJSONObject(JSONObject mainJson,JSONArray detailArr){
 
         writeLog("明细参数" + detailArr.toJSONString());
         writeLog("主参数"+mainJson.toJSONString());
