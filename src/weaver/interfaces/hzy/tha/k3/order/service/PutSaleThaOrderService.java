@@ -32,7 +32,7 @@ public class PutSaleThaOrderService extends BaseBean {
             String sendDate = Util.null2String(rsMain.getString("send_date"));
             String fhdc = Util.null2String(rsMain.getString("fhdc"));
 
-            jsonObject.put("fbillno",processCode);
+            jsonObject.put("fbillno","THA_"+processCode);
             jsonObject.put("fstockorgid","ZT031");
             jsonObject.put("fsaleorgid","ZT031");
             jsonObject.put("fcustomerid",fcustomerId);

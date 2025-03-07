@@ -32,10 +32,7 @@ public class PutSaleThaRefundService extends BaseBean {
             String entryDate = Util.null2String(rsMain.getString("entry_date"));
             String shdc = Util.null2String(rsMain.getString("shdc"));
 
-
-            processCode = "THA_"+processCode;
-
-            jsonObject.put("fbillno",processCode);
+            jsonObject.put("fbillno","THA_"+processCode);
             jsonObject.put("fstockorgid","ZT031");
             jsonObject.put("fsaleorgid","ZT031");
             jsonObject.put("fretcustid",fRetCustId);
