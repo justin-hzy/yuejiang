@@ -31,8 +31,7 @@ public class PutSaleVnOrderService extends BaseBean {
             String sendDate = Util.null2String(rsMain.getString("send_date"));
             String fhdc = Util.null2String(rsMain.getString("fhdc"));
 
-            processCode = "VN_"+processCode;
-            jsonObject.put("fbillno",processCode);
+            jsonObject.put("fbillno","VN_"+processCode);
             jsonObject.put("fstockorgid","ZT029");
             jsonObject.put("fsaleorgid","ZT029");
             jsonObject.put("fcustomerid",fcustomerId);

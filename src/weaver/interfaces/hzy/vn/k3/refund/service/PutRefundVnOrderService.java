@@ -33,10 +33,7 @@ public class PutRefundVnOrderService extends BaseBean {
             String entryDate = Util.null2String(rsMain.getString("entry_date"));
             String shdc = Util.null2String(rsMain.getString("shdc"));
 
-
-            processCode = "VN_"+processCode;
-
-            jsonObject.put("fbillno",processCode);
+            jsonObject.put("fbillno","VN_"+processCode);
             jsonObject.put("fstockorgid","ZT029");
             jsonObject.put("fsaleorgid","ZT029");
             jsonObject.put("fretcustid",fRetCustId);
