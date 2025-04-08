@@ -153,11 +153,11 @@ public class MeApiUtil extends BaseBean {
      * @param requestId 请求id
      * @return json格式的参数字符串
      */
-    public List<String> getParams(String requestId, String apiId){
+    public List<String> getParams(String requestId, String apiId,String dataTableName){
         writeLog("开始构建me接口-apiId为" + apiId + "的接口参数-------");
         List<String> params = null;
         if ("1".equals(apiId)){
-            params = getPurInJson(requestId);
+            params = getPurInJson(requestId,dataTableName);
         }else if("2".equals(apiId)){
             params = getRePurJson(requestId);
         }else if("3".equals(apiId)){
@@ -327,11 +327,13 @@ public class MeApiUtil extends BaseBean {
         ModeRightInfo.editModeDataShare(1, modeid, billid);//重置建模权限
     }
 
-    public List<String> getPurInJson(String requestId){
+        public List<String> getPurInJson(String requestId,String dataTableName){
+        String mainTable = dataTableName;
+        String detailTable = mainTable+"_dt2";
         writeLog("---------开始组装ME接口采购进仓单参数-----------");
         List<String> params = new ArrayList<>();
         RecordSet rs = new RecordSet();
-        String sql1 = "select main.lcbh,main.rkck,dt2.wlbm,dt2.rksl,dt2.rkrq from formtable_main_234 as main inner join formtable_main_234_dt2 dt2 on main.id = dt2.mainid where main.requestId = ?";
+        String sql1 = "select main.lcbh,main.rkck,dt2.wlbm,dt2.rksl,main.rkrq from "+mainTable +" as main inner join " + detailTable + " dt2 on main.id = dt2.mainid where main.requestId = ?";
         writeLog(sql1+","+requestId);
         rs.executeQuery(sql1, requestId);
         JSONObject jsonObject = new JSONObject();

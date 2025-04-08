@@ -19,6 +19,8 @@ public class MeApiAction extends BaseBean implements Action {
 
     private String apiId;
 
+    private String dataTableName;
+
     @Override
     public String execute(RequestInfo requestInfo) {
 
@@ -42,7 +44,7 @@ public class MeApiAction extends BaseBean implements Action {
         }
 
         //构建接口入参
-        List<String> params = apiUtil.getParams(requestid,apiId);
+        List<String> params = apiUtil.getParams(requestid,apiId,dataTableName);
 
         if (params.size()>0){
             for (String param : params){
