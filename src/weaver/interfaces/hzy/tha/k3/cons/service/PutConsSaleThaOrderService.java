@@ -16,7 +16,7 @@ public class PutConsSaleThaOrderService extends BaseBean {
     public void putSale(String requestid){
         CommonService commonService = new CommonService();
 
-        String mainSql = "select lcbh,receiver_address,fcustomer_id,send_date,send_warehouse from formtable_main_270 where requestId = ?";
+        String mainSql = "select lcbh,receiver_address,fcustomer_id,send_date,send_warehouse,currency,organization,tax_rate from formtable_main_270 where requestId = ?";
 
 
         RecordSet rsMain = new RecordSet();
@@ -34,16 +34,24 @@ public class PutConsSaleThaOrderService extends BaseBean {
             String sendDate = Util.null2String(rsMain.getString("send_date"));
             String sendWarehouse = Util.null2String(rsMain.getString("send_warehouse"));
 
+            String currency = Util.null2String(rsMain.getString("currency"));
+
+            String organization = Util.null2String(rsMain.getString("organization"));
+
+            String taxRate = Util.null2String(rsMain.getString("tax_rate"));
+
+
             jsonObject.put("fbillno",processCode);
-            jsonObject.put("fstockorgid","ZT031");
-            jsonObject.put("fsaleorgid","ZT031");
+            jsonObject.put("fstockorgid",organization);
+            jsonObject.put("fsaleorgid",organization);
             jsonObject.put("fcustomerid",fcustomerId);
             //jsonObject.put("fdsgbase","");
-            jsonObject.put("fsettleorgid","ZT031");
-            jsonObject.put("fsettlecurrid","PRE012");
+            jsonObject.put("fsettleorgid",organization);
+            jsonObject.put("fsettlecurrid",currency);
             jsonObject.put("fthirdbillno",processCode);
             jsonObject.put("fdate",sendDate);
             jsonObject.put("sendWarehouse",sendWarehouse);
+            jsonObject.put("taxRate",taxRate);
         }
 
         String param = getDtl(requestid,jsonObject);
@@ -69,6 +77,7 @@ public class PutConsSaleThaOrderService extends BaseBean {
 
         rsDt1.executeQuery(dt1Sql,requestid);
         JSONArray jsonArray = new JSONArray();
+        String taxRate = jsonObject.getString("taxRate");
         while (rsDt1.next()){
             String skuNo = Util.null2String(rsDt1.getString("sku_no"));
             String qty = Util.null2String(rsDt1.getString("qty"));
@@ -78,8 +87,8 @@ public class PutConsSaleThaOrderService extends BaseBean {
             dt1Json.put("fentryid",0);
             dt1Json.put("fmaterialId",skuNo);
 
-            //泰国税率为0
-            dt1Json.put("fentrytaxrate","7");
+            //税率
+            dt1Json.put("fentrytaxrate",taxRate);
 
             //获取价格
             dt1Json.put("ftaxprice",fTaxPrice);
@@ -93,8 +102,10 @@ public class PutConsSaleThaOrderService extends BaseBean {
             dt1Json.put("fdsgsrcoid",jsonObject.getString("fbillno"));
             jsonArray.add(dt1Json);
         }
-        //出去发货店仓
+        //除去发货店仓
         jsonObject.remove("sendWarehouse");
+
+        jsonObject.remove("taxRate");
 
         jsonObject.put("fentitylist",jsonArray);
 

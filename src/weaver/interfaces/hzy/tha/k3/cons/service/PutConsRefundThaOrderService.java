@@ -16,7 +16,7 @@ public class PutConsRefundThaOrderService extends BaseBean {
     public void putRefund(String requestid){
         CommonService commonService = new CommonService();
 
-        String mainSql = "select lcbh,fcustomer_id,receive_date,receive_warehouse from formtable_main_270 where requestId = ?";
+        String mainSql = "select lcbh,fcustomer_id,receive_date,receive_warehouse,currency,organization,tax_rate from formtable_main_270 where requestId = ?";
 
         RecordSet rsMain = new RecordSet();
 
@@ -32,18 +32,25 @@ public class PutConsRefundThaOrderService extends BaseBean {
             String receiveWarehouse = Util.null2String(rsMain.getString("receive_warehouse"));
 
 
+            String currency = Util.null2String(rsMain.getString("currency"));
+
+            String organization = Util.null2String(rsMain.getString("organization"));
+
+            String taxRate = Util.null2String(rsMain.getString("tax_rate"));
+
             processCode = "THA_"+processCode;
 
             jsonObject.put("fbillno",processCode);
-            jsonObject.put("fstockorgid","ZT031");
-            jsonObject.put("fsaleorgid","ZT031");
+            jsonObject.put("fstockorgid",organization);
+            jsonObject.put("fsaleorgid",organization);
             jsonObject.put("fretcustid",fRetCustId);
             //jsonObject.put("fdsgbase","");
-            jsonObject.put("fsettleorgid","ZT031");
-            jsonObject.put("fsettlecurrid","PRE012");
+            jsonObject.put("fsettleorgid",organization);
+            jsonObject.put("fsettlecurrid",currency);
             jsonObject.put("fthirdbillno",processCode);
             jsonObject.put("fdate",receiveDate);
             jsonObject.put("receiveWarehouse",receiveWarehouse);
+            jsonObject.put("taxRate",taxRate);
         }
 
         String param = getDtl(requestid,jsonObject);
@@ -82,8 +89,9 @@ public class PutConsRefundThaOrderService extends BaseBean {
 
             dt1Json.put("fmaterialId",skuNo);
 
-            //泰国税率为0
-            dt1Json.put("fentrytaxrate","7");
+            String taxRate = jsonObject.getString("taxRate");
+            //改为以取值方式赋值
+            dt1Json.put("fentrytaxrate",taxRate);
 
             //查询价目表
             dt1Json.put("ftaxprice",fTaxPrice);
@@ -98,6 +106,8 @@ public class PutConsRefundThaOrderService extends BaseBean {
         }
         //除去收货店仓
         jsonObject.remove("receiveWarehouse");
+        //除去税率
+        jsonObject.remove("taxRate");
 
         jsonObject.put("fentitylist",jsonArray);
 
