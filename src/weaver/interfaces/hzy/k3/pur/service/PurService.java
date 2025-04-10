@@ -180,7 +180,7 @@ public class PurService extends BaseBean {
 
         jsonObject.put("fdate",rkrq);
         jsonObject.put("fhdc",rkck);
-        jsonObject.put("fsettlecurrid","PRE005");
+        jsonObject.put("fsettlecurrid",bb);
         writeLog("jsonObject="+jsonObject.toJSONString());
         //传进口税
         if("0.00".equals(falldiscount)){
