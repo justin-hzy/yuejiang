@@ -165,17 +165,17 @@ public class PurService extends BaseBean {
         }
     }
 
-    /*大陆直发，台湾入库*/
-    public void tranTwPur_2(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String falldiscount){
+    /*大陆出口-工厂直发，台湾入库*/
+    public void tranTwPur_2(String lcbh, String gys, String rkrq, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String falldiscount,String purOrganization){
         JSONObject jsonObject = new JSONObject();
 
-        String fbillno = "TW_"+lcbh;
+        String fbillno = lcbh;
         jsonObject.put("fbillno",fbillno);
-        jsonObject.put("fstockorgid","ZT026");
-        jsonObject.put("fpurchaseorgid","ZT026");
+        jsonObject.put("fstockorgid",purOrganization);
+        jsonObject.put("fpurchaseorgid",purOrganization);
         jsonObject.put("fsupplierId","ZT021");
-        jsonObject.put("fdemandorgid","ZT026");
-        jsonObject.put("fsettleorgid","ZT026");
+        jsonObject.put("fdemandorgid",purOrganization);
+        jsonObject.put("fsettleorgid",purOrganization);
         jsonObject.put("fthirdbillno",lcbh);
 
         jsonObject.put("fdate",rkrq);
@@ -473,7 +473,7 @@ public class PurService extends BaseBean {
         return code;
     }
 
-    public String tranHkSale_2(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate){
+    public String tranHkSale_2(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String purCustomer){
 
         PriceService priceService = new PriceService();
         LogService logService = new LogService();
@@ -483,7 +483,7 @@ public class PurService extends BaseBean {
         jsonObject.put("fbillno",fbillno);
         jsonObject.put("fstockorgid","ZT021");
         jsonObject.put("fsaleorgid","ZT021");
-        jsonObject.put("fcustomerid","CUST0558");
+        jsonObject.put("fcustomerid",purCustomer);
         jsonObject.put("fdsgbase","ZT026");
         jsonObject.put("fsettleorgid","ZT021");
         jsonObject.put("type","HK");

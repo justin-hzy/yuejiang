@@ -65,6 +65,11 @@ public class PurAction extends BaseBean implements Action {
 
         K3Service k3Service = new K3Service();
 
+        //单据前缀
+        String orderPrefix = mainData.get("order_prefix");
+        //采购组织
+        String purOrganization = mainData.get("pur_organization");
+
         if("3".equals(cglx) || "4".equals(cglx)){
             //材料购买
             purService.tranTwPur_0(lcbh,gys,rkrq,rkck,bb,detailDatas1,k3Service,"5","");
@@ -101,9 +106,11 @@ public class PurAction extends BaseBean implements Action {
             String jks = mainData.get("jks");
             purService.tranTwPur_1(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks);
         }else if("5".equals(cglx)){
+            //用于台湾大陆出口-工厂直发 、海外的大陆出口-工厂直发、外海的大陆出口-总部发货
             writeLog("大陆出口-工厂直发");
             String jks = mainData.get("jks");
-            purService.tranTwPur_2(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks);
+            lcbh = orderPrefix+lcbh;
+            purService.tranTwPur_2(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks,purOrganization);
         }
 
         return SUCCESS;

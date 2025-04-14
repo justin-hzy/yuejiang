@@ -58,8 +58,11 @@ public class DailyNecAction extends BaseBean implements Action {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String pushDate = today.format(formatter);
 
+        //采购客户
+        String purCustomer = mainData.get("pur_customer");
 
         if("1".equals(apiId)){
+            //用于台湾大陆出口-工厂直发 、海外的大陆出口-工厂直发
             String code = purService.tranDailyNecCnSale(lcbh,gys,pushDate,ckck,bb,detailDatas1,k3Service,"0");
             if("200".equals(code)){
                 k3Service.addLog(lcbh,"200");
@@ -71,6 +74,7 @@ public class DailyNecAction extends BaseBean implements Action {
                 return FAILURE_AND_CONTINUE;
             }
         }else if("2".equals(apiId)){
+            //用于台湾大陆出口-工厂直发 、海外的大陆出口-工厂直发、外海的大陆出口-总部发货
             String code = purService.tranHkPur_2(lcbh,gys,pushDate,rkck,bb,detailDatas1,k3Service,"0");
             if("200".equals(code)){
                 k3Service.addLog(lcbh,"200");
@@ -82,7 +86,8 @@ public class DailyNecAction extends BaseBean implements Action {
                 return FAILURE_AND_CONTINUE;
             }
         }else if("3".equals(apiId)){
-            String code = purService.tranHkSale_2(lcbh,gys,pushDate,rkck,hkBb,detailDatas1,k3Service,"0");
+            //用于台湾大陆出口-工厂直发 、海外的大陆出口-工厂直发、外海的大陆出口-总部发货
+            String code = purService.tranHkSale_2(lcbh,gys,pushDate,rkck,hkBb,detailDatas1,k3Service,"0",purCustomer);
             if("200".equals(code)){
                 k3Service.addLog(lcbh,"200");
                 writeLog("同步金蝶-香港-销售出库单成功");
