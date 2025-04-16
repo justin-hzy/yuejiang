@@ -418,6 +418,72 @@ public class PurService extends BaseBean {
     }
 
 
+    public String tranAbroadPur(String lcbh, String gys, String rkrq, String rkck, String hkBb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate,String purOrganization){
+
+        PriceService priceService = new PriceService();
+        LogService logService = new LogService();
+
+        JSONObject jsonObject = new JSONObject();
+        String fbillno = "HK_"+lcbh;
+        jsonObject.put("fbillno",fbillno);
+
+        jsonObject.put("fbillno",fbillno);
+        jsonObject.put("fstockorgid",purOrganization);
+        jsonObject.put("fpurchaseorgid",purOrganization);
+        jsonObject.put("fsupplierId","ZT021");
+        jsonObject.put("fdemandorgid",purOrganization);
+        jsonObject.put("fsettleorgid",purOrganization);
+        jsonObject.put("fthirdbillno",lcbh);
+
+        jsonObject.put("fdate",rkrq);
+        jsonObject.put("fhdc",rkck);
+
+        jsonObject.put("fsettlecurrid",hkBb);
+        jsonObject.put("fisincludedtax","true");
+
+        JSONArray jsonArray = new JSONArray();
+
+        for (Map<String, String> detailData : detailDatas1){
+            JSONObject dtl = new JSONObject();
+
+
+            dtl.put("fmaterialId",detailData.get("wlbm"));
+            //暂时写死
+            dtl.put("fentrytaxrate",fentrytaxrate);
+            writeLog("cgsl="+detailData.get("cgsl"));
+            dtl.put("frealqty",detailData.get("cgsl"));
+            dtl.put("fstockid",rkck);
+
+            dtl.put("ftaxprice",detailData.get("twprice"));
+
+            jsonArray.add(dtl);
+        }
+
+        jsonObject.put("fentrylist",jsonArray);
+
+        String param = jsonObject.toJSONString();
+
+        writeLog("json="+param);
+
+        String resStr = priceService.doK3Action(param,k3Ip,putHKPurUrl);
+        JSONObject resJson = JSONObject.parseObject(resStr);
+        String code = resJson.getString("code");
+
+
+        if("200".equals(code)){
+            k3Service.addLog(fbillno,code);
+            writeLog("同步金蝶香港采购入库单成功");
+        }else {
+            String message = resJson.getString("message");
+            k3Service.addLog(fbillno,code);
+            writeLog("同步金蝶香港采购入库单失败");
+        }
+
+
+        return code;
+    }
+
+
     public String tranHkSale_1(String lcbh, String gys, String yjjcr, String rkck, String bb, List<Map<String,String>> detailDatas1, K3Service k3Service,String fentrytaxrate){
         JSONObject jsonObject = new JSONObject();
         String fbillno = "HK_"+lcbh;

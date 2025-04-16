@@ -110,9 +110,13 @@ public class PurAction extends BaseBean implements Action {
             writeLog("大陆出口-工厂直发");
             String jks = mainData.get("jks");
             lcbh = orderPrefix+lcbh;
-            purService.tranTwPur_2(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks,purOrganization);
-        }
 
+            if("ZT026".equals(purOrganization)){
+                purService.tranTwPur_2(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",jks,purOrganization);
+            }else {
+                purService.tranAbroadPur(lcbh,gys,rkrq,rkck,hkBb,detailDatas1,k3Service,"0",purOrganization);
+            }
+        }
         return SUCCESS;
     }
 
