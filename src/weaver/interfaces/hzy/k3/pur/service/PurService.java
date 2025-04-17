@@ -424,7 +424,7 @@ public class PurService extends BaseBean {
         LogService logService = new LogService();
 
         JSONObject jsonObject = new JSONObject();
-        String fbillno = "HK_"+lcbh;
+        String fbillno = lcbh;
         jsonObject.put("fbillno",fbillno);
 
         jsonObject.put("fbillno",fbillno);
