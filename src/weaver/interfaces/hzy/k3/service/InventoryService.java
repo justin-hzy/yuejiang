@@ -122,6 +122,24 @@ public class InventoryService extends BaseBean {
         }
     }
 
+    public List<Map<String,String>> CheckOutNegInv(List<Map<String,String>> k3InvList){
+
+        List<Map<String,String>> negInvList = new ArrayList<>();
+
+        for (Map<String,String> k3Inv : k3InvList){
+
+            String fBaseQty = k3Inv.get("fBaseQty");
+            if(Integer.valueOf(fBaseQty)<0){
+                String sku = k3Inv.get("sku");
+                Map<String,String> negInvMap = new HashMap<>();
+                negInvMap.put("sku",sku);
+                negInvMap.put("fBaseQty",fBaseQty);
+                negInvList.add(negInvMap);
+            }
+        }
+        return negInvList;
+    }
+
 
 
     public void compareInv(){
