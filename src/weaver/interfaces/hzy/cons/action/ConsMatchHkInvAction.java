@@ -88,25 +88,42 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
             String lcbh = mainData.get("lcbh");
 
-            Map<String,List<Map<String,String>>> respMap = compareInv(k3InvList, dt6MapList, lcbh);
+            //检查负库存
+            List<Map<String,String>> negInvList = inventoryService.CheckOutNegInv(k3InvList);
+            writeLog("negInvList="+negInvList.toString());
+            if(CollUtil.isNotEmpty(negInvList)){
 
-            if (respMap.containsKey("hkNotEnoughList")){
-                List<Map<String,String>> hkNotEnoughList = respMap.get("hkNotEnoughList");
-                writeLog("hkNotEnoughList="+hkNotEnoughList.toString());
-                String invErrorMsg = "";
-                for (Map<String,String> hkNotEnoughMap : hkNotEnoughList){
-                    String sku = hkNotEnoughMap.get("sku");
-                    String qty = hkNotEnoughMap.get("qty");
-
-                    invErrorMsg = invErrorMsg+"sku = "+sku+"缺货量="+qty+";";
+                String message = "负库存信息, ";
+                for (Map<String,String> negInvMap : negInvList){
+                    String sku = negInvMap.get("sku");
+                    String fBaseQty = negInvMap.get("fBaseQty");
+                    message = message + sku + "为" + fBaseQty + ";";
                 }
 
-                String updateSql = "update formtable_main_238 set inv_error_msg = ? where requestid = ? ";
-                writeLog("updateSql="+updateSql);
-                RecordSet rs  = new RecordSet();
-                rs.executeUpdate(updateSql,invErrorMsg,requestId);
-            }
+                String updateSql = "update formtable_main_238 set match_inv_fail = ? , inv_error_msg = ? where lcbh = ?";
+                RecordSet rs = new RecordSet();
+                rs.executeUpdate(updateSql,0,message,lcbh);
 
+            }else {
+                Map<String,List<Map<String,String>>> respMap = compareInv(k3InvList, dt6MapList, lcbh);
+
+                if (respMap.containsKey("hkNotEnoughList")){
+                    List<Map<String,String>> hkNotEnoughList = respMap.get("hkNotEnoughList");
+                    writeLog("hkNotEnoughList="+hkNotEnoughList.toString());
+                    String invErrorMsg = "";
+                    for (Map<String,String> hkNotEnoughMap : hkNotEnoughList){
+                        String sku = hkNotEnoughMap.get("sku");
+                        String qty = hkNotEnoughMap.get("qty");
+
+                        invErrorMsg = invErrorMsg+"sku = "+sku+"缺货量="+qty+";";
+                    }
+
+                    String updateSql = "update formtable_main_238 set inv_error_msg = ? where requestid = ? ";
+                    writeLog("updateSql="+updateSql);
+                    RecordSet rs  = new RecordSet();
+                    rs.executeUpdate(updateSql,invErrorMsg,requestId);
+                }
+            }
         }
         return SUCCESS;
     }
@@ -139,12 +156,25 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
                     Map<String,String> hkSale = new HashMap<>();
                     String fBaseQty = k3Inv.get("fBaseQty");
+                    writeLog("fBaseQty"+Integer.valueOf(fBaseQty));
+                    writeLog("hkQuantity"+Integer.valueOf(hkQuantity));
+                    if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(hkQuantity)) < 0){
+
+                        Map<String,String> hkNotEnough = new HashMap<>();
+                        Integer  enoughNumber = Integer.valueOf(fBaseQty) - Integer.valueOf(hkQuantity);
+                        hkNotEnough.put("sku",sku);
+
+                        hkNotEnough.put("qty",String.valueOf(enoughNumber));
+                        hkNotEnoughList.add(hkNotEnough);
+
+
+                    }
 //                    writeLog("fBaseQty="+fBaseQty);
 
                     /*writeLog("fBaseQty="+fBaseQty);
                     writeLog("xssl="+xssl);*/
 
-                    if(Integer.valueOf(fBaseQty)<0){
+                    /*if(Integer.valueOf(fBaseQty)<0){
                         String updateSql = "update formtable_main_238 set match_inv_fail = ? where lcbh = ?";
                         RecordSet rs = new RecordSet();
                         rs.executeUpdate(updateSql,0,lcbh);
@@ -162,7 +192,7 @@ public class ConsMatchHkInvAction extends BaseBean implements Action {
 
 
                         }
-                    }
+                    }*/
                 }
             }
         }

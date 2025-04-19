@@ -87,37 +87,56 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
 
             List<Map<String, String>> hkSales = new ArrayList<>();
 
-            hkSales = compareInv(k3InvList, dt5MapList, lcbh);
+            //判断负库存
+            List<Map<String,String>> negInvList = inventoryService.CheckOutNegInv(k3InvList);
+            writeLog("negInvList="+negInvList.toString());
+            if(CollUtil.isNotEmpty(negInvList)){
 
-            if (CollUtil.isNotEmpty(hkSales)){
-
-                String deleteSql = "DELETE FROM formtable_main_238_dt6 where mainid = ?";
-                RecordSet deleteRs = new RecordSet();
-                deleteRs.executeUpdate(deleteSql,id);
-
-                for (Map<String, String> hkSale : hkSales){
-
-                    String insertSql = "insert into formtable_main_238_dt6 (mainid,sku,quantity) values (?,?,?)";
-
-                    RecordSet insertRs = new RecordSet();
-
-                    String sku = hkSale.get("sku");
-
-                    String quantity = hkSale.get("quantity");
-
-                    insertRs.executeUpdate(insertSql,id,sku,quantity);
+                String message = "负库存信息, ";
+                for (Map<String,String> negInvMap : negInvList){
+                    String sku = negInvMap.get("sku");
+                    String fBaseQty = negInvMap.get("fBaseQty");
+                    message = message + sku + "为" + fBaseQty + ";";
                 }
 
-                String updateSql = "update formtable_main_238 set is_gyj_tw = ? where lcbh = ?";
+                String updateSql = "update formtable_main_238 set match_inv_fail = ? , inv_error_msg = ? where lcbh = ?";
                 RecordSet rs = new RecordSet();
-                rs.executeUpdate(updateSql,1,lcbh);
+                rs.executeUpdate(updateSql,0,message,lcbh);
 
-
-                writeLog("台湾货品不够，需要生成香港单据");
                 return SUCCESS;
             }else {
-                writeLog("台湾货品足够，无需生成香港单据");
-                return SUCCESS;
+                hkSales = compareInv(k3InvList, dt5MapList, lcbh);
+
+                if (CollUtil.isNotEmpty(hkSales)){
+
+                    String deleteSql = "DELETE FROM formtable_main_238_dt6 where mainid = ?";
+                    RecordSet deleteRs = new RecordSet();
+                    deleteRs.executeUpdate(deleteSql,id);
+
+                    for (Map<String, String> hkSale : hkSales){
+
+                        String insertSql = "insert into formtable_main_238_dt6 (mainid,sku,quantity) values (?,?,?)";
+
+                        RecordSet insertRs = new RecordSet();
+
+                        String sku = hkSale.get("sku");
+
+                        String quantity = hkSale.get("quantity");
+
+                        insertRs.executeUpdate(insertSql,id,sku,quantity);
+                    }
+
+                    String updateSql = "update formtable_main_238 set is_gyj_tw = ? where lcbh = ?";
+                    RecordSet rs = new RecordSet();
+                    rs.executeUpdate(updateSql,1,lcbh);
+
+
+                    writeLog("台湾货品不够，需要生成香港单据");
+                    return SUCCESS;
+                }else {
+                    writeLog("台湾货品足够，无需生成香港单据");
+                    return SUCCESS;
+                }
             }
         }
         return FAILURE_AND_CONTINUE;
@@ -149,12 +168,23 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
 
                     Map<String,String> hkSale = new HashMap<>();
                     String fBaseQty = k3Inv.get("fBaseQty");
+                    if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(twQuantity)) < 0){
+                        writeLog("生成香港数据");
+                        Integer hkNumber = Integer.valueOf(twQuantity) - Integer.valueOf(fBaseQty) ;
+                        hkSale.put("sku",sku);
+                        hkSale.put("quantity",String.valueOf(hkNumber));
+                        hkSales.add(hkSale);
+                    }else {
+                        String updateSql = "update formtable_main_238 set is_gyj_tw = ? where lcbh = ?";
+                        RecordSet rs = new RecordSet();
+                        rs.executeUpdate(updateSql,0,lcbh);
+                    }
 //                    writeLog("fBaseQty="+fBaseQty);
 
                     /*writeLog("fBaseQty="+fBaseQty);
                     writeLog("xssl="+xssl);*/
 
-                    if(Integer.valueOf(fBaseQty)<0){
+                    /*if(Integer.valueOf(fBaseQty)<0){
                         String updateSql = "update formtable_main_238 set match_inv_fail = ? where lcbh = ?";
                         RecordSet rs = new RecordSet();
                         rs.executeUpdate(updateSql,0,lcbh);
@@ -170,7 +200,7 @@ public class ConsMatchTwInvAction  extends BaseBean implements Action {
                             RecordSet rs = new RecordSet();
                             rs.executeUpdate(updateSql,0,lcbh);
                         }
-                    }
+                    }*/
                 }
             }
         }

@@ -21,6 +21,8 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
 
     private String getBatchGyjInventoryUrl = getPropValue("k3_api_config","getBatchGyjInventoryUrl");
 
+    private InventoryService inventoryService;
+
     @Override
     public String execute(RequestInfo requestInfo) {
 
@@ -85,35 +87,56 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
 
             List<Map<String, String>> twSales = new ArrayList<>();
 
-            twSales = compareInv(k3InvList, dtMapList, inventoryService, lcbh);
+            //判断负库存
+            List<Map<String,String>> negInvList = inventoryService.CheckOutNegInv(k3InvList);
+            writeLog("negInvList="+negInvList.toString());
+            if(CollUtil.isNotEmpty(negInvList)){
 
-            if (CollUtil.isNotEmpty(twSales)){
-
-                String deleteSql = "DELETE FROM formtable_main_238_dt5 where mainid = ?";
-                RecordSet deleteRs = new RecordSet();
-                deleteRs.executeUpdate(deleteSql,id);
-
-                for (Map<String, String> twSale : twSales){
-
-                    String insertSql = "insert into formtable_main_238_dt5 (mainid,sku,quantity) values (?,?,?)";
-
-                    RecordSet insertRs = new RecordSet();
-
-                    String sku = twSale.get("sku");
-
-                    String quantity = twSale.get("quantity");
-
-                    insertRs.executeUpdate(insertSql,id,sku,quantity);
+                String message = "负库存信息, ";
+                for (Map<String,String> negInvMap : negInvList){
+                    String sku = negInvMap.get("sku");
+                    String fBaseQty = negInvMap.get("fBaseQty");
+                    message = message + sku + "为" + fBaseQty + ";";
                 }
 
-                String updateSql = "update formtable_main_238 set is_gyj = ? where lcbh = ?";
+                String updateSql = "update formtable_main_238 set match_inv_fail = ? , inv_error_msg = ? where lcbh = ?";
                 RecordSet rs = new RecordSet();
-                /*is_gyj = 1 代表不够货*/
-                rs.executeUpdate(updateSql,1,lcbh);
+                rs.executeUpdate(updateSql,0,message,lcbh);
 
                 return SUCCESS;
             }else {
-                return SUCCESS;
+                twSales = compareInv(k3InvList, dtMapList, inventoryService, lcbh);
+
+                if (CollUtil.isNotEmpty(twSales)){
+
+                    String deleteSql = "DELETE FROM formtable_main_238_dt5 where mainid = ?";
+                    RecordSet deleteRs = new RecordSet();
+                    deleteRs.executeUpdate(deleteSql,id);
+
+                    for (Map<String, String> twSale : twSales){
+
+                        String insertSql = "insert into formtable_main_238_dt5 (mainid,sku,quantity) values (?,?,?)";
+
+                        RecordSet insertRs = new RecordSet();
+
+                        String sku = twSale.get("sku");
+
+                        String quantity = twSale.get("quantity");
+
+                        insertRs.executeUpdate(insertSql,id,sku,quantity);
+                    }
+
+                    String updateSql = "update formtable_main_238 set is_gyj = ? where lcbh = ?";
+                    RecordSet rs = new RecordSet();
+                    /*is_gyj = 1 代表不够货*/
+                    rs.executeUpdate(updateSql,1,lcbh);
+
+                    writeLog("广悦进货品不够，需要生成香港单据");
+                    return SUCCESS;
+                }else {
+                    writeLog("广悦进货品组够，无需生成香港单据");
+                    return SUCCESS;
+                }
             }
         }else {
             return FAILURE_AND_CONTINUE;
@@ -147,12 +170,27 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
 
                     Map<String,String> twSale = new HashMap<>();
                     String fBaseQty = k3Inv.get("fBaseQty");
+
+
+                    if(Integer.compare(Integer.valueOf(fBaseQty),Integer.valueOf(xssl)) < 0){
+                        writeLog("生成台湾数据");
+                        Integer twNumber = Integer.valueOf(xssl) - Integer.valueOf(fBaseQty) ;
+                        twSale.put("sku",wlbm);
+                        twSale.put("quantity",String.valueOf(twNumber));
+                        twSales.add(twSale);
+                    }else {
+                        String updateSql = "update formtable_main_238 set is_gyj = ? where lcbh = ?";
+                        RecordSet rs = new RecordSet();
+                        rs.executeUpdate(updateSql,0,lcbh);
+                    }
+
+
 //                    writeLog("fBaseQty="+fBaseQty);
 
                     /*writeLog("fBaseQty="+fBaseQty);
                     writeLog("xssl="+xssl);*/
 
-                    if(Integer.valueOf(fBaseQty)<0){
+                    /*if(Integer.valueOf(fBaseQty)<0){
                         String updateSql = "update formtable_main_238 set match_inv_fail = ? where lcbh = ?";
                         RecordSet rs = new RecordSet();
                         rs.executeUpdate(updateSql,0,lcbh);
@@ -168,7 +206,7 @@ public class ConsMatchGyjInvAction extends BaseBean implements Action {
                             RecordSet rs = new RecordSet();
                             rs.executeUpdate(updateSql,0,lcbh);
                         }
-                    }
+                    }*/
                 }
             }
         }
