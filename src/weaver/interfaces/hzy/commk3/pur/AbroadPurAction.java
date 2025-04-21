@@ -52,14 +52,14 @@ public class AbroadPurAction extends BaseBean implements Action {
 
         PurService purService = new PurService();
 
-        String country = mainData.get("country");
+        String area = mainData.get("area");
 
 
         String org = "";
 
-        if("237".equals(country)){
+        if("237".equals(area)){
             org = "ZT029";
-        }else if("216".equals(country)){
+        }else if("216".equals(area)){
             org = "ZT031";
         }
 
